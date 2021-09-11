@@ -35,15 +35,21 @@ const useStyles = makeStyles({
     marginTop: 4,
     color: 'rgba(255, 210, 113, 1)',
     lineHeight: '18.26px',
+    userSelect: 'none',
   }
 })
 
-function WalletButton({ connected }: WalletBtnProp) {
+function WalletButton({ connected, address }: WalletBtnProp) {
   const classes = useStyles();
 
   if (connected) {
-
+    <div className={classes.root}>
+      <div className={classes.text}>
+        {address}
+      </div>
+    </div>
   }
+
   return (
     <div className={classes.root}>
       <div className={classes.text}>

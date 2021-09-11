@@ -1,9 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useSetRecoilState } from "recoil";
+import { popupState } from 'recoil/atoms';
 import { HeaderProps } from './Header.types';
 import { makeStyles } from '@material-ui/core';
 import NavButton from 'components/Buttons/NavButton';
 import WalletButton from 'components/Buttons/WalletButton';
 import Logo from 'assets/svgs/logo.svg';
+import WalletConnectPopup from 'components/WalletConnectPopup';
 
 const useStyles = makeStyles({
   container: {
@@ -40,12 +43,20 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    cursor: 'pointer',
   }
 })
+
 
 function Header({ routeList }: HeaderProps) {
   const location = useLocation();
   const classes = useStyles();
+  const setPopupState = useSetRecoilState(popupState);
+
+  const handleConnect = () => {
+    // address check
+    setPopupState(<WalletConnectPopup />);
+  }
 
   return (
     <div className={classes.container}>
@@ -63,7 +74,7 @@ function Header({ routeList }: HeaderProps) {
           </Link>
         ))}
       </div>
-      <div className={classes.connectBtn}>
+      <div className={classes.connectBtn} onClick={handleConnect}>
         <WalletButton connected={false} address="" />
       </div>
     </div>
