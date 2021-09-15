@@ -2,7 +2,7 @@ import { useSetRecoilState } from 'recoil';
 import { popupState } from 'recoil/atoms';
 
 import { makeStyles } from '@material-ui/core';
-import BGWalletPopup from 'assets/svgs/BGWalletPopup.svg';
+import BGConnectWallet from 'assets/svgs/BGConnectWallet.svg';
 import BtnExitEnabled from 'assets/svgs/BtnExitEnabled.svg';
 import BtnExitHovered from 'assets/svgs/BtnExitHovered.svg';
 import BtnExitPressed from 'assets/svgs/BtnExitPressed.svg';
@@ -16,21 +16,21 @@ const useStyles = makeStyles({
     width: '100vw',
     height: '100vh',
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    backdropFilter: 'blur(2px)',
+    backdropFilter: 'blur(4px)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
   box: {
-    width: 450,
-    height: 300,
-    backgroundImage: `url(${BGWalletPopup})`,
+    width: 448,
+    height: 218,
+    backgroundImage: `url(${BGConnectWallet})`,
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
   },
   titleContainer: {
-    marginTop: 60,
+    marginTop: 40,
     marginLeft: 32,
     marginRight: 32,
     display: 'flex',
@@ -56,8 +56,7 @@ const useStyles = makeStyles({
   },
   listContainer: {
     width: '100%',
-    height: 300 - 60 - 32 - 40,
-    marginTop: 16,
+    marginTop: 40,
     marginBottom: 24,
     display: 'flex',
     flexDirection: 'column',
