@@ -9,6 +9,7 @@ body {
   background: radial-gradient(74.59% 79.26% at 24.92% 28.24%, #1F1830 24.32%, #3F2643 91.83%);
   background-repeat: no-repeat;
   background-size: cover;
+  cursor: url('assets/Cursor.svg'), auto;
 }
 
 code {

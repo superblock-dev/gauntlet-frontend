@@ -1,35 +1,35 @@
 import { makeStyles } from "@material-ui/core";
 import { WalletBtnProp } from 'types';
-import SmallBtnEnabled from 'assets/svgs/SmallBtnEnabled.svg';
-import SmallBtnHovered from 'assets/svgs/SmallBtnHovered.svg';
-import SmallBtnPressed from 'assets/svgs/SmallBtnPressed.svg';
-import SmallBtnSelected from 'assets/svgs/SmallBtnSelected.svg';
+import WalletBtnEnabled from 'assets/svgs/WalletBtnEnabled.svg';
+import WalletBtnHovered from 'assets/svgs/WalletBtnHovered.svg';
+import WalletBtnPressed from 'assets/svgs/WalletBtnPressed.svg';
+import WalletBtnSelected from 'assets/svgs/WalletBtnSelected.svg';
 
 const useStyles = makeStyles({
   root: {
-    width: 104,
+    width: 140,
     height: 36,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundImage: `url(${SmallBtnEnabled})`,
+    backgroundImage: `url(${WalletBtnEnabled})`,
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     '&:hover': {
-      backgroundImage: `url(${SmallBtnHovered})`,
+      backgroundImage: `url(${WalletBtnHovered})`,
     },
     '&:active': {
-      backgroundImage: `url(${SmallBtnPressed})`,
+      backgroundImage: `url(${WalletBtnPressed})`,
     },
     '&:focus': {
-      backgroundImage: `url(${SmallBtnSelected})`,
+      backgroundImage: `url(${WalletBtnSelected})`,
     },
     cursor: 'pointer',
   },
   text: {
     fontFamily: 'Spectral SC',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 700,
     backgroundColor: 'transparent',
     marginTop: 4,
