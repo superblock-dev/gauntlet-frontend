@@ -45,7 +45,15 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
-  }
+  },
+  tvlText: {
+    position: 'absolute',
+    right: 172,
+    top: 16,
+    fontSize: 16,
+    fontWeight: 700,
+    color: 'rgba(255, 210, 113, 1)',
+  },
 })
 
 
@@ -74,6 +82,9 @@ function Header({ routeList }: HeaderProps) {
               title={menu.label} />
           </Link>
         ))}
+      </div>
+      <div className={classes.tvlText}>
+        tvl: $785.06M
       </div>
       <div className={classes.connectBtn} onClick={handleConnect}>
         <WalletButton connected={false} address="" />

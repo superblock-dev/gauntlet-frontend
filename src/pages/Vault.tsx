@@ -11,6 +11,9 @@ import { FARMS } from 'utils/tokens';
 
 const useStyles = makeStyles({
   contentContainer: {
+    // width: '100%',
+    // minWidth: 960,
+    // maxWidth: 1280,
     width: 960,
   },
   listTitle: {

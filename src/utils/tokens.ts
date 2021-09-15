@@ -20,12 +20,14 @@ export const TOKENS: { [key: string]: Token } = {
     name: 'USDC',
     mintAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     decimals: 6,
+    icon: 'https://sdk.raydium.io/icons/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
   },
   RAY: {
     symbol: 'RAY',
     name: 'Raydium',
     mintAddress: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
     decimals: 6,
+    icon: 'https://sdk.raydium.io/icons/AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3.png',
   },
   ETH: {
     symbol: 'ETH',
@@ -38,6 +40,7 @@ export const TOKENS: { [key: string]: Token } = {
     name: 'Wrapped Bitcoin',
     mintAddress: '9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E',
     decimals: 6,
+    icon: 'https://sdk.raydium.io/icons/9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E.png',
   },
   SOL: {
     symbol: 'SOL',
@@ -56,21 +59,25 @@ export const TOKENS: { [key: string]: Token } = {
 export const LP_TOKENS = {
   'RAY-USDC-V3': {
     symbol: 'RAY-USDC',
-    name: 'RAY-USDC V3 LP',
+    name: 'RAY-USDC',
     coin: { ...TOKENS.RAY },
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'BZFGfXMrjG2sS7QT2eiCDEevPFnkYYF7kzJpWfYxPbcx',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    url: 'https://raydium.io',
+    urlHelper: 'Raydium',
   },
   'RAY-ETH-V3': {
     symbol: 'RAY-ETH',
-    name: 'RAY-ETH V3 LP',
+    name: 'RAY-ETH',
     coin: { ...TOKENS.RAY },
     pc: { ...TOKENS.ETH },
 
     mintAddress: '8Q6MKy5Yxb9vG1mWzppMtMb2nrhNuCRNUkJTeiE3fuwD',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    url: 'https://raydium.io',
+    urlHelper: 'Raydium',
   },
 };
 
@@ -161,6 +168,7 @@ export interface Token {
   name: string,
   mintAddress: string,
   decimals: number,
+  icon?: string,
 }
 
 export interface LPToken {
@@ -170,6 +178,8 @@ export interface LPToken {
   pc: Token,
   mintAddress: string,
   decimals: number,
+  url?: string,
+  urlHelper?: string,
 }
 
 export interface Reward {

@@ -7,6 +7,7 @@ import SmallButton from "components/Buttons/SmallButton";
 import { SMALL_STONES, VaultInfo } from 'utils/tokens';
 import LinePurpleShort from 'assets/svgs/LinePurpleShort.svg';
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
+import LPTokenView from './LPTokenView';
 
 const AccordionSummary = withStyles({
   root: {
@@ -132,7 +133,9 @@ function UserVaultItem({ name, lp, userStaked }: VaultInfo) {
   return (
     <>
       <Grid container className={classes.container}>
-        <Grid item xs={3} className={classes.itemContainer} >{name}</Grid>
+        <Grid item xs={3} className={classes.itemContainer} >
+          <LPTokenView lp={lp} />
+        </Grid>
         <Grid item xs={2} className={classes.itemContainer} >540.1 M</Grid>
         <Grid item xs={2} className={classes.itemContainer} >118.0%</Grid>
         <Grid item xs={3} className={classes.itemContainer} >{
