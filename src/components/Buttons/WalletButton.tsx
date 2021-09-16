@@ -4,6 +4,7 @@ import WalletBtnEnabled from 'assets/svgs/WalletBtnEnabled.svg';
 import WalletBtnHovered from 'assets/svgs/WalletBtnHovered.svg';
 import WalletBtnPressed from 'assets/svgs/WalletBtnPressed.svg';
 import WalletBtnSelected from 'assets/svgs/WalletBtnSelected.svg';
+import CursorPointer from 'assets/CursorPointer.svg';
 
 const useStyles = makeStyles({
   root: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
     '&:focus': {
       backgroundImage: `url(${WalletBtnSelected})`,
     },
-    cursor: 'pointer',
+    cursor: `url(${CursorPointer}), pointer`,
   },
   text: {
     fontFamily: 'Spectral SC',

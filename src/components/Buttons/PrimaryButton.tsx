@@ -5,6 +5,7 @@ import PrimaryBtnDisabled from 'assets/svgs/PrimaryBtnDisabled.svg';
 import PrimaryBtnHovered from 'assets/svgs/PrimaryBtnHovered.svg';
 import PrimaryBtnPressed from 'assets/svgs/PrimaryBtnPressed.svg';
 import PrimaryBtnSelected from 'assets/svgs/PrimaryBtnSelected.svg';
+import CursorPointer from 'assets/CursorPointer.svg';
 
 const useStyles = makeStyles({
   root: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles({
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    cursor: 'pointer',
+    cursor: `url(${CursorPointer}), pointer`,
     '&:hover': {
       backgroundImage: `url(${PrimaryBtnHovered})`,
     },

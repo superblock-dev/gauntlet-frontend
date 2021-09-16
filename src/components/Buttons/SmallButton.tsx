@@ -4,6 +4,7 @@ import SmallBtnEnabled from 'assets/svgs/SmallBtnEnabled.svg';
 import SmallBtnHovered from 'assets/svgs/SmallBtnHovered.svg';
 import SmallBtnPressed from 'assets/svgs/SmallBtnPressed.svg';
 import SmallBtnSelected from 'assets/svgs/SmallBtnSelected.svg';
+import CursorPointer from 'assets/CursorPointer.svg';
 
 const useStyles = makeStyles({
   root: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
     '&:focus': {
       backgroundImage: `url(${SmallBtnSelected})`,
     },
-    cursor: 'pointer',
+    cursor: `url(${CursorPointer}), pointer`,
   },
   text: {
     fontFamily: 'Spectral SC',

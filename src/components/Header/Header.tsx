@@ -7,6 +7,7 @@ import NavButton from 'components/Buttons/NavButton';
 import WalletButton from 'components/Buttons/WalletButton';
 import Logo from 'assets/svgs/logo.svg';
 import WalletConnectPopup from 'components/WalletConnectPopup';
+import CursorPointer from 'assets/CursorPointer.svg';
 
 const useStyles = makeStyles({
   container: {
@@ -44,7 +45,7 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    cursor: 'pointer',
+    cursor: `url(${CursorPointer}), pointer`,
   },
   tvlText: {
     position: 'absolute',

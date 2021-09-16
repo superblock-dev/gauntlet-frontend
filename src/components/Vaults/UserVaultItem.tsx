@@ -8,6 +8,7 @@ import { SMALL_STONES, VaultInfo } from 'utils/tokens';
 import LinePurpleShort from 'assets/svgs/LinePurpleShort.svg';
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import LPTokenView from './LPTokenView';
+import CursorPointer from 'assets/CursorPointer.svg';
 
 const AccordionSummary = withStyles({
   root: {
@@ -17,10 +18,14 @@ const AccordionSummary = withStyles({
     padding: '0 16px',
     height: 40,
     minHeight: 40,
+    cursor: `url(${CursorPointer}), pointer !important`,
     '&$expanded': {
       minHeight: 40,
       height: 40,
     },
+  },
+  expandIcon: {
+    cursor: `url(${CursorPointer}), pointer !important`,
   },
   content: {},
   expanded: {},
@@ -155,18 +160,23 @@ function UserVaultItem({ name, lp, userStaked }: VaultInfo) {
       <Grid container>
         <Grid item xs={3} />
         <Grid item xs={7}>
-          <Accordion style={{ backgroundColor: 'transparent', zIndex: 0, boxShadow: 'none', marginBottom: 24, }}>
-            <AccordionSummary expandIcon={<CaretDown />} >
+          <Accordion style={{
+            backgroundColor: 'transparent',
+            zIndex: 0,
+            boxShadow: 'none',
+            marginBottom: 24,
+          }}>
+            <AccordionSummary expandIcon={<CaretDown style={{ cursor: `url(${CursorPointer}), pointer !important` }} />} >
               <div className={classes.rewardSummaryContent}>
-                <div 
+                <div
                   className={classes.textSen}
                   style={{
                     position: 'absolute',
                     left: 0,
                     top: 13,
-                  }}  
+                  }}
                 >Deposit</div>
-                <div 
+                <div
                   className={classes.textBasic}
                   style={{
                     position: 'absolute',
@@ -174,15 +184,15 @@ function UserVaultItem({ name, lp, userStaked }: VaultInfo) {
                     top: 7,
                   }}
                 >{userStaked?.deposit}</div>
-                <div  
+                <div
                   className={classes.textSen}
                   style={{
                     position: 'absolute',
                     left: 309,
                     top: 13,
-                  }}  
+                  }}
                 >Rewards</div>
-                <div 
+                <div
                   className={classes.textBasic}
                   style={{
                     position: 'absolute',

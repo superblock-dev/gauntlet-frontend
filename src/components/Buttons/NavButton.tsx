@@ -4,6 +4,7 @@ import NavEnabled from 'assets/svgs/NavEnabled.svg';
 import NavHovered from 'assets/svgs/NavHovered.svg';
 import NavPressed from 'assets/svgs/NavPressed.svg';
 import NavSelected from 'assets/svgs/NavSelected.svg';
+import CursorPointer from 'assets/CursorPointer.svg';
 
 const useStyles = makeStyles({
   inactive: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
     '&:active': {
       backgroundImage: `url(${NavPressed})`,
     },
-    cursor: 'pointer',
+    cursor: `url(${CursorPointer}), pointer`,
   },
   active: {
     width: 124,
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',  
-    cursor: 'pointer',
+    cursor: `url(${CursorPointer}), pointer`,
   },
   title: {
     fontFamily: 'Spectral SC',

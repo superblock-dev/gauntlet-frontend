@@ -8,6 +8,7 @@ import BtnExitHovered from 'assets/svgs/BtnExitHovered.svg';
 import BtnExitPressed from 'assets/svgs/BtnExitPressed.svg';
 import ItemWalletType from 'assets/svgs/ItemWalletType.svg';
 import WalletIconPhantom from 'assets/svgs/WalletIconPhantom.svg';
+import CursorPointer from 'assets/CursorPointer.svg';
 
 const useStyles = makeStyles({
   root: {
@@ -52,7 +53,7 @@ const useStyles = makeStyles({
     '&:active': {
       backgroundImage: `url(${BtnExitPressed})`,
     },
-    cursor: 'pointer',
+    cursor: `url(${CursorPointer}), pointer`,
   },
   listContainer: {
     width: '100%',
@@ -66,7 +67,7 @@ const useStyles = makeStyles({
   item: {
     width: 384,
     height: 66,
-    cursor: 'pointer',
+    cursor: `url(${CursorPointer}), pointer`,
     display: 'flex',
     alignItems: 'center',
     backgroundImage: `url(${ItemWalletType})`,
