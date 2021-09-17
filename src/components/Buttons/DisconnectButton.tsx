@@ -1,10 +1,9 @@
 import { makeStyles } from "@material-ui/core";
-import { WalletBtnProp } from 'types';
+import { DisconnectBtnProp } from 'types';
 import WalletBtnEnabled from 'assets/svgs/WalletBtnEnabled.svg';
 import WalletBtnHovered from 'assets/svgs/WalletBtnHovered.svg';
 import WalletBtnPressed from 'assets/svgs/WalletBtnPressed.svg';
 import WalletBtnSelected from 'assets/svgs/WalletBtnSelected.svg';
-import IconWallet from 'assets/svgs/IconWallet.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
 
 const useStyles = makeStyles({
@@ -29,16 +28,6 @@ const useStyles = makeStyles({
     },
     cursor: `url(${CursorPointer}), pointer`,
   },
-  icon: {
-    width: 16,
-    height: 16,
-    marginTop: 4,
-    marginRight: 8,
-    backgroundImage: `url(${IconWallet})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-  },
   text: {
     fontFamily: 'Spectral SC',
     fontSize: 12,
@@ -51,27 +40,16 @@ const useStyles = makeStyles({
   }
 })
 
-function WalletButton({ connected, address }: WalletBtnProp) {
+function DisconnectButton({ handleClick }: DisconnectBtnProp) {
   const classes = useStyles();
 
-  if (connected) {
-    return (
-      <div className={classes.root}>
-        <div className={classes.icon} />
-        <div className={classes.text}>
-          {address?.slice(0, 5) + '...' + address?.slice(40)}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={classes.root}>
+    <div className={classes.root} onClick={handleClick}>
       <div className={classes.text}>
-        CONNECT WALLET
+        DISCONNECT
       </div>
     </div>
   )
 }
 
-export default WalletButton;
+export default DisconnectButton;

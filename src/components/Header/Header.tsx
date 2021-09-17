@@ -1,4 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
+import { WalletAdapter } from '@solana/wallet-adapter-base';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useSetRecoilState } from "recoil";
 import { popupState } from 'recoil/atoms';
 import { HeaderProps } from './Header.types';
@@ -62,11 +64,13 @@ function Header({ routeList }: HeaderProps) {
   const location = useLocation();
   const classes = useStyles();
   const setPopupState = useSetRecoilState(popupState);
+  const { publicKey, connected } = useWallet();
 
   const handleConnect = () => {
     // address check
     setPopupState(<WalletConnectPopup />);
   }
+  const address = publicKey?.toBase58();
 
   return (
     <div className={classes.container}>
@@ -88,7 +92,7 @@ function Header({ routeList }: HeaderProps) {
         tvl: $785.06M
       </div>
       <div className={classes.connectBtn} onClick={handleConnect}>
-        <WalletButton connected={false} address="" />
+        <WalletButton connected={connected} address={address} />
       </div>
     </div>
   )

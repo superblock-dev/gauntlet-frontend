@@ -1,9 +1,15 @@
+import { useMemo } from "react";
 import { useRecoilValue } from "recoil";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
+import { clusterApiUrl } from '@solana/web3.js';
 import { SnackbarProvider } from 'notistack';
 import { Route as RouteType } from 'types';
 import { popupState } from "recoil/atoms";
+
 import Header from 'components/Header';
 import Popup from 'components/Popup';
 import Zap from "pages/Zap";
@@ -26,8 +32,15 @@ const routeList: RouteType[] = [
 function App() {
   const popup = useRecoilValue(popupState);
   const classes = useStyles();
+  const network = WalletAdapterNetwork.Devnet;
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const wallets = useMemo(() => [
+    getPhantomWallet(),
+  ], [network]);
 
   return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets}>
     <SnackbarProvider 
       maxSnack={3} 
       autoHideDuration={2000}
@@ -50,6 +63,9 @@ function App() {
         {popup ? <Popup>{popup}</Popup> : undefined}
       </Router>
     </SnackbarProvider>
+
+</WalletProvider>
+</ConnectionProvider>
   );
 }
 

@@ -18,7 +18,11 @@ export interface NavBtnProp {
 
 export interface WalletBtnProp {
   connected: boolean,
-  address: string, 
+  address?: string, 
+}
+
+export interface DisconnectBtnProp {
+  handleClick: any,
 }
 
 export interface ChildrenProp {
