@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core";
-import { WalletBtnProp } from 'types';
 import SmallBtnEnabled from 'assets/svgs/SmallBtnEnabled.svg';
 import SmallBtnHovered from 'assets/svgs/SmallBtnHovered.svg';
 import SmallBtnPressed from 'assets/svgs/SmallBtnPressed.svg';

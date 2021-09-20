@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 })
 
 const routeList: RouteType[] = [
-  { label: "ZAP", path: "/" },
+  { label: "ZAP", path: "/zap" },
   { label: "VAULT", path: "/vault" },
   { label: "SWAP", path: "/swap" },
 ]
@@ -60,7 +60,8 @@ function App() {
           <Route exact path={"/vault"} component={() => <Vault />} />
           <Route path={"/vault/:vaultId"} component={() => <VaultDetail />} />
           <Route path={"/swap"} component={() => <></>} />
-          <Route path={"/"} component={() => <Zap />} />
+          <Route path={"/zap"} component={() => <Zap />} />
+          <Route path={"/"} component={() => <></>} />
         </Switch>
         {popup ? <Popup>{popup}</Popup> : undefined}
       </Router>

@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     borderStyle: 'solid',
-    borderImage: 'linear-gradient(63.44deg, rgba(143, 103, 255, 0) 31.39%, #8F67FF 65.97%, rgba(143, 103, 255, 0) 100%)',
+    borderImage: 'linear-gradient(45deg, rgba(143, 103, 255, 0), #8F67FF 50%, rgba(143, 103, 255, 0) 100%)',
     borderImageSlice: 1,
     borderImageWidth: '0 0 1px 0',
   },

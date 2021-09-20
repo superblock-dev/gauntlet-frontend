@@ -78,15 +78,17 @@ function Header({ routeList }: HeaderProps) {
         <img src={Logo} />
       </Link>
       <div className={classes.navContainer}>
-        {routeList.map((menu) => (
+        {routeList.map((menu) => { 
+          console.log(location.pathname)
+          return (
           <Link
             key={menu.path}
             to={menu.path}>
             <NavButton
-              active={location.pathname === menu.path}
+              active={location.pathname.includes(menu.path)}
               title={menu.label} />
           </Link>
-        ))}
+        )} )}
       </div>
       <div className={classes.tvlText}>
         tvl: $785.06M
