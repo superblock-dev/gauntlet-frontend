@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core";
-import LineOnlyPurple from "assets/svgs/LineOnlyPurple.svg";
 
 const useStyles = makeStyles({
   root: {
@@ -24,7 +23,7 @@ const useStyles = makeStyles({
     borderImage: 'linear-gradient(45deg, rgba(143, 103, 255, 0), #8F67FF 50%, rgba(143, 103, 255, 0) 100%)',
     borderImageSlice: 1,
     borderImageWidth: '0 0 1px 0',
-    marginBottom: 25,
+    marginBottom: 29,
   },
   infoContainer: {
     position: 'relative',

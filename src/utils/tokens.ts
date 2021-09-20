@@ -1,19 +1,3 @@
-import StoneBTC from 'assets/svgs/stones_small/BTC.svg';
-import StoneETH from 'assets/svgs/stones_small/ETH.svg';
-import StoneSOL from 'assets/svgs/stones_small/SOL.svg';
-import StoneUSDC from 'assets/svgs/stones_small/USDC.svg';
-import StoneUSDT from 'assets/svgs/stones_small/USDT.svg';
-import StoneETC from 'assets/svgs/stones_small/ETC.svg';
-
-export const SMALL_STONES: { [key: string]: string } = {
-  BTC: StoneBTC,
-  ETH: StoneETH,
-  SOL: StoneSOL,
-  USDC: StoneUSDC,
-  USDT: StoneUSDT,
-  ETC: StoneETC,
-}
-
 export const TOKENS: { [key: string]: Token } = {
   USDC: {
     symbol: 'USDC',

@@ -8,6 +8,7 @@ import { FARMS } from 'utils/tokens';
 import VaultSummary from "components/VaultDetail/VaultSummary";
 import VaultDetails from "components/VaultDetail/VaultDetails";
 import MediumButton from "components/Buttons/MediumButton";
+import RewardList from "components/VaultDetail/RewardList";
 
 interface VaultDetailParams {
   vaultId: string,
@@ -103,6 +104,8 @@ function VaultDetail() {
       <VaultSummary />
 
       <div className={classes.divider} />
+
+      <RewardList />
 
       <VaultDetails />
 
