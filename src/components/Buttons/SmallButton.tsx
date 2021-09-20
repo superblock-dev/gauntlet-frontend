@@ -40,12 +40,16 @@ const useStyles = makeStyles({
   }
 })
 
-function SmallButton() {
+interface SmallButtonProps {
+  text?: string;
+}
+
+function SmallButton({text = "LET's do it"}: SmallButtonProps) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <div className={classes.text}>
-        LET’s do it
+        {text}
       </div>
     </div>
   )
