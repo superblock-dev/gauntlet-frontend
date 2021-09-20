@@ -3,6 +3,7 @@ import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
 import UserVaultItem from "components/Vaults/UserVaultItem";
 import VaultItem from "components/Vaults/VaultItem";
+import Slider from "components/Slider";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import IconHelp from 'assets/svgs/IconHelp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
@@ -10,6 +11,10 @@ import { ReactComponent as LineDivider } from 'assets/svgs/LineDivider.svg';
 import { FARMS } from 'utils/tokens';
 
 const useStyles = makeStyles({
+  sliderContainer: {
+    width: 1280,
+    height: 960,
+  },
   contentContainer: {
     // width: '100%',
     // minWidth: 960,
@@ -64,6 +69,9 @@ function Vault() {
       title={"VAULT"}
     // subtitle={"Wherever you farm, collect what you want!"}
     >
+      <div className={classes.sliderContainer}>
+        <Slider />
+      </div>
       <div className={classes.contentContainer}>
         {
           userFarms.length !== 0 ?
