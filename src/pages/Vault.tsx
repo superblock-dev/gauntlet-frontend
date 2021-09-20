@@ -12,7 +12,7 @@ import { FARMS } from 'utils/tokens';
 
 const useStyles = makeStyles({
   sliderContainer: {
-    width: 1280,
+    width: 1440,
     height: 960,
   },
   contentContainer: {

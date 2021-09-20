@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Carousel from "react-spring-3d-carousel";
 import { config } from "react-spring";
 import { v4 as uuidv4 } from "uuid";
 import styled from "@emotion/styled";
 import { Slide } from "./Slide";
+import Flag from "components/Vaults/Flag";
 
 const Wrapper = styled.div`
   position: relative;
@@ -11,16 +12,16 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 
-function createItem(src: string, idx: number) {
+function createItem(active: boolean) {
     return (
-        <img src={src} alt={idx.toString()} />
+        <Flag active={active}/>
     );
 }
 
-function createSlide(src: string, idx: number, onClick: () => void) {
+function createSlide(curIdx: number, idx: number, onClick: () => void) {
     return {
         key: uuidv4(),
-        content: createItem(src, idx),
+        content: createItem(curIdx === idx),
         onClick: onClick
     }
 }
@@ -64,16 +65,25 @@ class CustomCarousel extends Carousel {
       }
 }
 
-export default function Slider() {
-    const [ goToSlide, setGoToSlide ] = useState(0);
-    const slides = urls.map((url, i) => {
-        return createSlide(url, i, () => setGoToSlide(i));
+interface SliderProps {
+    onChange?: (index: number) => void
+}
+
+export default function Slider({ onChange }: SliderProps) {
+    const [ slideIndex, setSlideIndex ] = useState(0);
+
+    useEffect(() => {
+        if (onChange) onChange(slideIndex);
+    }, [slideIndex])
+
+    const slides = urls.map((_, i) => {
+        return createSlide(slideIndex, i, () => setSlideIndex(i));
     });
 
     return (
         <CustomCarousel
             slides={slides}
-            goToSlide={goToSlide}
+            goToSlide={slideIndex}
             offsetRadius={3}
             showNavigation={true}
             animationConfig={config.gentle}>

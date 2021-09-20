@@ -36,8 +36,11 @@ export function Slide({
   const distanceFactor = 1 - Math.abs(offsetFromCenter / (offsetRadius + 1));
 
   const translateXoffset =
-    50 * (Math.abs(offsetFromCenter) / (offsetRadius + 1));
+    50 * Math.cos(Math.abs(offsetFromCenter) / (offsetRadius + 1));
+  const translateYoffset =
+    25 * Math.sin(Math.abs(offsetFromCenter) / (offsetRadius + 1));
   let translateX = -50;
+  let translateY = -50;
 
   if (offsetRadius !== 0) {
     if (index === 0) {
@@ -49,14 +52,16 @@ export function Slide({
 
   if (offsetFromCenter > 0) {
     translateX += translateXoffset;
+    translateY -= translateYoffset;
   } else if (offsetFromCenter < 0) {
     translateX -= translateXoffset;
+    translateY -= translateYoffset;
   }
 
   return (
     <Spring
       to={{
-        transform: `translateY(${-50 - 0.25 * Math.abs(100 * offsetFromCenter / offsetRadius)}%) translateX(${translateX}%) scale(${distanceFactor})`,
+        transform: `translateY(${translateY}%) translateX(${translateX}%) scale(${1.0})`,
         left: `${
           offsetRadius === 0 ? 50 : 50 + (offsetFromCenter * 50) / offsetRadius
         }%`,
