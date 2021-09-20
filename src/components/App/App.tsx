@@ -21,6 +21,11 @@ const useStyles = makeStyles({
   containerRoot: {
     top: 136,
     right: 80, 
+  },
+  "@global": {
+    input: {
+      fontSize: 16,
+    }
   }
 })
 

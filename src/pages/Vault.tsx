@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
 import UserVaultItem from "components/Vaults/UserVaultItem";
