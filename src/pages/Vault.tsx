@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
 import UserVaultItem from "components/Vaults/UserVaultItem";
@@ -91,7 +90,7 @@ function Vault() {
               {
                 userFarms.map((userFarm, idx) => (
                   <>
-                    <UserVaultItem name={userFarm.name} lp={userFarm.lp} userStaked={userFarm.userStaked} />
+                    <UserVaultItem id={idx} name={userFarm.name} lp={userFarm.lp} userStaked={userFarm.userStaked} />
                     {
                       idx !== userFarms.length - 1 ?
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, }}>
@@ -135,7 +134,7 @@ function Vault() {
         {
           otherFarms.map((farm, idx) => (
             <>
-              <VaultItem name={farm.name} lp={farm.lp} userStaked={undefined} />
+              <VaultItem id={idx} name={farm.name} lp={farm.lp} userStaked={undefined} />
               {
                 idx !== otherFarms.length - 1 ?
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, }}>

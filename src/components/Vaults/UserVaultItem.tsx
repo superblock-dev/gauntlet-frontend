@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
@@ -132,7 +133,7 @@ const useStyles = makeStyles({
 
 });
 
-function UserVaultItem({ name, lp, userStaked }: VaultInfo) {
+function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
   const classes = useStyles();
 
   return (
@@ -151,7 +152,9 @@ function UserVaultItem({ name, lp, userStaked }: VaultInfo) {
           ))
         }</Grid>
         <Grid item xs={2} className={classes.btnContainer}>
-          <SmallButton />
+          <Link to={`/vault/${id}`}>
+            <SmallButton />
+          </Link> 
         </Grid>
       </Grid>
       <div className={classes.shortDivider}>

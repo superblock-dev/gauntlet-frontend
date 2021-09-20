@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core";
 import SmallButton from "components/Buttons/SmallButton";
 import { VaultInfo } from 'utils/tokens';
 import LPTokenView from './LPTokenView';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
   container: {
@@ -34,7 +35,7 @@ const useStyles = makeStyles({
   },
 });
 
-function VaultItem({ name, lp, userStaked }: VaultInfo) {
+function VaultItem({ id, lp, userStaked }: VaultInfo) {
   const classes = useStyles();
 
   return (
@@ -46,7 +47,9 @@ function VaultItem({ name, lp, userStaked }: VaultInfo) {
         <Grid item xs={3} className={classes.itemContainer}>540.1 M</Grid>
         <Grid item xs={3} className={classes.itemContainer}>118.0%</Grid>
         <Grid item xs={2} className={classes.btnContainer}>
-          <SmallButton />
+          <Link to={`/vault/${id}`}>
+            <SmallButton />
+          </Link>
         </Grid>
       </Grid>
     </>

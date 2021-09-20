@@ -83,6 +83,7 @@ export const LP_TOKENS = {
 
 export const FARMS: VaultInfo[] = [
   {
+    id: 0,
     name: 'RAY-USDC',
     lp: { ...LP_TOKENS['RAY-USDC-V3'] },
     userStaked: {
@@ -114,6 +115,7 @@ export const FARMS: VaultInfo[] = [
     // poolRewardTokenAccount: '3ejmkn5HpXR9KdVWkai1Ngo87sQSUyKXrx8wSakipkno' // reward vault
   },
   {
+    id: 1,
     name: 'RAY-USDC',
     lp: { ...LP_TOKENS['RAY-USDC-V3'] },
     userStaked: {
@@ -141,6 +143,7 @@ export const FARMS: VaultInfo[] = [
     // poolRewardTokenAccount: '3ejmkn5HpXR9KdVWkai1Ngo87sQSUyKXrx8wSakipkno' // reward vault
   },
   {
+    id: 2,
     name: 'RAY-ETH',
     lp: { ...LP_TOKENS['RAY-ETH-V3'] },
     userStaked: undefined,
@@ -152,6 +155,7 @@ export const FARMS: VaultInfo[] = [
   },
 
   {
+    id: 3,
     name: 'RAY-ETH',
     lp: { ...LP_TOKENS['RAY-ETH-V3'] },
     userStaked: undefined,
@@ -195,4 +199,5 @@ export interface VaultInfo {
     totalRewardInUSD: number,
     rewards: Reward[],
   },
+  id: number,
 }

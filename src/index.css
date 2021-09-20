@@ -22,10 +22,6 @@ a {
   cursor: url('assets/CursorPointer.svg'), pointer;
 }
 
-a, a:visited, a:hover, a:active {
-  color: inherit;
-}
-
 div {
   white-space: pre-wrap;
 }

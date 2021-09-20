@@ -15,6 +15,7 @@ import Popup from 'components/Popup';
 import Zap from "pages/Zap";
 import Vault from "pages/Vault";
 import Snackbar from "components/Snackbar";
+import VaultDetail from "pages/VaultDetail";
 
 const useStyles = makeStyles({
   containerRoot: {
@@ -56,7 +57,8 @@ function App() {
       <Router>
         <Header routeList={routeList} />
         <Switch>
-          <Route path={"/vault"} component={() => <Vault />} />
+          <Route exact path={"/vault"} component={() => <Vault />} />
+          <Route path={"/vault/:vaultId"} component={() => <VaultDetail />} />
           <Route path={"/swap"} component={() => <></>} />
           <Route path={"/"} component={() => <Zap />} />
         </Switch>
