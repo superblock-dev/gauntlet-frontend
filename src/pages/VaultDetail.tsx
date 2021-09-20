@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import LPTokenView from "components/Vaults/LPTokenView";
@@ -9,7 +10,24 @@ import VaultSummary from "components/VaultDetail/VaultSummary";
 import VaultDetails from "components/VaultDetail/VaultDetails";
 import MediumButton from "components/Buttons/MediumButton";
 import RewardList from "components/VaultDetail/RewardList";
+import Slider from "components/Slider";
 import CursorPointer from 'assets/CursorPointer.svg';
+import Flag from "components/Vaults/Flag";
+import { v4 as uuidv4 } from "uuid";
+
+function createItem(active: boolean) {
+  return (
+      <Flag active={active}/>
+  );
+}
+
+function createSlide(curIdx: number, idx: number, onClick: () => void) {
+  return {
+      key: uuidv4(),
+      content: createItem(curIdx === idx),
+      onClick: onClick
+  }
+}
 
 interface VaultDetailParams {
   vaultId: string,
@@ -60,11 +78,20 @@ const useStyles = makeStyles({
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
   },
+  sliderContainer: {
+    width: 1440,
+    height: 960,
+  },
 });
 
 function VaultDetail() {
   const classes = useStyles();
   const { goBack } = useHistory();
+  const [slideIndex, setSlideIndex] = useState(0);
+  const flags = ([1,2,3,4,5,5,5,55,5,5,5,5,5]).map((_, i) => {
+    return createSlide(slideIndex, i, () => setSlideIndex(i));
+  });
+
   let { vaultId } = useParams<VaultDetailParams>();
   let vId = parseInt(vaultId);
   if (vId === undefined) return <></> // TODO: Page not found
@@ -107,6 +134,10 @@ function VaultDetail() {
       <VaultSummary />
 
       <div className={classes.divider} />
+
+      <div className={classes.sliderContainer}>
+        <Slider index={slideIndex} slides={flags} />
+      </div>
 
       <RewardList />
 

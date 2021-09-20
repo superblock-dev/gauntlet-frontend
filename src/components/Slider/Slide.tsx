@@ -66,6 +66,7 @@ export function Slide({
           offsetRadius === 0 ? 50 : 50 + (offsetFromCenter * 50) / offsetRadius
         }%`,
         opacity: distanceFactor < 0.5 ? 0.0 : 1.0,
+        transition: "0.3s ease-out",
       }}
       config={animationConfig}
     >
