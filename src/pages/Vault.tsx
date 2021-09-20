@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { useEffect } from "react";
+import { cloneDeep } from "lodash";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { conn, rewardPrices } from "recoil/atoms";
+import { getPrice, requestPriceInfo } from "api/prices";
+
 import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
 import UserVaultItem from "components/Vaults/UserVaultItem";
@@ -11,6 +17,8 @@ import { ReactComponent as LineDivider } from 'assets/svgs/LineDivider.svg';
 import { FARMS } from 'utils/tokens';
 import Flag from "components/Vaults/Flag";
 import { v4 as uuidv4 } from "uuid";
+import { TIMEOUT_DEFAULT } from "utils/constants";
+import { LiquidityPoolInfo } from "utils/pools";
 
 const useStyles = makeStyles({
   sliderContainer: {
@@ -22,6 +30,7 @@ const useStyles = makeStyles({
     // minWidth: 960,
     // maxWidth: 1280,
     width: 960,
+    marginBottom: 229,
   },
   listTitle: {
     fontFamily: 'Sen',
@@ -79,6 +88,35 @@ function Vault() {
   const classes = useStyles();
   const userFarms = FARMS.filter(farmInfo => farmInfo.userStaked != null);
   const otherFarms = FARMS.filter(farmInfo => farmInfo.userStaked == null);
+  const web3 = useRecoilValue(conn);
+  const [prices, setPrices] = useRecoilState(rewardPrices);
+
+  const updatePriceInfo = async () => {
+    if (web3) {
+      const pools = await requestPriceInfo(web3) as {[key: string]: LiquidityPoolInfo};
+      const newPrices = cloneDeep(prices);
+      for (const value of Object.values(pools)) {
+        newPrices[value.target] = {
+          price: getPrice(value).toNumber(),
+        }
+      }
+      setPrices(newPrices);
+    }
+  }
+
+  useEffect(() => {
+    updatePriceInfo();
+  }, [web3]);
+
+  useEffect(() => {
+    const timer = setInterval(async () => {
+      updatePriceInfo();
+    }, TIMEOUT_DEFAULT);
+
+    return () => clearTimeout(timer);
+  });
+
+  console.log(prices);
 
   const [slideIndex, setSlideIndex] = useState(0);
 

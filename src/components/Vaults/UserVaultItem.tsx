@@ -1,4 +1,7 @@
 import { Link } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { rewardPrices } from 'recoil/atoms';
+
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
@@ -136,6 +139,10 @@ const useStyles = makeStyles({
 
 function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
   const classes = useStyles();
+  const prices = useRecoilValue(rewardPrices);
+  const totalRewardInUSD = userStaked?.rewards.reduce((total, reward) => {
+    return total + reward.amount * prices[reward.token.symbol].price
+  }, 0);
 
   return (
     <>
@@ -203,7 +210,7 @@ function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
                     right: 0,
                     top: 7,
                   }}
-                >{userStaked?.totalRewardInUSD}</div>
+                >{`$ ${totalRewardInUSD?.toString().slice(0, 10)}`}</div>
               </div>
             </AccordionSummary>
             <AccordionDetails >

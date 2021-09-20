@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import LPTokenView from "components/Vaults/LPTokenView";
 import { makeStyles } from "@material-ui/core";
@@ -9,6 +9,7 @@ import VaultSummary from "components/VaultDetail/VaultSummary";
 import VaultDetails from "components/VaultDetail/VaultDetails";
 import MediumButton from "components/Buttons/MediumButton";
 import RewardList from "components/VaultDetail/RewardList";
+import CursorPointer from 'assets/CursorPointer.svg';
 
 interface VaultDetailParams {
   vaultId: string,
@@ -31,6 +32,7 @@ const useStyles = makeStyles({
     marginBottom: 32,
     display: 'flex',
     alignItems: 'center',
+    cursor: `url(${CursorPointer}), pointer`,
   },
   iconBack: {
     width: 32,
@@ -62,6 +64,7 @@ const useStyles = makeStyles({
 
 function VaultDetail() {
   const classes = useStyles();
+  const { goBack } = useHistory();
   let { vaultId } = useParams<VaultDetailParams>();
   let vId = parseInt(vaultId);
   if (vId === undefined) return <></> // TODO: Page not found
@@ -71,7 +74,7 @@ function VaultDetail() {
   return (
     <div className={classes.root}>
       <div className={classes.header}>
-        <div className={classes.backBtnContainer}>
+        <div className={classes.backBtnContainer} onClick={goBack}>
           <div className={classes.iconBack} />
           <div className={classes.textBack}>
             Back to Vaults

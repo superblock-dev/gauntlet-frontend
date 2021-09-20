@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.3",
+    "@project-serum/borsh": "^0.2.2",
     "@solana/spl-token": "^0.1.8",
     "@solana/wallet-adapter-base": "^0.6.0",
     "@solana/wallet-adapter-react": "^0.12.0",
@@ -20,7 +21,9 @@
     "@types/react-router-dom": "^5.1.8",
     "@types/styled-components": "^5.1.12",
     "@types/uuid": "^8.3.1",
+    "bignumber.js": "^9.0.1",
     "eventemitter3": "^4.0.7",
+    "lodash-es": "^4.17.21",
     "notistack": "^1.0.10",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
