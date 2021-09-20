@@ -9,6 +9,8 @@ import IconHelp from 'assets/svgs/IconHelp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import { ReactComponent as LineDivider } from 'assets/svgs/LineDivider.svg';
 import { FARMS } from 'utils/tokens';
+import Flag from "components/Vaults/Flag";
+import { v4 as uuidv4 } from "uuid";
 
 const useStyles = makeStyles({
   sliderContainer: {
@@ -59,10 +61,30 @@ const useStyles = makeStyles({
   }
 });
 
+function createItem(active: boolean) {
+  return (
+      <Flag active={active}/>
+  );
+}
+
+function createSlide(curIdx: number, idx: number, onClick: () => void) {
+  return {
+      key: uuidv4(),
+      content: createItem(curIdx === idx),
+      onClick: onClick
+  }
+}
+
 function Vault() {
   const classes = useStyles();
   const userFarms = FARMS.filter(farmInfo => farmInfo.userStaked != null);
   const otherFarms = FARMS.filter(farmInfo => farmInfo.userStaked == null);
+
+  const [slideIndex, setSlideIndex] = useState(0);
+
+  const flags = ([...FARMS, ...FARMS]).map((_, i) => {
+    return createSlide(slideIndex, i, () => setSlideIndex(i));
+  });
 
   return (
     <PageTemplate
@@ -70,7 +92,7 @@ function Vault() {
     // subtitle={"Wherever you farm, collect what you want!"}
     >
       <div className={classes.sliderContainer}>
-        <Slider />
+        <Slider index={slideIndex} slides={flags} />
       </div>
       <div className={classes.contentContainer}>
         {
