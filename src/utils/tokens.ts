@@ -1,3 +1,41 @@
+import { TokenAmount } from "./safe-math";
+
+export interface Token {
+  symbol: string,
+  name: string,
+  mintAddress: string,
+  decimals: number,
+  icon?: string,
+  balance?: TokenAmount,
+}
+
+export interface LPToken {
+  symbol: string,
+  name: string,
+  coin: Token,
+  pc: Token,
+  mintAddress: string,
+  decimals: number,
+  url?: string,
+  urlHelper?: string,
+  balance?: TokenAmount,
+}
+
+export interface Reward {
+  token: Token,
+  amount: number,
+}
+
+export interface VaultInfo {
+  name: string,
+  lp: LPToken,
+  userStaked?: {
+    deposit: number,
+    rewards: Reward[],
+  },
+  id: number,
+}
+
 export const TOKENS: { [key: string]: Token } = {
   USDC: {
     symbol: 'USDC',
@@ -11,13 +49,14 @@ export const TOKENS: { [key: string]: Token } = {
     name: 'Raydium',
     mintAddress: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
     decimals: 6,
-    icon: 'https://sdk.raydium.io/icons/AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3.png',
+    icon: 'https://sdk.raydium.io/icons/4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R.png',
   },
   ETH: {
     symbol: 'ETH',
     name: 'Wrapped Ethereum',
     mintAddress: '2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk',
     decimals: 6,
+    icon: 'https://sdk.raydium.io/icons/2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk.png',
   },
   BTC: {
     symbol: 'BTC',
@@ -37,6 +76,7 @@ export const TOKENS: { [key: string]: Token } = {
     name: 'USDT',
     mintAddress: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
     decimals: 6,
+    icon: 'https://sdk.raydium.io/icons/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB.png',
   },
 }
 
@@ -63,6 +103,42 @@ export const LP_TOKENS = {
     url: 'https://raydium.io',
     urlHelper: 'Raydium',
   },
+  'ETH-USDC-V4': {
+    symbol: 'ETH-USDC',
+    name: 'ETH-USDC',
+    coin: { ...TOKENS.ETH },
+    pc: { ...TOKENS.USDC },
+
+    mintAddress: '13PoKid6cZop4sj2GfoBeujnGfthUbTERdE5tpLCDLEY',
+    decimals: TOKENS.ETH.decimals
+  },
+  'BTC-USDC-V4': {
+    symbol: 'BTC-USDC',
+    name: 'BTC-USDC',
+    coin: { ...TOKENS.BTC },
+    pc: { ...TOKENS.USDC },
+
+    mintAddress: '2hMdRdVWZqetQsaHG8kQjdZinEMBz75vsoWTCob1ijXu',
+    decimals: TOKENS.BTC.decimals
+  },
+  'BTC-USDT-V4': {
+    symbol: 'BTC-USDT',
+    name: 'BTC-USDT',
+    coin: { ...TOKENS.BTC },
+    pc: { ...TOKENS.USDT },
+
+    mintAddress: 'DgGuvR9GSHimopo3Gc7gfkbKamLKrdyzWkq5yqA6LqYS',
+    decimals: TOKENS.BTC.decimals
+  },
+  'SOL-USDC-V4': {
+    symbol: 'SOL-USDC',
+    name: 'SOL-USDC',
+    coin: { ...TOKENS.SOL },
+    pc: { ...TOKENS.USDC },
+
+    mintAddress: '8HoQnePLqPj4M7PUDzfw8e3Ymdwgc7NLGnaTUapubyvu',
+    decimals: TOKENS.SOL.decimals
+  },
 };
 
 export const FARMS: VaultInfo[] = [
@@ -72,7 +148,6 @@ export const FARMS: VaultInfo[] = [
     lp: { ...LP_TOKENS['RAY-USDC-V3'] },
     userStaked: {
       deposit: 49.48604,
-      totalRewardInUSD: 49.48,
       rewards: [
         {
           token: TOKENS.ETH,
@@ -100,11 +175,10 @@ export const FARMS: VaultInfo[] = [
   },
   {
     id: 1,
-    name: 'RAY-USDC',
-    lp: { ...LP_TOKENS['RAY-USDC-V3'] },
+    name: 'BTC-USDT',
+    lp: { ...LP_TOKENS['BTC-USDT-V4'] },
     userStaked: {
       deposit: 49.48604,
-      totalRewardInUSD: 49.48,
       rewards: [
         {
           token: TOKENS.BTC,
@@ -150,38 +224,3 @@ export const FARMS: VaultInfo[] = [
     // poolRewardTokenAccount: '8q8BHw7fP7mitLrb2jzw78qcSEgCvM7GTB5PzbSQobUt' // reward vault
   },
 ];
-
-export interface Token {
-  symbol: string,
-  name: string,
-  mintAddress: string,
-  decimals: number,
-  icon?: string,
-}
-
-export interface LPToken {
-  symbol: string,
-  name: string,
-  coin: Token,
-  pc: Token,
-  mintAddress: string,
-  decimals: number,
-  url?: string,
-  urlHelper?: string,
-}
-
-export interface Reward {
-  token: Token,
-  amount: number,
-}
-
-export interface VaultInfo {
-  name: string,
-  lp: LPToken,
-  userStaked?: {
-    deposit: number,
-    totalRewardInUSD: number,
-    rewards: Reward[],
-  },
-  id: number,
-}
