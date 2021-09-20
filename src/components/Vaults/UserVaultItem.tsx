@@ -1,10 +1,12 @@
+import { Link } from 'react-router-dom';
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from "@material-ui/core";
 import SmallButton from "components/Buttons/SmallButton";
-import { SMALL_STONES, VaultInfo } from 'utils/tokens';
+import { VaultInfo } from 'utils/tokens';
+import { SMALL_STONES } from 'utils/stones';
 import LinePurpleShort from 'assets/svgs/LinePurpleShort.svg';
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import LPTokenView from './LPTokenView';
@@ -132,7 +134,7 @@ const useStyles = makeStyles({
 
 });
 
-function UserVaultItem({ name, lp, userStaked }: VaultInfo) {
+function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
   const classes = useStyles();
 
   return (
@@ -151,7 +153,9 @@ function UserVaultItem({ name, lp, userStaked }: VaultInfo) {
           ))
         }</Grid>
         <Grid item xs={2} className={classes.btnContainer}>
-          <SmallButton />
+          <Link to={`/vault/${id}`}>
+            <SmallButton />
+          </Link> 
         </Grid>
       </Grid>
       <div className={classes.shortDivider}>

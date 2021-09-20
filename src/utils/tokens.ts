@@ -1,19 +1,3 @@
-import StoneBTC from 'assets/svgs/stones_small/BTC.svg';
-import StoneETH from 'assets/svgs/stones_small/ETH.svg';
-import StoneSOL from 'assets/svgs/stones_small/SOL.svg';
-import StoneUSDC from 'assets/svgs/stones_small/USDC.svg';
-import StoneUSDT from 'assets/svgs/stones_small/USDT.svg';
-import StoneETC from 'assets/svgs/stones_small/ETC.svg';
-
-export const SMALL_STONES: { [key: string]: string } = {
-  BTC: StoneBTC,
-  ETH: StoneETH,
-  SOL: StoneSOL,
-  USDC: StoneUSDC,
-  USDT: StoneUSDT,
-  ETC: StoneETC,
-}
-
 export const TOKENS: { [key: string]: Token } = {
   USDC: {
     symbol: 'USDC',
@@ -83,6 +67,7 @@ export const LP_TOKENS = {
 
 export const FARMS: VaultInfo[] = [
   {
+    id: 0,
     name: 'RAY-USDC',
     lp: { ...LP_TOKENS['RAY-USDC-V3'] },
     userStaked: {
@@ -114,6 +99,7 @@ export const FARMS: VaultInfo[] = [
     // poolRewardTokenAccount: '3ejmkn5HpXR9KdVWkai1Ngo87sQSUyKXrx8wSakipkno' // reward vault
   },
   {
+    id: 1,
     name: 'RAY-USDC',
     lp: { ...LP_TOKENS['RAY-USDC-V3'] },
     userStaked: {
@@ -141,6 +127,7 @@ export const FARMS: VaultInfo[] = [
     // poolRewardTokenAccount: '3ejmkn5HpXR9KdVWkai1Ngo87sQSUyKXrx8wSakipkno' // reward vault
   },
   {
+    id: 2,
     name: 'RAY-ETH',
     lp: { ...LP_TOKENS['RAY-ETH-V3'] },
     userStaked: undefined,
@@ -152,6 +139,7 @@ export const FARMS: VaultInfo[] = [
   },
 
   {
+    id: 3,
     name: 'RAY-ETH',
     lp: { ...LP_TOKENS['RAY-ETH-V3'] },
     userStaked: undefined,
@@ -195,4 +183,5 @@ export interface VaultInfo {
     totalRewardInUSD: number,
     rewards: Reward[],
   },
+  id: number,
 }
