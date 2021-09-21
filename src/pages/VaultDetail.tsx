@@ -159,7 +159,11 @@ function VaultDetail() {
 
       <div className={classes.sliderContainer}>
         <Slider index={slideIndex} slides={flags} />
-        <FlagNavigation onClick={(direction: number) => setSlideIndex(slideIndex + direction)}/>
+        <FlagNavigation onClick={(direction: number) => {
+          const index = slideIndex + direction;
+          const nextIndex = index >= flags.length ? 0 : index < 0 ? flags.length - 1 : index;
+          setSlideIndex(nextIndex);
+        }} />
       </div>
 
       <RewardList />
