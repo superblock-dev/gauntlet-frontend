@@ -2,7 +2,8 @@ import { useState } from "react";
 import CursorPointer from 'assets/CursorPointer.svg';
 import { makeStyles } from "@material-ui/core"
 
-import activeFlag from "../../assets/svgs/flags_large/BTC.svg";
+import largeActiveFlag from "../../assets/svgs/flags_large/BTC.svg";
+import smallActiveFlag from "../../assets/svgs/flags_small/BTC.svg";
 import inactiveFlag from "../../assets/svgs/flags_mini1/BTC.svg";
 import dot from "../../assets/svgs/Dot.svg";
 import btcStone from "../../assets/svgs/stones_xxlarge/BTC.svg";
@@ -10,8 +11,17 @@ import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
 
 const useStyles = makeStyles({
-    active: {
-        backgroundImage: `url(${activeFlag})`,
+    activeNormal: {
+        backgroundImage: `url(${largeActiveFlag})`,
+        backgroundRepeat: "no-repeat",
+        height: 726,
+        width: 420,
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column",
+    },
+    activeConfirm: {
+        backgroundImage: `url(${smallActiveFlag})`,
         backgroundRepeat: "no-repeat",
         height: 726,
         width: 420,
@@ -148,49 +158,94 @@ const useStyles = makeStyles({
     }
 });
 
+interface ConfirmFlagProps {
+    onClick: (...args: any) => void;
+}
+
+function ConfirmFlag({ onClick }: ConfirmFlagProps) {
+    const classes = useStyles();
+
+    return (
+        <div className={classes.activeConfirm}>
+            <img className={classes.soul} src={btcStone} />
+            <div className={classes.tokenName}>BTC</div>
+            <div className={classes.inputContainer}>
+                <input className={classes.input} placeholder="0.000" />
+                <div className={classes.maxButton}>MAX</div>
+            </div>
+            <div className={classes.labelContainer}>
+                <span className={classes.textLabel}>{`Deposit: ${(0.000).toFixed(3)}`}</span>
+                <span className={classes.textLabel}>{`Balance: ${(0.000).toFixed(3)}`}</span>
+            </div>
+            <div className={classes.confirmBtn} onClick={onClick}>
+                <SmallPrimaryButton>Approve</SmallPrimaryButton>
+            </div>
+        </div>
+
+    );
+}
+
+interface NormalFlagProps {
+    onClick: (...args: any) => void;
+}
+
+function NormalFlag({ onClick }: NormalFlagProps) {
+    const classes = useStyles();
+    const [ isDeposit, setIsDeposit ] = useState(true);
+
+    return (
+        <div className={classes.activeNormal}>
+            <img className={classes.soul} src={btcStone} />
+            <div className={classes.tokenName}>BTC</div>
+            <div className={classes.reward}>{ `${3.39} ($${0.39})` }</div>
+            <div className={classes.claimButton}>
+                <SmallButton text="CLAIM" />
+            </div>
+            <div className={classes.topDivider0} />
+            <div className={classes.topDivider1} />
+            <div className={classes.buttonContainer}>
+                <div className={classes.buttonWrapper} onClick={() => setIsDeposit(true)}>
+                    {isDeposit ? <img src={dot} /> : undefined }
+                    <div className={isDeposit ? classes.activeButton : classes.inactiveButton}>DEPOSIT</div>
+                </div>
+                <div className={classes.buttonWrapper} onClick={() => setIsDeposit(false)}>
+                    {!isDeposit ? <img src={dot} /> : undefined }
+                    <div className={!isDeposit ? classes.activeButton : classes.inactiveButton}>WIDTHDRAW</div>
+                </div>
+            </div>
+            <div className={classes.inputContainer}>
+                <input className={classes.input} placeholder="0.000" />
+                <div className={classes.maxButton}>MAX</div>
+            </div>
+            <div className={classes.labelContainer}>
+                <span className={classes.textLabel}>{`Deposit: ${(0.000).toFixed(3)}`}</span>
+                <span className={classes.textLabel}>{`Balance: ${(0.000).toFixed(3)}`}</span>
+            </div>
+            <div className={classes.confirmBtn} onClick={onClick}>
+                <SmallPrimaryButton>Deposit</SmallPrimaryButton>
+            </div>
+        </div>
+    );
+}
+
+function ActiveFlag() {
+    const [needApprove, setNeedApprove] = useState(false);
+    return needApprove
+        ? <ConfirmFlag onClick={() => setNeedApprove(false)} />
+        :  <NormalFlag onClick={() => setNeedApprove(true)} />;
+}
+
+function InActiveFlag() {
+    const classes = useStyles();
+    return  <div className={classes.inactive} />;
+}
+
 interface FlagProps {
     active?: boolean;
 }
 
-// TODO: remove gap between divider
 export default function Flag({ active }: FlagProps) {
-    const [isDeposit, setIsDeposit] = useState(true);
-    const classes = useStyles();
-
     return (
-        <div className={active ? classes.active : classes.inactive }>
-            { active ? <>
-                <img className={classes.soul} src={btcStone} />
-                <div className={classes.tokenName}>BTC</div>
-                <div className={classes.reward}>{ `${3.39} ($${0.39})` }</div>
-                <div className={classes.claimButton}>
-                    <SmallButton text="CLAIM" />
-                </div>
-                <div className={classes.topDivider0} />
-                <div className={classes.topDivider1} />
-                <div className={classes.buttonContainer}>
-                    <div className={classes.buttonWrapper} onClick={() => setIsDeposit(true)}>
-                        {isDeposit ? <img src={dot} /> : undefined }
-                        <div className={isDeposit ? classes.activeButton : classes.inactiveButton}>DEPOSIT</div>
-                    </div>
-                    <div className={classes.buttonWrapper} onClick={() => setIsDeposit(false)}>
-                        {!isDeposit ? <img src={dot} /> : undefined }
-                        <div className={!isDeposit ? classes.activeButton : classes.inactiveButton}>WIDTHDRAW</div>
-                    </div>
-                </div>
-                <div className={classes.inputContainer}>
-                    <input className={classes.input} placeholder="0.000" />
-                    <div className={classes.maxButton}>MAX</div>
-                </div>
-                <div className={classes.labelContainer}>
-                    <span className={classes.textLabel}>{`Deposit: ${(0.000).toFixed(3)}`}</span>
-                    <span className={classes.textLabel}>{`Balance: ${(0.000).toFixed(3)}`}</span>
-                </div>
-                <div className={classes.confirmBtn}>
-                    <SmallPrimaryButton>Deposit</SmallPrimaryButton>
-                </div>
-                </> : undefined
-            }
-        </div>
+        active ? <ActiveFlag />  : <InActiveFlag  />
     )
 }
