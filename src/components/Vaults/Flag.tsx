@@ -7,6 +7,7 @@ import inactiveFlag from "../../assets/test/mini-1.png";
 import dot from "../../assets/svgs/Dot.svg";
 import btcStone from "../../assets/svgs/stones/BTC-XX-Large.svg";
 import SmallButton from "components/Buttons/SmallButton";
+import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
 
 const useStyles = makeStyles({
     active: {
@@ -140,6 +141,9 @@ const useStyles = makeStyles({
         lineHeight: "14px",
         color: "#CBA344"
     },
+    confirmBtn: {
+        marginTop: 31
+    }
 });
 
 interface FlagProps {
@@ -179,6 +183,9 @@ export default function Flag({ active }: FlagProps) {
                 <div className={classes.labelContainer}>
                     <span className={classes.textLabel}>{`Deposit: ${(0.000).toFixed(3)}`}</span>
                     <span className={classes.textLabel}>{`Balance: ${(0.000).toFixed(3)}`}</span>
+                </div>
+                <div className={classes.confirmBtn}>
+                    <SmallPrimaryButton>Deposit</SmallPrimaryButton>
                 </div>
                 </> : undefined
             }
