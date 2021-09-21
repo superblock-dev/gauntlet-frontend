@@ -54,22 +54,16 @@ const useStyles = makeStyles({
 function WalletButton({ connected, address }: WalletBtnProp) {
   const classes = useStyles();
 
-  if (connected) {
-    return (
-      <div className={classes.root}>
-        <div className={classes.icon} />
-        <div className={classes.text}>
-          {address?.slice(0, 5) + '...' + address?.slice(40)}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={classes.root}>
-      <div className={classes.text}>
-        CONNECT WALLET
-      </div>
+      {connected ?
+        <div className={classes.text}>
+          {address?.slice(0, 5) + '...' + address?.slice(40)}
+        </div> :
+        <div className={classes.text}>
+          CONNECT WALLET
+        </div>
+      }
     </div>
   )
 }
