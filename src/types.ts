@@ -1,5 +1,7 @@
 import { ComponentType, ReactNode } from "react";
 
+export type TokenName = "BTC" | "ETH" | "SOL" | "USDT" | "USDC" | "ETC";
+
 export interface Route {
   label: string,
   path: string,

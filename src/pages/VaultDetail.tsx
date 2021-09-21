@@ -15,6 +15,8 @@ import CursorPointer from 'assets/CursorPointer.svg';
 import Flag from "components/Vaults/Flag";
 import { v4 as uuidv4 } from "uuid";
 import FlagNavigation from "components/Vaults/FlagNavigation";
+import StoneDisplay from "components/Vaults/StoneDisplay";
+import { TokenName } from "types";
 
 function createItem(active: boolean) {
   return (
@@ -84,6 +86,9 @@ const useStyles = makeStyles({
     height: 960,
     position: "relative",
   },
+  stoneDisplayContainer: {
+    width: 1440,
+  }
 });
 
 function VaultDetail() {
@@ -93,6 +98,15 @@ function VaultDetail() {
   const flags = ([1,2,3,4,5,5,5,55,5,5,5,5,5]).map((_, i) => {
     return createSlide(slideIndex, i, () => setSlideIndex(i));
   });
+
+  const stones: { tokenName: TokenName, active: boolean }[] = [
+    { tokenName: "BTC", active: true },
+    { tokenName: "ETH", active: false },
+    { tokenName: "SOL", active: true },
+    { tokenName: "USDT", active: true },
+    { tokenName: "USDC", active: false },
+    { tokenName: "ETC", active: false },
+  ]
 
   let { vaultId } = useParams<VaultDetailParams>();
   let vId = parseInt(vaultId);
@@ -134,6 +148,12 @@ function VaultDetail() {
       </div>
       
       <VaultSummary />
+
+      <div className={classes.divider} />
+
+      <div className={classes.stoneDisplayContainer}>
+        <StoneDisplay items={stones} />
+      </div>
 
       <div className={classes.divider} />
 
