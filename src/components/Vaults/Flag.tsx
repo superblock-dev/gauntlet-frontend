@@ -2,16 +2,17 @@ import { useState } from "react";
 import CursorPointer from 'assets/CursorPointer.svg';
 import { makeStyles } from "@material-ui/core"
 
-import activeFlag from "../../assets/svgs/StoneFlagActive-large.svg";
-import inactiveFlag from "../../assets/test/mini-1.png";
+import activeFlag from "../../assets/svgs/flags_large/BTC.svg";
+import inactiveFlag from "../../assets/svgs/flags_mini1/BTC.svg";
 import dot from "../../assets/svgs/Dot.svg";
-import btcStone from "../../assets/svgs/stones/BTC-XX-Large.svg";
+import btcStone from "../../assets/svgs/stones_xxlarge/BTC.svg";
 import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
 
 const useStyles = makeStyles({
     active: {
         backgroundImage: `url(${activeFlag})`,
+        backgroundRepeat: "no-repeat",
         height: 726,
         width: 420,
         display: "flex",
@@ -21,7 +22,8 @@ const useStyles = makeStyles({
     inactive: {
         backgroundImage: `url(${inactiveFlag})`,
         height: 274,
-        width: 169
+        width: 176,
+        backgroundRepeat: "no-repeat",
     },
     soul: {
         width: 187.28,
