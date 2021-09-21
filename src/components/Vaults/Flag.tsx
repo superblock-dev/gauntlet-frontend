@@ -125,11 +125,25 @@ const useStyles = makeStyles({
         fontSize: 14,
         lineHeight: "21px",
         margin: "0 8px 0 0",
-    }
+    },
+    labelContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        width: "266px",
+        marginTop: 8,
+    },
+    textLabel: {
+        fontFamily: "Sen",
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: 12,
+        lineHeight: "14px",
+        color: "#CBA344"
+    },
 });
 
 interface FlagProps {
-    active?: boolean
+    active?: boolean;
 }
 
 // TODO: remove gap between divider
@@ -161,6 +175,10 @@ export default function Flag({ active }: FlagProps) {
                 <div className={classes.inputContainer}>
                     <input className={classes.input} placeholder="0.000" />
                     <div className={classes.maxButton}>MAX</div>
+                </div>
+                <div className={classes.labelContainer}>
+                    <span className={classes.textLabel}>{`Deposit: ${(0.000).toFixed(3)}`}</span>
+                    <span className={classes.textLabel}>{`Balance: ${(0.000).toFixed(3)}`}</span>
                 </div>
                 </> : undefined
             }
