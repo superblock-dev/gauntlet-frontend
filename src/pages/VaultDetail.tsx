@@ -14,6 +14,7 @@ import Slider from "components/Slider";
 import CursorPointer from 'assets/CursorPointer.svg';
 import Flag from "components/Vaults/Flag";
 import { v4 as uuidv4 } from "uuid";
+import FlagNavigation from "components/Vaults/FlagNavigation";
 
 function createItem(active: boolean) {
   return (
@@ -81,6 +82,7 @@ const useStyles = makeStyles({
   sliderContainer: {
     width: 1440,
     height: 960,
+    position: "relative",
   },
 });
 
@@ -137,6 +139,7 @@ function VaultDetail() {
 
       <div className={classes.sliderContainer}>
         <Slider index={slideIndex} slides={flags} />
+        <FlagNavigation onClick={(direction: number) => setSlideIndex(slideIndex + direction)}/>
       </div>
 
       <RewardList />

@@ -9,7 +9,6 @@ import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
 import UserVaultItem from "components/Vaults/UserVaultItem";
 import VaultItem from "components/Vaults/VaultItem";
-import Slider from "components/Slider";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import IconHelp from 'assets/svgs/IconHelp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
