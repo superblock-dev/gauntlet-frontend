@@ -9,11 +9,6 @@ const useStyles = makeStyles({
         alignItems: "center",
         width: "100%",
     },
-    stone: {
-        width: 124.85,
-        height: 128,
-        backgroundRepeat: "no-repeat"
-    }
 })
 
 interface StoneDisplayProps {

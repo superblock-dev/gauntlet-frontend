@@ -3,46 +3,30 @@ import { TokenName } from "types";
 
 import { STONES } from "utils/stones";
 
-function makeStoneStyles(tokenName: TokenName) {
-    return makeStyles({
+const useStyles = makeStyles({
         container: {
             position: "relative",
             width: 124.85,
-            height: 130,
+            height: 107.45,
         },
-        activatedStoneBg: {
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundRepeat: "no-repeat",
+        stoneBg: {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            opacity: 0.0,
+            zIndex: 100,
             '&:hover': {
-                backgroundImage: `url(${STONES[tokenName].xlargeBgEffect})`,
+                opacity: 1.0
             },
         },
-        activatedStone: {
-            width: "100%",
-            height: "100%",
-            backgroundRepeat: "no-repeat",
-            backgroundImage: `url(${STONES[tokenName].xlarge})`,
-        },
-        deactivatedStone: {
+        stone: {
             position: "absolute",
-            width: "100%",
-            height: "100%",
-            backgroundRepeat: "no-repeat",
-            backgroundImage: `url(${STONES[tokenName].xlargeDeactivated})`,
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
         },
-        stoneOutline: {
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            backgroundRepeat: "no-repeat",
-            backgroundImage: `url(${STONES[tokenName].xlargeOutline})`,
-        },
-    })();
-}
+});
 
 interface StoneProps {
     tokenName: TokenName;
@@ -50,20 +34,19 @@ interface StoneProps {
 }
 
 export default function Stone({ tokenName, active }: StoneProps) {
-    const classes = makeStoneStyles(tokenName);
+    const classes = useStyles();
 
     return (
         <>
             {active ? (
                 <div className={classes.container}>
-                <div className={classes.activatedStoneBg}>
-                    <div className={classes.activatedStone} />
-                </div>
+                    <img className={classes.stoneBg} src={STONES[tokenName].xlargeBgEffect} />
+                    <img className={classes.stone} src={STONES[tokenName].xlarge} />
                 </div>
             ): (
                 <div className={classes.container}>
-                    <div className={classes.stoneOutline} />
-                    <div className={classes.deactivatedStone} />
+                    <img className={classes.stone} src={STONES[tokenName].xlargeOutline} />
+                    <img className={classes.stone} src={STONES[tokenName].xlargeDeactivated} />
                 </div>
             )}
         </>
