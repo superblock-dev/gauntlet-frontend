@@ -9,19 +9,12 @@ import dot from "../../assets/svgs/Dot.svg";
 import btcStone from "../../assets/svgs/stones_xxlarge/BTC.svg";
 import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
+import { TokenName } from "types";
+import { STONES } from "utils/stones";
 
 const useStyles = makeStyles({
-    activeNormal: {
-        backgroundImage: `url(${largeActiveFlag})`,
-        backgroundRepeat: "no-repeat",
-        height: 726,
-        width: 420,
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "column",
-    },
-    activeConfirm: {
-        backgroundImage: `url(${smallActiveFlag})`,
+    activeFlag: {
+        // backgroundImage: `url(${largeActiveFlag})`,
         backgroundRepeat: "no-repeat",
         height: 726,
         width: 420,
@@ -158,16 +151,20 @@ const useStyles = makeStyles({
     }
 });
 
-interface ConfirmFlagProps {
+interface ActiveFlagProps {
+    tokenName: TokenName;
     onClick: (...args: any) => void;
 }
 
-function ConfirmFlag({ onClick }: ConfirmFlagProps) {
+function ConfirmFlag({ tokenName, onClick }: ActiveFlagProps) {
     const classes = useStyles();
 
+    const flagBg = STONES[tokenName].smallFlag;
+    const stone = STONES[tokenName].xxlarge;
+
     return (
-        <div className={classes.activeConfirm}>
-            <img className={classes.soul} src={btcStone} />
+        <div className={classes.activeFlag} style={{backgroundImage: `url(${flagBg})`}}>
+            <img className={classes.soul} src={stone} />
             <div className={classes.tokenName}>BTC</div>
             <div className={classes.inputContainer}>
                 <input className={classes.input} placeholder="0.000" />
@@ -185,18 +182,17 @@ function ConfirmFlag({ onClick }: ConfirmFlagProps) {
     );
 }
 
-interface NormalFlagProps {
-    onClick: (...args: any) => void;
-}
-
-function NormalFlag({ onClick }: NormalFlagProps) {
+function NormalFlag({ tokenName, onClick }: ActiveFlagProps) {
     const classes = useStyles();
     const [ isDeposit, setIsDeposit ] = useState(true);
 
+    const flagBg = STONES[tokenName].largeFlag;
+    const stone = STONES[tokenName].xxlarge;
+
     return (
-        <div className={classes.activeNormal}>
-            <img className={classes.soul} src={btcStone} />
-            <div className={classes.tokenName}>BTC</div>
+        <div className={classes.activeFlag} style={{backgroundImage: `url(${flagBg})`}}>
+            <img className={classes.soul} src={stone} />
+            <div className={classes.tokenName}>{tokenName}</div>
             <div className={classes.reward}>{ `${3.39} ($${0.39})` }</div>
             <div className={classes.claimButton}>
                 <SmallButton text="CLAIM" />
@@ -228,24 +224,27 @@ function NormalFlag({ onClick }: NormalFlagProps) {
     );
 }
 
-function ActiveFlag() {
-    const [needApprove, setNeedApprove] = useState(false);
-    return needApprove
-        ? <ConfirmFlag onClick={() => setNeedApprove(false)} />
-        :  <NormalFlag onClick={() => setNeedApprove(true)} />;
+interface FlagProps {
+    tokenName: TokenName;
+    active?: boolean;
 }
 
-function InActiveFlag() {
+function ActiveFlag({ tokenName }: FlagProps) {
+    const [needApprove, setNeedApprove] = useState(false);
+    return needApprove
+        ? <ConfirmFlag tokenName={tokenName} onClick={() => setNeedApprove(false)} />
+        :  <NormalFlag tokenName={tokenName} onClick={() => setNeedApprove(true)} />;
+}
+
+function InActiveFlag({ tokenName }: FlagProps) {
     const classes = useStyles();
     return  <div className={classes.inactive} />;
 }
 
-interface FlagProps {
-    active?: boolean;
-}
-
-export default function Flag({ active }: FlagProps) {
+export default function Flag({ tokenName, active }: FlagProps) {
     return (
-        active ? <ActiveFlag />  : <InActiveFlag  />
+        active
+        ? <ActiveFlag tokenName={tokenName} />
+        : <InActiveFlag tokenName={tokenName} />
     )
 }

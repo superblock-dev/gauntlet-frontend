@@ -47,6 +47,35 @@ import XXLargeStoneUSDC from 'assets/svgs/stones_xxlarge/USDC.svg';
 import XXLargeStoneUSDT from 'assets/svgs/stones_xxlarge/USDT.svg';
 import XXLargeStoneETC from 'assets/svgs/stones_xxlarge/ETC.svg';
 
+import LargeFlagBTC from "assets/svgs/flags_large/BTC.svg";
+import LargeFlagETH from "assets/svgs/flags_large/ETH.svg";
+import LargeFlagSOL from "assets/svgs/flags_large/SOL.svg";
+import LargeFlagUSDC from "assets/svgs/flags_large/USDC.svg";
+import LargeFlagUSDT from "assets/svgs/flags_large/USDT.svg";
+import LargeFlagETC from "assets/svgs/flags_large/ETC.svg";
+
+import SmallFlagBTC from "assets/svgs/flags_small/BTC.svg";
+import SmallFlagETH from "assets/svgs/flags_small/ETH.svg";
+import SmallFlagSOL from "assets/svgs/flags_small/SOL.svg";
+import SmallFlagUSDC from "assets/svgs/flags_small/USDC.svg";
+import SmallFlagUSDT from "assets/svgs/flags_small/USDT.svg";
+import SmallFlagETC from "assets/svgs/flags_small/ETC.svg";
+
+import Mini1FlagBTC from "assets/svgs/flags_mini1/BTC.svg";
+import Mini1FlagETH from "assets/svgs/flags_mini1/ETH.svg";
+import Mini1FlagSOL from "assets/svgs/flags_mini1/SOL.svg";
+import Mini1FlagUSDC from "assets/svgs/flags_mini1/USDC.svg";
+import Mini1FlagUSDT from "assets/svgs/flags_mini1/USDT.svg";
+import Mini1FlagETC from "assets/svgs/flags_mini1/ETC.svg";
+
+import Mini2FlagBTC from "assets/svgs/flags_mini2/BTC.svg";
+import Mini2FlagETH from "assets/svgs/flags_mini2/ETH.svg";
+import Mini2FlagSOL from "assets/svgs/flags_mini2/SOL.svg";
+import Mini2FlagUSDC from "assets/svgs/flags_mini2/USDC.svg";
+import Mini2FlagUSDT from "assets/svgs/flags_mini2/USDT.svg";
+import Mini2FlagETC from "assets/svgs/flags_mini2/ETC.svg";
+
+
 import { TokenName } from "../types";
 
 export const SMALL_STONES: { [key: string]: string } = {
@@ -75,6 +104,10 @@ interface StoneAsset {
   xlargeDeactivated: string;
   xlargeOutline: string;
   xxlarge: string,
+  largeFlag: string;
+  smallFlag: string;
+  mini1Flag: string;
+  mini2Flag: string;
 }
 
 export const STONES: { [key in TokenName]: StoneAsset } = {
@@ -86,6 +119,10 @@ export const STONES: { [key in TokenName]: StoneAsset } = {
     xlargeDeactivated: XLargeStoneDeactivatedBTC,
     xlargeOutline: XLargeStoneOutlineBTC,
     xxlarge: XXLargeStoneBTC,
+    largeFlag: LargeFlagBTC,
+    smallFlag: SmallFlagBTC,
+    mini1Flag: Mini1FlagBTC,
+    mini2Flag: Mini2FlagBTC,
   },
   ETH: {
     normal: StoneETH,
@@ -95,6 +132,10 @@ export const STONES: { [key in TokenName]: StoneAsset } = {
     xlargeDeactivated: XLargeStoneDeactivatedETH,
     xlargeOutline: XLargeStoneOutlineETH,
     xxlarge: XXLargeStoneETH,
+    largeFlag: LargeFlagETH,
+    smallFlag: SmallFlagETH,
+    mini1Flag: Mini1FlagETH,
+    mini2Flag: Mini2FlagETH,
   },
   SOL: {
     normal: StoneSOL,
@@ -104,6 +145,10 @@ export const STONES: { [key in TokenName]: StoneAsset } = {
     xlargeDeactivated: XLargeStoneDeactivatedSOL,
     xlargeOutline: XLargeStoneOutlineSOL,
     xxlarge: XXLargeStoneSOL,
+    largeFlag: LargeFlagSOL,
+    smallFlag: SmallFlagSOL,
+    mini1Flag: Mini1FlagSOL,
+    mini2Flag: Mini2FlagSOL,
   },
   USDC: {
     normal: StoneUSDC,
@@ -113,6 +158,10 @@ export const STONES: { [key in TokenName]: StoneAsset } = {
     xlargeDeactivated: XLargeStoneDeactivatedUSDC,
     xlargeOutline: XLargeStoneOutlineUSDC,
     xxlarge: XXLargeStoneUSDC,
+    largeFlag: LargeFlagUSDC,
+    smallFlag: SmallFlagUSDC,
+    mini1Flag: Mini1FlagUSDC,
+    mini2Flag: Mini2FlagUSDC,
   },
   USDT: {
     normal: StoneUSDT,
@@ -122,6 +171,10 @@ export const STONES: { [key in TokenName]: StoneAsset } = {
     xlargeDeactivated: XLargeStoneDeactivatedUSDT,
     xlargeOutline: XLargeStoneOutlineUSDT,
     xxlarge: XXLargeStoneUSDT,
+    largeFlag: LargeFlagUSDT,
+    smallFlag: SmallFlagUSDT,
+    mini1Flag: Mini1FlagUSDT,
+    mini2Flag: Mini2FlagUSDT,
   },
   ETC: {
     normal: StoneETC,
@@ -131,5 +184,9 @@ export const STONES: { [key in TokenName]: StoneAsset } = {
     xlargeDeactivated: XLargeStoneDeactivatedETC,
     xlargeOutline: XLargeStoneOutlineETC,
     xxlarge: XXLargeStoneETC,
+    largeFlag: LargeFlagETC,
+    smallFlag: SmallFlagETC,
+    mini1Flag: Mini1FlagETC,
+    mini2Flag: Mini2FlagETC,
   },
 }

@@ -18,16 +18,16 @@ import FlagNavigation from "components/Vaults/FlagNavigation";
 import StoneDisplay from "components/Vaults/StoneDisplay";
 import { TokenName } from "types";
 
-function createItem(active: boolean) {
+function createItem(tokenName: TokenName, active: boolean) {
   return (
-      <Flag active={active}/>
+      <Flag tokenName={tokenName} active={active}/>
   );
 }
 
-function createSlide(curIdx: number, idx: number, onClick: () => void) {
+function createSlide(tokenName: TokenName, active: boolean, onClick: () => void) {
   return {
       key: uuidv4(),
-      content: createItem(curIdx === idx),
+      content: createItem(tokenName, active),
       onClick: onClick
   }
 }
@@ -95,8 +95,8 @@ function VaultDetail() {
   const classes = useStyles();
   const { goBack } = useHistory();
   const [slideIndex, setSlideIndex] = useState(0);
-  const flags = ([1,2,3,4,5,5,5,55,5,5,5,5,5]).map((_, i) => {
-    return createSlide(slideIndex, i, () => setSlideIndex(i));
+  const flags = (["BTC", "ETH", "SOL", "USDT", "ETC", "USDC"]).map((tokenName, i) => {
+    return createSlide(tokenName as TokenName, slideIndex === i, () => setSlideIndex(i));
   });
 
   const stones: { tokenName: TokenName, active: boolean }[] = [
