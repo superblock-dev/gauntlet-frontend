@@ -36,9 +36,9 @@ export function Slide({
   const distanceFactor = 1 - Math.abs(offsetFromCenter / (offsetRadius + 1));
 
   const translateXoffset =
-    50 * Math.cos(Math.abs(offsetFromCenter) / (offsetRadius + 1));
+    60 * Math.cos(Math.abs(offsetFromCenter * 2.5) / (offsetRadius + 1));
   const translateYoffset =
-    25 * Math.sin(Math.abs(offsetFromCenter) / (offsetRadius + 1));
+    37.5 * Math.sin(Math.abs(offsetFromCenter) / (offsetRadius + 1));
   let translateX = -50;
   let translateY = -50;
 
@@ -61,18 +61,22 @@ export function Slide({
   return (
     <Spring
       to={{
-        transform: `translateY(${translateY}%) translateX(${translateX}%) scale(${1.0})`,
+        transform: `translateY(${translateY}%) translateX(${translateX}%) scale(${Math.abs(offsetFromCenter) < 2 ? 1.0 : 0.813 })`,
         left: `${
           offsetRadius === 0 ? 50 : 50 + (offsetFromCenter * 50) / offsetRadius
         }%`,
-        opacity: distanceFactor < 0.5 ? 0.0 : 1.0,
+        opacity: distanceFactor,
         transition: "0.3s ease-out",
       }}
       config={animationConfig}
     >
       {style => (
         <SlideContainer
-          style={{ ...style, zIndex: Math.abs(Math.abs(offsetFromCenter) - 2) }}
+          style={{
+            ...style,
+            zIndex: Math.abs(Math.abs(offsetFromCenter) - 2),
+            visibility: Math.abs(offsetFromCenter) < 3 ? "visible" : "hidden",
+          }}
           onClick={onClick}
         >
           {content}

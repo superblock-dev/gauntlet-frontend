@@ -7,6 +7,10 @@ import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
 import { TokenName } from "types";
 import { STONES } from "utils/stones";
+import LargeFlag from "../../assets/svgs/flags/large.svg";
+import SmallFlag from "../../assets/svgs/flags/small.svg";
+import MiniFlag from "../../assets/svgs/flags/mini-1.svg";
+
 
 const useStyles = makeStyles({
     activeFlag: {
@@ -19,12 +23,20 @@ const useStyles = makeStyles({
     },
     inactiveFlag: {
         height: 274,
-        width: 176,
+        width: 169,
+        padding: 4,
         backgroundRepeat: "no-repeat",
+        position: "relative",
     },
-    soul: {
+    xxlargeSoul: {
         width: 187.28,
         height: 161.71,
+    },
+    xlargeSoul: {
+        position: "absolute",
+        top: 53.33,
+        left: "50%",
+        transform: "translate(-50%, 0)"
     },
     tokenName: {
         fontFamily: "Spectral SC",
@@ -152,13 +164,11 @@ interface ActiveFlagProps {
 
 function ConfirmFlag({ tokenName, onClick }: ActiveFlagProps) {
     const classes = useStyles();
-
-    const flagBg = STONES[tokenName].smallFlag;
     const stone = STONES[tokenName].xxlarge;
 
     return (
-        <div className={classes.activeFlag} style={{backgroundImage: `url(${flagBg})`}}>
-            <img className={classes.soul} src={stone} />
+        <div className={classes.activeFlag} style={{backgroundImage: `url(${SmallFlag})`}}>
+            <img className={classes.xxlargeSoul} src={stone} />
             <div className={classes.tokenName}>BTC</div>
             <div className={classes.inputContainer}>
                 <input className={classes.input} placeholder="0.000" />
@@ -179,13 +189,11 @@ function ConfirmFlag({ tokenName, onClick }: ActiveFlagProps) {
 function NormalFlag({ tokenName, onClick }: ActiveFlagProps) {
     const classes = useStyles();
     const [ isDeposit, setIsDeposit ] = useState(true);
-
-    const flagBg = STONES[tokenName].largeFlag;
     const stone = STONES[tokenName].xxlarge;
 
     return (
-        <div className={classes.activeFlag} style={{backgroundImage: `url(${flagBg})`}}>
-            <img className={classes.soul} src={stone} />
+        <div className={classes.activeFlag} style={{backgroundImage: `url(${LargeFlag})`}}>
+            <img className={classes.xxlargeSoul} src={stone} />
             <div className={classes.tokenName}>{tokenName}</div>
             <div className={classes.reward}>{ `${3.39} ($${0.39})` }</div>
             <div className={classes.claimButton}>
@@ -232,8 +240,12 @@ function ActiveFlag({ tokenName }: FlagProps) {
 
 function InActiveFlag({ tokenName }: FlagProps) {
     const classes = useStyles();
-    const flagBg = STONES[tokenName].mini1Flag;
-    return  <div className={classes.inactiveFlag} style={{backgroundImage: `url(${flagBg})`}} />;
+    const stone = STONES[tokenName].xlarge;
+    return (
+        <div className={classes.inactiveFlag} style={{backgroundImage: `url(${MiniFlag})`}}>
+            <img className={classes.xlargeSoul} src={stone} />
+        </div>
+    );
 }
 
 export default function Flag({ tokenName, active }: FlagProps) {
