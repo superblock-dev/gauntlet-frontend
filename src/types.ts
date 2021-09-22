@@ -1,5 +1,16 @@
 import { ComponentType, ReactNode } from "react";
 
+export type TokenName = "BTC" | "ETH" | "SOL" | "USDT" | "USDC" | "ETC";
+
+// Temporary type
+export interface VaultState {
+  tokenName: TokenName;
+  balance: number;
+  depositAmount: number;
+  withdrawAmount: number;
+  rewards: number;
+}
+
 export interface Route {
   label: string,
   path: string,
