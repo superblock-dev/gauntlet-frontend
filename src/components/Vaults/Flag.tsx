@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core"
 import dot from "../../assets/svgs/Dot.svg";
 import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
-import { TokenName } from "types";
+import { TokenName, VaultState } from "types";
 import { STONES } from "utils/stones";
 import LargeFlag from "../../assets/svgs/flags/large.svg";
 import SmallFlag from "../../assets/svgs/flags/small.svg";
@@ -157,13 +157,23 @@ const useStyles = makeStyles({
     }
 });
 
-interface ActiveFlagProps {
-    tokenName: TokenName;
-    onClick: (...args: any) => void;
+interface FlagProps {
+    vaultState: VaultState;
+    active?: boolean;
 }
 
-function ConfirmFlag({ tokenName, onClick }: ActiveFlagProps) {
+type ActiveFlagProps = {
+    isDeposit?: boolean
+    onClick?: (...args: any) => void;
+    onChange?: (mode: boolean) => void;
+} & FlagProps;
+
+function ConfirmFlag({ vaultState, onClick, isDeposit }: ActiveFlagProps) {
     const classes = useStyles();
+
+    const { tokenName, balance, depositAmount, withdrawAmount } = vaultState;
+    const mode = isDeposit ? "Deposit" : "Withdraw";
+    const amount = isDeposit ? depositAmount : withdrawAmount;
     const stone = STONES[tokenName].xxlarge;
 
     return (
@@ -175,8 +185,8 @@ function ConfirmFlag({ tokenName, onClick }: ActiveFlagProps) {
                 <div className={classes.maxButton}>MAX</div>
             </div>
             <div className={classes.labelContainer}>
-                <span className={classes.textLabel}>{`Deposit: ${(0.000).toFixed(3)}`}</span>
-                <span className={classes.textLabel}>{`Balance: ${(0.000).toFixed(3)}`}</span>
+                <span className={classes.textLabel}>{`${mode}: ${(amount).toFixed(3)}`}</span>
+                <span className={classes.textLabel}>{`Balance: ${(balance).toFixed(3)}`}</span>
             </div>
             <div className={classes.confirmBtn} onClick={onClick}>
                 <SmallPrimaryButton>Approve</SmallPrimaryButton>
@@ -186,27 +196,30 @@ function ConfirmFlag({ tokenName, onClick }: ActiveFlagProps) {
     );
 }
 
-function NormalFlag({ tokenName, onClick }: ActiveFlagProps) {
+function NormalFlag({ vaultState, onClick, isDeposit, onChange }: ActiveFlagProps) {
     const classes = useStyles();
-    const [ isDeposit, setIsDeposit ] = useState(true);
+
+    const { tokenName, depositAmount, withdrawAmount, balance, rewards } = vaultState;
+    const mode = isDeposit ? "Deposit" : "Withdraw";
+    const amount = isDeposit ? depositAmount : withdrawAmount;
     const stone = STONES[tokenName].xxlarge;
 
     return (
         <div className={classes.activeFlag} style={{backgroundImage: `url(${LargeFlag})`}}>
             <img className={classes.xxlargeSoul} src={stone} />
             <div className={classes.tokenName}>{tokenName}</div>
-            <div className={classes.reward}>{ `${3.39} ($${0.39})` }</div>
+            <div className={classes.reward}>{ `${rewards.toFixed(3)} ($${(rewards / 10).toFixed(4)})` }</div>
             <div className={classes.claimButton}>
                 <SmallButton text="CLAIM" />
             </div>
             <div className={classes.topDivider0} />
             <div className={classes.topDivider1} />
             <div className={classes.buttonContainer}>
-                <div className={classes.buttonWrapper} onClick={() => setIsDeposit(true)}>
+                <div className={classes.buttonWrapper} onClick={() => onChange ? onChange(true) : undefined}>
                     {isDeposit ? <img src={dot} /> : undefined }
                     <div className={isDeposit ? classes.activeButton : classes.inactiveButton}>DEPOSIT</div>
                 </div>
-                <div className={classes.buttonWrapper} onClick={() => setIsDeposit(false)}>
+                <div className={classes.buttonWrapper} onClick={() => onChange ? onChange(false) : undefined}>
                     {!isDeposit ? <img src={dot} /> : undefined }
                     <div className={!isDeposit ? classes.activeButton : classes.inactiveButton}>WITHDRAW</div>
                 </div>
@@ -216,30 +229,33 @@ function NormalFlag({ tokenName, onClick }: ActiveFlagProps) {
                 <div className={classes.maxButton}>MAX</div>
             </div>
             <div className={classes.labelContainer}>
-                <span className={classes.textLabel}>{`${ isDeposit ? "Deposit" : "Withdraw" }: ${(0.000).toFixed(3)}`}</span>
-                <span className={classes.textLabel}>{`Balance: ${(0.000).toFixed(3)}`}</span>
+                <span className={classes.textLabel}>{`${mode}: ${(amount).toFixed(3)}`}</span>
+                <span className={classes.textLabel}>{`Balance: ${(balance).toFixed(3)}`}</span>
             </div>
             <div className={classes.confirmBtn} onClick={onClick}>
-                <SmallPrimaryButton>{ isDeposit ? "Deposit" : "Withdraw"}</SmallPrimaryButton>
+                <SmallPrimaryButton>{mode}</SmallPrimaryButton>
             </div>
         </div>
     );
 }
 
-interface FlagProps {
-    tokenName: TokenName;
-    active?: boolean;
-}
-
-function ActiveFlag({ tokenName }: FlagProps) {
+function ActiveFlag({ vaultState }: FlagProps) {
     const [needApprove, setNeedApprove] = useState(false);
+    const [ isDeposit, setIsDeposit ] = useState(true);
+
     return needApprove
-        ? <ConfirmFlag tokenName={tokenName} onClick={() => setNeedApprove(false)} />
-        :  <NormalFlag tokenName={tokenName} onClick={() => setNeedApprove(true)} />;
+        ? <ConfirmFlag vaultState={vaultState} isDeposit={isDeposit} onClick={() => setNeedApprove(false)} />
+        :  <NormalFlag
+            vaultState={vaultState}
+            isDeposit={isDeposit}
+            onClick={() => setNeedApprove(true)}
+            onChange={(mode) => setIsDeposit(mode)} />;
 }
 
-function InActiveFlag({ tokenName }: FlagProps) {
+function InActiveFlag({ vaultState }: FlagProps) {
     const classes = useStyles();
+
+    const { tokenName } = vaultState;
     const stone = STONES[tokenName].xlarge;
     return (
         <div className={classes.inactiveFlag} style={{backgroundImage: `url(${MiniFlag})`}}>
@@ -248,10 +264,10 @@ function InActiveFlag({ tokenName }: FlagProps) {
     );
 }
 
-export default function Flag({ tokenName, active }: FlagProps) {
+export default function Flag({ vaultState, active }: FlagProps) {
     return (
         active
-        ? <ActiveFlag tokenName={tokenName} />
-        : <InActiveFlag tokenName={tokenName} />
+        ? <ActiveFlag vaultState={vaultState} />
+        : <InActiveFlag vaultState={vaultState} />
     )
 }

@@ -16,18 +16,18 @@ import Flag from "components/Vaults/Flag";
 import { v4 as uuidv4 } from "uuid";
 import FlagNavigation from "components/Vaults/FlagNavigation";
 import StoneDisplay from "components/Vaults/StoneDisplay";
-import { TokenName } from "types";
+import { TokenName, VaultState } from "types";
 
-function createItem(tokenName: TokenName, active: boolean) {
+function createItem(vaultState: VaultState, active: boolean) {
   return (
-      <Flag tokenName={tokenName} active={active}/>
+      <Flag vaultState={vaultState} active={active}/>
   );
 }
 
-function createSlide(tokenName: TokenName, active: boolean, onClick: () => void) {
+function createSlide(vaultState: VaultState, active: boolean, onClick: () => void) {
   return {
       key: uuidv4(),
-      content: createItem(tokenName, active),
+      content: createItem(vaultState, active),
       onClick: onClick
   }
 }
@@ -95,8 +95,16 @@ function VaultDetail() {
   const classes = useStyles();
   const { goBack } = useHistory();
   const [slideIndex, setSlideIndex] = useState(0);
-  const flags = (["BTC", "ETH", "SOL", "USDT", "USDC", "BTC", "ETH", "SOL", "USDT", "USDC"]).map((tokenName, i) => {
-    return createSlide(tokenName as TokenName, slideIndex === i, () => setSlideIndex(i));
+  
+  const vaultStates: VaultState[] = [
+    { tokenName: "BTC", balance: 1002.34, depositAmount: 11.1, withdrawAmount: 0.1, rewards: 1292.1 },
+    { tokenName: "ETH", balance: 32602.34, depositAmount: 0.1, withdrawAmount: 1.21, rewards: 2.1 },
+    { tokenName: "SOL", balance: 102.34, depositAmount: 981.1, withdrawAmount: 280.1, rewards: 0.000001 },
+    { tokenName: "USDT", balance: 10083642.34, depositAmount: 0.0, withdrawAmount: 9127.1, rewards: 999912.1 },
+    { tokenName: "USDC", balance: 90202.34, depositAmount: 1.0000001, withdrawAmount: 0.9999991, rewards: 123146.1235 },
+  ]
+  const flags = ([...vaultStates, ...vaultStates]).map((vaultState, i) => {
+    return createSlide(vaultState, slideIndex === i, () => setSlideIndex(i));
   });
 
   const stones: { tokenName: TokenName, active: boolean }[] = [
