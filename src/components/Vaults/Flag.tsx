@@ -200,7 +200,7 @@ function NormalFlag({ tokenName, onClick }: ActiveFlagProps) {
                 </div>
                 <div className={classes.buttonWrapper} onClick={() => setIsDeposit(false)}>
                     {!isDeposit ? <img src={dot} /> : undefined }
-                    <div className={!isDeposit ? classes.activeButton : classes.inactiveButton}>WIDTHDRAW</div>
+                    <div className={!isDeposit ? classes.activeButton : classes.inactiveButton}>WITHDRAW</div>
                 </div>
             </div>
             <div className={classes.inputContainer}>
@@ -208,11 +208,11 @@ function NormalFlag({ tokenName, onClick }: ActiveFlagProps) {
                 <div className={classes.maxButton}>MAX</div>
             </div>
             <div className={classes.labelContainer}>
-                <span className={classes.textLabel}>{`Deposit: ${(0.000).toFixed(3)}`}</span>
+                <span className={classes.textLabel}>{`${ isDeposit ? "Deposit" : "Withdraw" }: ${(0.000).toFixed(3)}`}</span>
                 <span className={classes.textLabel}>{`Balance: ${(0.000).toFixed(3)}`}</span>
             </div>
             <div className={classes.confirmBtn} onClick={onClick}>
-                <SmallPrimaryButton>Deposit</SmallPrimaryButton>
+                <SmallPrimaryButton>{ isDeposit ? "Deposit" : "Withdraw"}</SmallPrimaryButton>
             </div>
         </div>
     );

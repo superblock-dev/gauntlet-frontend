@@ -13,7 +13,7 @@ const NavigationButtons = styled.div`
   width: 40%;
   margin-top: 1rem;
   justify-content: space-between;
-  z-index: 1;
+  z-index: 100;
   img {
     height: 100%;
     cursor: url(${CursorPointer}), pointer;

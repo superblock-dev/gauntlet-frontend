@@ -95,7 +95,7 @@ function VaultDetail() {
   const classes = useStyles();
   const { goBack } = useHistory();
   const [slideIndex, setSlideIndex] = useState(0);
-  const flags = (["BTC", "ETH", "SOL", "USDT", "ETC", "USDC"]).map((tokenName, i) => {
+  const flags = (["BTC", "ETH", "SOL", "USDT", "USDC", "BTC", "ETH", "SOL", "USDT", "USDC"]).map((tokenName, i) => {
     return createSlide(tokenName as TokenName, slideIndex === i, () => setSlideIndex(i));
   });
 
@@ -105,7 +105,6 @@ function VaultDetail() {
     { tokenName: "SOL", active: true },
     { tokenName: "USDT", active: true },
     { tokenName: "USDC", active: false },
-    { tokenName: "ETC", active: false },
   ]
 
   let { vaultId } = useParams<VaultDetailParams>();
