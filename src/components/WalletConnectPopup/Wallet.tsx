@@ -1,10 +1,23 @@
-import { useMemo, useCallback } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { popupState } from 'recoil/atoms';
+import { ConnectionProvider, WalletProvider, useWallet } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { getPhantomWallet, WalletName } from '@solana/wallet-adapter-wallets';
-import { useWallet } from '@solana/wallet-adapter-react';
-
+import {
+  getLedgerWallet,
+  getPhantomWallet,
+  getSlopeWallet,
+  getSolflareWallet,
+  getSolletExtensionWallet,
+  getSolletWallet,
+  getTorusWallet,
+} from '@solana/wallet-adapter-wallets';
+import {
+  WalletModalProvider,
+  WalletDisconnectButton,
+  WalletMultiButton
+} from '@solana/wallet-adapter-react-ui';
+import { clusterApiUrl } from '@solana/web3.js';
 import { makeStyles } from '@material-ui/core';
 import BGConnectWallet from 'assets/svgs/BGConnectWallet.svg';
 import BGConnectedWallet from 'assets/svgs/BGConnectedWallet.svg';
@@ -152,11 +165,27 @@ const useStyles = makeStyles({
   },
 });
 
-function WalletConnectPopup() {
-  const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
+export const Wallet: FC = () => {
+  // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
+  const network = WalletAdapterNetwork.Mainnet;
+
+  // You can also provide a custom RPC endpoint
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking --
+  // Only the wallets you configure here will be compiled into your application
+  const wallets = useMemo(() => [
+    getPhantomWallet(),
+    getSlopeWallet(),
+    getSolflareWallet(),
+    getLedgerWallet(),
+    getSolletWallet({ network }),
+    getSolletExtensionWallet({ network }),
+  ], [network]);
+
+  const { connect, connected, disconnect, select, publicKey } = useWallet();
+
   const setPopupState = useSetRecoilState(popupState);
-  const { wallets, connect, connected, disconnect, select, publicKey } = useWallet();
 
   const handleExit = () => {
     setPopupState(undefined);
@@ -165,85 +194,22 @@ function WalletConnectPopup() {
   const handleInvalidClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
   }
+  console.log(connected)
 
-  const handleSelectWallet = useCallback(
-    (walletName) => {
-      select(walletName);
-    },
-    [select]
-  );
-
-  const handleClickConnect = useCallback(
-    () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      connect()
-        .then(() =>
-          enqueueSnackbar(<SuccessSnackbar message={"Wallet Connected"} />)
-        ).catch(() => { });
-      setPopupState(undefined);
-    },
-    [connect, setPopupState]
-  );
-  const handleClickDisconnect: React.MouseEventHandler<HTMLDivElement> = useCallback(
-    () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      disconnect().catch(() => { });
-      setPopupState(undefined);
-    },
-    [disconnect, setPopupState]
-  );
-
-  const address = publicKey?.toBase58();
+  const classes = useStyles();
 
   return (
-    <div className={classes.root} onClick={handleExit}>
-      <div className={connected ? classes.connectedBox : classes.box} onClick={handleInvalidClick}>
-        <div className={classes.titleContainer}>
-          <div className={classes.title}>{
-            connected ?
-              "YOUR WALLET" :
-              "CONNECT WALLET"
-          }</div>
-          <div className={classes.exitBtn} onClick={handleExit} />
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets}>
+        <div className={classes.root} onClick={handleExit}>
+          <div className={connected ? classes.connectedBox : classes.box} onClick={handleInvalidClick}>
+            <WalletModalProvider>
+              <WalletMultiButton />
+              <WalletDisconnectButton />
+            </WalletModalProvider>
+          </div>
         </div>
-        {
-          connected ?
-            <div className={classes.contentContainer}>
-              <div className={classes.addressHeader}>YOUR ADDRESS</div>
-              <div className={classes.addressContainer}>
-                <div className={classes.addressText}>{address}</div>
-                <div
-                  className={classes.copyText}
-                  onClick={() => {
-                    navigator.clipboard.writeText(address ? address : "");
-                    enqueueSnackbar(<SuccessSnackbar message={"Address copied"} />);
-                  }}>COPY</div>
-              </div>
-              <div className={classes.addressLine} />
-              <DisconnectButton handleClick={handleClickDisconnect} />
-            </div> :
-            <div className={classes.listContainer}>
-              {
-                wallets.map(walletInfo => (
-                  <div key={walletInfo.name} className={classes.item} 
-                    onMouseOver={() => handleSelectWallet(walletInfo.name)}
-                    onClick={() => { handleClickConnect();}}>
-                    <img
-                      className={classes.icon}
-                      src={WalletIconPhantom}
-                      alt={"phatom_icon"}
-                    />
-                    <div className={classes.text} >
-                      {walletInfo.name.toUpperCase()}
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
-        }
-      </div>
-    </div>
-  )
-}
-
-export default WalletConnectPopup;
+      </WalletProvider>
+    </ConnectionProvider>
+  );
+};

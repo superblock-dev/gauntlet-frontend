@@ -4,8 +4,14 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl, Connection } from '@solana/web3.js';
+import {
+  getLedgerWallet,
+  getPhantomWallet,
+  getSlopeWallet,
+  getSolflareWallet,
+  getSolletExtensionWallet,
+  getSolletWallet,
+} from '@solana/wallet-adapter-wallets';import { clusterApiUrl, Connection } from '@solana/web3.js';
 import { SnackbarProvider } from 'notistack';
 import { Route as RouteType } from 'types';
 import { conn, popupState } from "recoil/atoms";
@@ -56,33 +62,32 @@ function App() {
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets}>
-    <SnackbarProvider 
-      maxSnack={3} 
-      autoHideDuration={2000}
-      anchorOrigin={{
-        horizontal: 'right', 
-        vertical: 'top',
-      }}
-      classes={{
-        containerRoot: classes.containerRoot,
-      }}
-      content={(key, msg) => <Snackbar id={key} message={msg} />}
-    >
-      <Router>
-        <Header routeList={routeList} />
-        <Switch>
-          <Route exact path={"/vault"} component={() => <Vault />} />
-          <Route path={"/vault/:vaultId"} component={() => <VaultDetail />} />
-          {/* <Route path={"/swap"} component={() => <></>} /> */}
-          {/* <Route path={"/zap"} component={() => <Zap />} /> */}
-          <Route path={"/"} component={() => <></>} />
-        </Switch>
-        {popup ? <Popup>{popup}</Popup> : undefined}
-      </Router>
-    </SnackbarProvider>
-
-</WalletProvider>
-</ConnectionProvider>
+        <SnackbarProvider
+          maxSnack={3}
+          autoHideDuration={2000}
+          anchorOrigin={{
+            horizontal: 'right',
+            vertical: 'top',
+          }}
+          classes={{
+            containerRoot: classes.containerRoot,
+          }}
+          content={(key, msg) => <Snackbar id={key} message={msg} />}
+        >
+          <Router>
+            <Header routeList={routeList} />
+            <Switch>
+              <Route exact path={"/vault"} component={() => <Vault />} />
+              <Route path={"/vault/:vaultId"} component={() => <VaultDetail />} />
+              {/* <Route path={"/swap"} component={() => <></>} /> */}
+              {/* <Route path={"/zap"} component={() => <Zap />} /> */}
+              <Route path={"/"} component={() => <></>} />
+            </Switch>
+            {popup ? <Popup>{popup}</Popup> : undefined}
+          </Router>
+        </SnackbarProvider>
+      </WalletProvider>
+    </ConnectionProvider>
   );
 }
 
