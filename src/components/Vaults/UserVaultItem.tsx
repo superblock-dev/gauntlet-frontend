@@ -7,6 +7,7 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from "@material-ui/core";
+import Countup from 'react-countup';
 import SmallButton from "components/Buttons/SmallButton";
 import { VaultInfo } from 'utils/tokens';
 import { SMALL_STONES } from 'utils/stones';
@@ -210,7 +211,18 @@ function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
                     right: 0,
                     top: 7,
                   }}
-                >{`$ ${totalRewardInUSD?.toString().slice(0, 10)}`}</div>
+                >
+                  <Countup 
+                    start={0} 
+                    end={totalRewardInUSD as number} 
+                    delay={0} 
+                    duration={0.75}
+                    separator=","
+                    decimals={3}
+                    decimal="."
+                    prefix="$ "
+                  />
+                </div>
               </div>
             </AccordionSummary>
             <AccordionDetails >
