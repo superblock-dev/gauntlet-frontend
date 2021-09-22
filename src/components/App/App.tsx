@@ -26,7 +26,12 @@ import VaultDetail from "pages/VaultDetail";
 const useStyles = makeStyles({
   containerRoot: {
     top: 136,
-    right: 80,
+    right: 80, 
+  },
+  "@global": {
+    input: {
+      fontSize: 16,
+    }
   }
 })
 
