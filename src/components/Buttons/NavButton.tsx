@@ -48,7 +48,12 @@ const useStyles = makeStyles({
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent',
     lineHeight: '24.5px',
-  }
+  },
+  activeTitle: {
+    fontWeight: 700,
+    fontSize: 16,
+    color: '#FFD271',
+  },
 });
 
 function NavButton(prop: NavBtnProp) {
@@ -56,7 +61,7 @@ function NavButton(prop: NavBtnProp) {
   const { active, title } = prop;
   return (
     <div className={active ? classes.active : classes.inactive}>
-      <div className={classes.title}>
+      <div className={active ? classes.activeTitle : classes.title}>
         {title}
       </div>
     </div>

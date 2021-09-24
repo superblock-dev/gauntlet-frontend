@@ -21,21 +21,6 @@ export interface LPToken {
   balance?: TokenAmount,
 }
 
-export interface Reward {
-  token: Token,
-  amount: number,
-}
-
-export interface VaultInfo {
-  name: string,
-  lp: LPToken,
-  userStaked?: {
-    deposit: number,
-    rewards: Reward[],
-  },
-  id: number,
-}
-
 export const TOKENS: { [key: string]: Token } = {
   USDC: {
     symbol: 'USDC',
@@ -89,7 +74,7 @@ export const LP_TOKENS = {
 
     mintAddress: 'BZFGfXMrjG2sS7QT2eiCDEevPFnkYYF7kzJpWfYxPbcx',
     decimals: TOKENS.RAY.decimals,
-    url: 'https://raydium.io',
+    url: 'https://raydium.io/liquidity/?ammId=6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg',
     urlHelper: 'Raydium',
   },
   'RAY-ETH-V3': {
@@ -100,7 +85,7 @@ export const LP_TOKENS = {
 
     mintAddress: '8Q6MKy5Yxb9vG1mWzppMtMb2nrhNuCRNUkJTeiE3fuwD',
     decimals: TOKENS.RAY.decimals,
-    url: 'https://raydium.io',
+    url: 'https://raydium.io/liquidity/?ammId=8iQFhWyceGREsWnLM8NkG9GC8DvZunGZyMzuyUScgkMK',
     urlHelper: 'Raydium',
   },
   'ETH-USDC-V4': {
@@ -110,7 +95,9 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '13PoKid6cZop4sj2GfoBeujnGfthUbTERdE5tpLCDLEY',
-    decimals: TOKENS.ETH.decimals
+    decimals: TOKENS.ETH.decimals,
+    url: 'https://raydium.io/liquidity/?ammId=AoPebtuJC4f2RweZSxcVCcdeTgaEXY64Uho8b5HdPxAR',
+    urlHelper: 'Raydium',
   },
   'BTC-USDC-V4': {
     symbol: 'BTC-USDC',
@@ -119,7 +106,9 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '2hMdRdVWZqetQsaHG8kQjdZinEMBz75vsoWTCob1ijXu',
-    decimals: TOKENS.BTC.decimals
+    decimals: TOKENS.BTC.decimals,
+    url: 'https://raydium.io/liquidity/?ammId=6kbC5epG18DF2DwPEW34tBy5pGFS7pEGALR3v5MGxgc5',
+    urlHelper: 'Raydium',
   },
   'BTC-USDT-V4': {
     symbol: 'BTC-USDT',
@@ -128,7 +117,9 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'DgGuvR9GSHimopo3Gc7gfkbKamLKrdyzWkq5yqA6LqYS',
-    decimals: TOKENS.BTC.decimals
+    decimals: TOKENS.BTC.decimals,
+    url: 'https://raydium.io/liquidity/?ammId=AMMwkf57c7ZsbbDCXvBit9zFehMr1xRn8ZzaT1iDF18o',
+    urlHelper: 'Raydium',
   },
   'SOL-USDC-V4': {
     symbol: 'SOL-USDC',
@@ -137,90 +128,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '8HoQnePLqPj4M7PUDzfw8e3Ymdwgc7NLGnaTUapubyvu',
-    decimals: TOKENS.SOL.decimals
+    decimals: TOKENS.SOL.decimals,
+    url: 'https://raydium.io/liquidity/?ammId=58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2',
+    urlHelper: 'Raydium',
   },
 };
-
-export const FARMS: VaultInfo[] = [
-  {
-    id: 0,
-    name: 'RAY-USDC',
-    lp: { ...LP_TOKENS['RAY-USDC-V3'] },
-    userStaked: {
-      deposit: 49.48604,
-      rewards: [
-        {
-          token: TOKENS.ETH,
-          amount: 0.41038,
-        },
-        {
-          token: TOKENS.USDC,
-          amount: 0.41038,
-        },
-        {
-          token: TOKENS.USDT,
-          amount: 0.41038,
-        },
-        {
-          token: TOKENS.SOL,
-          amount: 0.41038,
-        },
-      ]
-    },
-
-    // poolId: '8nEWqxeDNZ2yo1izbPzY4nwR55isBZRaQk7CM8ntwUwR',
-    // poolAuthority: '6vQGZLsHgpJdqh1ER7q2q6mjZ43QwzhtTofTzb2sUhNh',
-    // poolLpTokenAccount: '77ujS15hjUfFZkM8QAw4HMLvMGZg95Gcm6ixjA1bnk3M', // lp vault
-    // poolRewardTokenAccount: '3ejmkn5HpXR9KdVWkai1Ngo87sQSUyKXrx8wSakipkno' // reward vault
-  },
-  {
-    id: 1,
-    name: 'BTC-USDT',
-    lp: { ...LP_TOKENS['BTC-USDT-V4'] },
-    userStaked: {
-      deposit: 49.48604,
-      rewards: [
-        {
-          token: TOKENS.BTC,
-          amount: 0.41038,
-        },
-        {
-          token: TOKENS.USDC,
-          amount: 0.41038,
-        },
-        {
-          token: TOKENS.SOL,
-          amount: 0.41038,
-        },
-      ]
-    },
-
-    // poolId: '8nEWqxeDNZ2yo1izbPzY4nwR55isBZRaQk7CM8ntwUwR',
-    // poolAuthority: '6vQGZLsHgpJdqh1ER7q2q6mjZ43QwzhtTofTzb2sUhNh',
-    // poolLpTokenAccount: '77ujS15hjUfFZkM8QAw4HMLvMGZg95Gcm6ixjA1bnk3M', // lp vault
-    // poolRewardTokenAccount: '3ejmkn5HpXR9KdVWkai1Ngo87sQSUyKXrx8wSakipkno' // reward vault
-  },
-  {
-    id: 2,
-    name: 'RAY-ETH',
-    lp: { ...LP_TOKENS['RAY-ETH-V3'] },
-    userStaked: undefined,
-
-    // poolId: 'CYKDTwojSLVFEShB3tcTTfMjtBxUNtYfCTM4PiMFGkio',
-    // poolAuthority: 'Azmucec2jdgWagFkbnqmwYcsrtKPf1v1kcM95v6s1zxu',
-    // poolLpTokenAccount: 'EncPBQhpc5KLmcgRD2PutQz7wBBNQkVN2s8jjFWEw9no', // lp vault
-    // poolRewardTokenAccount: '8q8BHw7fP7mitLrb2jzw78qcSEgCvM7GTB5PzbSQobUt' // reward vault
-  },
-
-  {
-    id: 3,
-    name: 'RAY-ETH',
-    lp: { ...LP_TOKENS['RAY-ETH-V3'] },
-    userStaked: undefined,
-
-    // poolId: 'CYKDTwojSLVFEShB3tcTTfMjtBxUNtYfCTM4PiMFGkio',
-    // poolAuthority: 'Azmucec2jdgWagFkbnqmwYcsrtKPf1v1kcM95v6s1zxu',
-    // poolLpTokenAccount: 'EncPBQhpc5KLmcgRD2PutQz7wBBNQkVN2s8jjFWEw9no', // lp vault
-    // poolRewardTokenAccount: '8q8BHw7fP7mitLrb2jzw78qcSEgCvM7GTB5PzbSQobUt' // reward vault
-  },
-];

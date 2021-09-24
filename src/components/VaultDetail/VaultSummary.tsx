@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import BGVaultSummary from 'assets/svgs/BGVaultSummary.svg';
+import { UserState, Vault } from "types";
 
 const useStyles = makeStyles({
   summaryContainer: {
@@ -41,7 +42,13 @@ const useStyles = makeStyles({
   },
 });
 
-function VaultSummary() {
+interface VaultSummaryProps {
+  vault: Vault;
+  userState?: UserState;
+}
+
+
+function VaultSummary({ vault, userState }: VaultSummaryProps) {
   const classes = useStyles();
 
   return (
@@ -51,7 +58,7 @@ function VaultSummary() {
         <div className={classes.summaryHeader}>APY</div>
       </div>
       <div className={classes.summaryContent}>
-        <div className={classes.summaryBody}>0.04859</div>
+        <div className={classes.summaryBody}>{userState ? userState.balance : 0}</div>
         <div className={classes.summaryBody}>95.39%</div>
       </div>
       <div className={classes.summaryContent} style={{ marginBottom: 50, }}>

@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { rewardPrices } from 'recoil/atoms';
+import { UserState, Vault } from 'types';
+import { BigNumber } from 'bignumber.js';
 
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -9,12 +11,12 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from "@material-ui/core";
 import Countup from 'react-countup';
 import SmallButton from "components/Buttons/SmallButton";
-import { VaultInfo } from 'utils/tokens';
 import { SMALL_STONES } from 'utils/stones';
 import LinePurpleShort from 'assets/svgs/LinePurpleShort.svg';
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import LPTokenView from './LPTokenView';
 import CursorPointer from 'assets/CursorPointer.svg';
+import { calculateReward } from 'utils/vaults';
 
 const AccordionSummary = withStyles({
   root: {
@@ -138,30 +140,44 @@ const useStyles = makeStyles({
 
 });
 
-function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
+interface UserVaultProps {
+  vault: Vault;
+  userState?: UserState;
+}
+
+function UserVaultItem({ vault, userState }: UserVaultProps) {
   const classes = useStyles();
   const prices = useRecoilValue(rewardPrices);
-  const totalRewardInUSD = userStaked?.rewards.reduce((total, reward) => {
-    return total + reward.amount * prices[reward.token.symbol].price
-  }, 0);
+
+  const totalRewardInUSD = userState?.rewards.reduce((total, reward) => {
+    const strategy = vault.strategies.find(strategy => strategy.rewardToken === reward.token);
+    if (!strategy) return total;
+    return BigNumber.sum(total, calculateReward(reward, strategy.accRewardPerShare).multipliedBy(prices[reward.token]));
+  }, new BigNumber(0));
 
   return (
     <>
       <Grid container className={classes.container}>
         <Grid item xs={3} className={classes.itemContainer} >
-          <LPTokenView lp={lp} />
+          <LPTokenView lp={vault.depositToken} />
         </Grid>
         <Grid item xs={2} className={classes.itemContainer} >540.1 M</Grid>
         <Grid item xs={2} className={classes.itemContainer} >118.0%</Grid>
         <Grid item xs={3} className={classes.itemContainer} >{
-          userStaked?.rewards.map(reward => (
-            <div key={reward.token.name} className={classes.stoneContainer}>
-              <img className={classes.stoneIcon} src={SMALL_STONES[reward.token.symbol]} />
+          userState?.rewards.map(reward => (
+            <div key={reward.token} className={classes.stoneContainer}>
+              <img className={classes.stoneIcon} src={SMALL_STONES[reward.token]} />
             </div>
           ))
         }</Grid>
         <Grid item xs={2} className={classes.btnContainer}>
-          <Link to={`/vault/${id}`}>
+          <Link to={{
+            pathname: `/vault/${vault.id}`,
+            state: {
+              vault: vault,
+              userState: userState,
+            }
+          }}>
             <SmallButton />
           </Link> 
         </Grid>
@@ -195,7 +211,7 @@ function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
                     left: 153,
                     top: 7,
                   }}
-                >{userStaked?.deposit}</div>
+                >{userState?.balance.toLocaleString()}</div>
                 <div
                   className={classes.textSen}
                   style={{
@@ -214,7 +230,7 @@ function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
                 >
                   <Countup 
                     start={0} 
-                    end={totalRewardInUSD as number} 
+                    end={totalRewardInUSD ? totalRewardInUSD.toNumber() : 0} 
                     delay={0} 
                     duration={0.75}
                     separator=","
@@ -227,11 +243,11 @@ function UserVaultItem({ id, lp, userStaked }: VaultInfo) {
             </AccordionSummary>
             <AccordionDetails >
               {
-                userStaked?.rewards.map(reward => (
+                userState?.rewards.map(reward => (
                   <div className={classes.rewardDetailContainer}>
-                    <img className={classes.rewardIcon} src={SMALL_STONES[reward.token.symbol]} />
-                    <div className={classes.rewardSymbolText}>{reward.token.symbol}</div>
-                    <div className={classes.rewardAmount}>{reward.amount}</div>
+                    <img className={classes.rewardIcon} src={SMALL_STONES[reward.token]} />
+                    <div className={classes.rewardSymbolText}>{reward.token}</div>
+                    <div className={classes.rewardAmount}>{reward.amount.toLocaleString()}</div>
                   </div>
                 ))
               }

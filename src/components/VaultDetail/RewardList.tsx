@@ -136,31 +136,51 @@ const useStyles = makeStyles({
   },
 });
 
-function RewardList() {
+export interface RewardAPR {
+  token: string;
+  value: number;
+}
+
+export interface RewardListProps {
+  rewards: RewardAPR[];
+  mainIndex: number;
+}
+
+function RewardList({ rewards, mainIndex }: RewardListProps) {
   const classes = useStyles();
+  const index = mainIndex % 5;
 
   return (
-    <div className={classes.root}>
-      <div className={classes.header}>Estimated return for each token Vault</div>
-      <div className={classes.divider} />
-      <Accordion style={{ marginBottom: 72, marginTop: 0, }}>
-        <AccordionSummary expandIcon={<CaretDown style={{ cursor: `url(${CursorPointer}), pointer !important` }} />} >
-          <img className={classes.largeIcon} src={LARGE_STONES.SOL} />
-          <div className={classes.largeName}>SOL</div>
-          <div className={classes.largePercentage}>95.39%</div>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div className={classes.rewardItem}>
-            <img className={classes.smallIcon} src={SMALL_STONES.BTC} />
-            <div className={classes.smallName}>BTC</div>
-            <div className={classes.smallPercentage}>95.39%</div>
-          </div>
-          <div className={classes.rewardItem}></div>
-          <div className={classes.rewardItem}></div>
-          <div className={classes.rewardItem}></div>
-        </AccordionDetails>
-      </Accordion>
-    </div>
+    <>
+      {rewards.length === 0 ?
+        null :
+        <div className={classes.root}>
+          <div className={classes.header}>Estimated return for each token Vault</div>
+          <div className={classes.divider} />
+          <Accordion style={{ marginBottom: 72, marginTop: 0, }}>
+            <AccordionSummary expandIcon={<CaretDown style={{ cursor: `url(${CursorPointer}), pointer !important` }} />} >
+              <img className={classes.largeIcon} src={LARGE_STONES[rewards[index].token]} />
+              <div className={classes.largeName}>{rewards[index].token}</div>
+              <div className={classes.largePercentage}>{`${((rewards[index].value - 1) * 100).toFixed(3)} %`}</div>
+            </AccordionSummary>
+            <AccordionDetails>
+              {
+                rewards.map(r => {
+                  if (r.token === rewards[index].token) return null;
+                  return (
+                    <div className={classes.rewardItem}>
+                      <img className={classes.smallIcon} src={SMALL_STONES[r.token]} />
+                      <div className={classes.smallName}>{r.token}</div>
+                      <div className={classes.smallPercentage}>{`${((r.value - 1) * 100).toFixed(3)} %`}</div>
+                    </div>
+                  )
+                })
+              }
+            </AccordionDetails>
+          </Accordion>
+        </div>
+      }
+    </>
   )
 }
 

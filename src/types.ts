@@ -1,14 +1,40 @@
 import { ComponentType, ReactNode } from "react";
+import { LPToken } from "utils/tokens";
 
-export type TokenName = "BTC" | "ETH" | "SOL" | "USDT" | "USDC" | "ETC";
+export type TokenName = "BTC" | "ETH" | "SOL" | "USDT" | "USDC" | "LET" | "ETC";
 
-// Temporary type
-export interface VaultState {
-  tokenName: TokenName;
-  balance: number;
+// Temporary types
+export interface Fees {
+  performanceFee: number;
+  withdrawalFee: number;
+}
+
+export interface Strategy {
+  rewardToken: TokenName;
   depositAmount: number;
-  withdrawAmount: number;
-  rewards: number;
+  accRewardPerShare: number;
+  lastRewardUpdatedTime: number;
+}
+
+export interface Vault {
+  id: number;
+  fees: Fees;
+  depositToken: LPToken;
+  totalDepositAmount: number;
+  farmId: string;
+  strategies: Strategy[];
+}
+
+export interface Reward {
+  token: TokenName;
+  amount: number;
+  rewardDebt: number;
+}
+
+export interface UserState {
+  vaultId: number;
+  balance: number;
+  rewards: Reward[];
 }
 
 export interface Route {

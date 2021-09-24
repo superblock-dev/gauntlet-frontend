@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core";
+import { Vault } from "types";
 
 const useStyles = makeStyles({
   root: {
@@ -70,7 +71,12 @@ const useStyles = makeStyles({
   }
 });
 
-function VaultDetails() {
+interface VaultDetailProps {
+  vault: Vault;
+
+}
+
+function VaultDetails({ vault }: VaultDetailProps) {
   const classes = useStyles();
 
   return (
@@ -80,16 +86,16 @@ function VaultDetails() {
       <div className={classes.infoContainer}>
         <div className={classes.assetInfoContainer}>
           <div className={classes.textName}>Asset</div>
-          <div className={classes.textValue}>KSP-DAI LP($234)</div>
+          <div className={classes.textValue}>{`${vault.depositToken.name} lp`}</div>
           <div className={classes.textName}>Farm Name</div>
-          <div className={classes.textValue}>Klayswap</div>
+          <div className={classes.textValue}>{vault.depositToken.urlHelper}</div>
         </div>
         <div className={classes.apyContainer}>
           <div className={classes.containerHeader}>APY Calculations</div>
           <div className={classes.textName}>Farm APR</div>
           <div className={classes.textValue}>200%</div>
-          <div className={classes.textName}>LET APR</div>
-          <div className={classes.textValue}>20%</div>
+          {/* <div className={classes.textName}>LET APR</div>
+          <div className={classes.textValue}>20%</div> */}
           <div className={classes.textName}>Total APY</div>
           <div className={classes.textValue}>230%</div>
           <div className={classes.textName}>Daily APR</div>
@@ -97,16 +103,16 @@ function VaultDetails() {
         </div>
         <div className={classes.feeContainer}>
           <div className={classes.containerHeader}>Fees</div>
-          <div className={classes.textName}>Controller fee</div>
-          <div className={classes.textValue}>0.5%</div>
-          <div className={classes.textName}>Platform fee</div>
+          <div className={classes.textName}>Performance fee</div>
+          <div className={classes.textValue}>{`${(vault.fees.performanceFee * 100).toFixed(2)} %`}</div>
+          {/* <div className={classes.textName}>Platform fee</div>
           <div className={classes.textValue}>2%</div>
           <div className={classes.textName}>GauntLET Staking Pool</div>
-          <div className={classes.textValue}>2.5%</div>
+          <div className={classes.textValue}>2.5%</div> */}
           <div className={classes.textName}>Entrance fee</div>
-          <div className={classes.textValue}>0.1%</div>
-          <div className={classes.textName}>Withdrawal fee</div>
           <div className={classes.textValue}>Free</div>
+          <div className={classes.textName}>Withdrawal fee</div>
+          <div className={classes.textValue}>{`${(vault.fees.withdrawalFee * 100).toFixed(2)} %`}</div>
         </div>
       </div>
     </div>

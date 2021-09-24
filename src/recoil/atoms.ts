@@ -12,29 +12,15 @@ export const conn = atom<Connection | undefined>({
   default: undefined
 });
 
-interface TokenPrice {
-  price: number,
-}
-
-const INITIAL_PRICES: {[key: string]: TokenPrice} = {
-  BTC: {
-    price: 0,
-  },
-  ETH: {
-    price: 0,
-  },
-  USDC: {
-    price: 1,
-  },
-  USDT: {
-    price: 1,
-  },
-  SOL: {
-    price: 0,
-  },
+const INITIAL_PRICES: {[key: string]: number} = {
+  BTC: 0,
+  ETH: 0,
+  USDC: 1,
+  USDT: 1,
+  SOL: 0,
 };
 
-export const rewardPrices = atom<{[key: string]: TokenPrice}>({
+export const rewardPrices = atom<{[key: string]: number}>({
   key: "rewardPrices",
   default: INITIAL_PRICES,
 });

@@ -1,35 +1,96 @@
 import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { BigNumber } from 'bignumber.js';
 
 import LPTokenView from "components/Vaults/LPTokenView";
 import { makeStyles } from "@material-ui/core";
 import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
 import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
-import { FARMS } from 'utils/tokens';
 import VaultSummary from "components/VaultDetail/VaultSummary";
 import VaultDetails from "components/VaultDetail/VaultDetails";
 import MediumButton from "components/Buttons/MediumButton";
-import RewardList from "components/VaultDetail/RewardList";
+import RewardList, { RewardAPR } from "components/VaultDetail/RewardList";
 import Slider from "components/Slider";
 import CursorPointer from 'assets/CursorPointer.svg';
 import Flag from "components/Vaults/Flag";
 import { v4 as uuidv4 } from "uuid";
 import FlagNavigation from "components/Vaults/FlagNavigation";
 import StoneDisplay from "components/Vaults/StoneDisplay";
-import { TokenName, VaultState } from "types";
+import { Reward, Strategy, TokenName, UserState, Vault } from "types";
+import { calculateReward, USER_STATES, VAULTS } from "utils/vaults";
 
-function createItem(vaultState: VaultState, active: boolean) {
+function createItem(strategy: Strategy, reward: Reward, balance: number, active: boolean) {
+  const pendingReward = (strategy.accRewardPerShare * reward.amount - reward.rewardDebt);
+
   return (
-      <Flag vaultState={vaultState} active={active}/>
+    <Flag
+      tokenName={reward.token}
+      deposited={reward.amount}
+      balance={balance}
+      reward={pendingReward}
+      active={active} />
   );
 }
 
-function createSlide(vaultState: VaultState, active: boolean, onClick: () => void) {
+function createSlide(strategy: Strategy, reward: Reward, balance: number, active: boolean, onClick: () => void) {
   return {
-      key: uuidv4(),
-      content: createItem(vaultState, active),
-      onClick: onClick
+    key: uuidv4(),
+    content: createItem(strategy, reward, balance, active),
+    onClick: onClick
   }
+}
+
+const REWARDS: Reward[] = [
+  {
+    token: 'BTC',
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
+    token: 'ETH',
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
+    token: 'SOL',
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
+    token: 'USDC',
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
+    token: 'USDT',
+    amount: 0,
+    rewardDebt: 0,
+  },
+]
+
+function createRewardsListFromUserState(
+  vault: Vault,
+  balance: number,
+  slideIndex: number,
+  onClick: (idx: number) => void,
+  userState?: UserState,
+) {
+  if (!userState) {
+    return ([...REWARDS, ...REWARDS]).map((reward, idx) => {
+      const strategy = vault.strategies.find(strategy => strategy.rewardToken === reward.token);
+      if (!strategy) return;
+      return createSlide(strategy, reward, balance, slideIndex === idx, () => onClick(idx));
+    });
+  }
+  return ([...REWARDS, ...REWARDS]).map((reward, idx) => {
+    const userReward = userState.rewards.find(state => state.token === reward.token)
+    const strategy = vault.strategies.find(strategy => strategy.rewardToken === reward.token);
+    if (!strategy) return;
+    if (userReward) {
+      return createSlide(strategy, userReward, balance, slideIndex === idx, () => onClick(idx));
+    }
+    return createSlide(strategy, reward, balance, slideIndex === idx, () => onClick(idx));
+  });
 }
 
 interface VaultDetailParams {
@@ -73,7 +134,7 @@ const useStyles = makeStyles({
   },
   divider: {
     marginTop: 80,
-    marginBottom: 80,
+    marginBottom: 40,
     height: 20,
     width: 388,
     backgroundImage: `url(${LineMixPurpleAndGold})`,
@@ -95,31 +156,51 @@ function VaultDetail() {
   const classes = useStyles();
   const { goBack } = useHistory();
   const [slideIndex, setSlideIndex] = useState(0);
-  
-  const vaultStates: VaultState[] = [
-    { tokenName: "BTC", balance: 1002.34, depositAmount: 11.1, withdrawAmount: 0.1, rewards: 1292.1 },
-    { tokenName: "ETH", balance: 32602.34, depositAmount: 0.1, withdrawAmount: 1.21, rewards: 2.1 },
-    { tokenName: "SOL", balance: 102.34, depositAmount: 981.1, withdrawAmount: 280.1, rewards: 0.000001 },
-    { tokenName: "USDT", balance: 10083642.34, depositAmount: 0.0, withdrawAmount: 9127.1, rewards: 999912.1 },
-    { tokenName: "USDC", balance: 90202.34, depositAmount: 1.0000001, withdrawAmount: 0.9999991, rewards: 123146.1235 },
-  ]
-  const flags = ([...vaultStates, ...vaultStates]).map((vaultState, i) => {
-    return createSlide(vaultState, slideIndex === i, () => setSlideIndex(i));
-  });
-
-  const stones: { tokenName: TokenName, active: boolean }[] = [
-    { tokenName: "BTC", active: true },
-    { tokenName: "ETH", active: false },
-    { tokenName: "SOL", active: true },
-    { tokenName: "USDT", active: true },
-    { tokenName: "USDC", active: false },
-  ]
-
   let { vaultId } = useParams<VaultDetailParams>();
   let vId = parseInt(vaultId);
-  if (vId === undefined) return <></> // TODO: Page not found
-  let farm = FARMS.find(farm => farm.id === vId);
-  if (farm === undefined) return <></> // TODO: Page not found
+  const vault = VAULTS.find(v => v.id === vId);
+  const userState = USER_STATES.find(s => s.vaultId === vId);
+
+  if (vId === undefined || vault === undefined) return <></> // TODO: Page not found
+
+  const lpBalance: number = 939.2 // User LP Token Balance
+
+  const flags = createRewardsListFromUserState(
+    vault,
+    lpBalance,
+    slideIndex,
+    setSlideIndex,
+    userState,
+  );
+
+  const rewardAPRs: RewardAPR[] = [
+    {
+      token: 'BTC',
+      value: 1.58432,
+    },
+    {
+      token: 'ETH',
+      value: 1.63592,
+    },
+    {
+      token: 'SOL',
+      value: 1.57201,
+    },
+    {
+      token: 'USDC',
+      value: 1.15039,
+    },
+    {
+      token: 'USDT',
+      value: 1.25131,
+    },
+  ];
+
+  const stones: {[key: string]: BigNumber} = {};
+  userState?.rewards.forEach((reward) => {
+    const strategy = vault.strategies.find(s => s.rewardToken === reward.token);
+    if (strategy) stones[reward.token.toString()] = calculateReward(reward, strategy.accRewardPerShare);
+  });
 
   return (
     <div className={classes.root}>
@@ -138,7 +219,7 @@ function VaultDetail() {
           marginLeft: 8,
         }}>
           <div style={{ width: 800, }}>
-            <LPTokenView lp={farm.lp} linkVisible />
+            <LPTokenView lp={vault.depositToken} linkVisible />
           </div>
           <div style={{
             display: 'flex',
@@ -153,8 +234,8 @@ function VaultDetail() {
           </div>
         </div>
       </div>
-      
-      <VaultSummary />
+
+      <VaultSummary vault={vault} userState={userState} />
 
       <div className={classes.divider} />
 
@@ -173,9 +254,12 @@ function VaultDetail() {
         }} />
       </div>
 
-      <RewardList />
+      <RewardList 
+        rewards={rewardAPRs}
+        mainIndex={slideIndex}
+      />
 
-      <VaultDetails />
+      <VaultDetails vault={vault} />
 
       <div style={{
         display: 'flex',
@@ -184,9 +268,9 @@ function VaultDetail() {
         marginBottom: 340,
         marginTop: 52,
       }}>
-        <MediumButton text="Create LP" link="https://raydium.io/" external/>
-        <MediumButton text="Farm Contract" external/>
-        <MediumButton text="Vault Contract" external/>
+        <MediumButton text="Create LP" link={vault.depositToken.url} external />
+        <MediumButton text="Farm Contract" link={`https://solscan.io/account/${vault.farmId}`} external />
+        <MediumButton text="Vault Contract" external />
       </div>
     </div>
   )

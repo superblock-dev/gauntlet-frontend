@@ -1,21 +1,19 @@
 import { useEffect, useMemo } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { makeStyles } from "@material-ui/core";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
-  getLedgerWallet,
   getPhantomWallet,
-  getSlopeWallet,
-  getSolflareWallet,
-  getSolletExtensionWallet,
-  getSolletWallet,
-} from '@solana/wallet-adapter-wallets';import { clusterApiUrl, Connection } from '@solana/web3.js';
+} from '@solana/wallet-adapter-wallets';
+import { clusterApiUrl, Connection } from '@solana/web3.js';
 import { SnackbarProvider } from 'notistack';
 import { Route as RouteType } from 'types';
-import { conn, popupState } from "recoil/atoms";
+import { conn, popupState, rewardPrices } from "recoil/atoms";
+import { getPrices } from "api/prices";
+import { TIMEOUT_DEFAULT } from "utils/constants";
 
+import { makeStyles } from "@material-ui/core";
 import Header from 'components/Header';
 import Popup from 'components/Popup';
 import Zap from "pages/Zap";
@@ -43,6 +41,7 @@ const routeList: RouteType[] = [
 
 function App() {
   const popup = useRecoilValue(popupState);
+
   const setWeb3Connection = useSetRecoilState(conn);
   const classes = useStyles();
   const network = WalletAdapterNetwork.Mainnet;
@@ -58,6 +57,26 @@ function App() {
     );
     setWeb3Connection(connection);
   })
+
+  const setPrices = useSetRecoilState(rewardPrices);
+
+  const updatePriceInfo = async () => {
+    const priceData = await getPrices();
+    setPrices(priceData);
+  }
+
+  useEffect(() => {
+    updatePriceInfo();
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(async () => {
+      await updatePriceInfo();
+    }, TIMEOUT_DEFAULT);
+
+    return () => clearTimeout(timer);
+  });
+
 
   return (
     <ConnectionProvider endpoint={endpoint}>
