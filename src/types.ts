@@ -21,7 +21,6 @@ export interface Vault {
   fees: Fees;
   depositToken: LPToken;
   totalDepositAmount: number;
-  farmId: string;
   strategies: Strategy[];
 }
 
@@ -35,6 +34,11 @@ export interface UserState {
   vaultId: number;
   balance: number;
   rewards: Reward[];
+}
+
+/** Pairs **/
+export interface PairInfo {
+  [key: string]: string | number;
 }
 
 export interface Route {

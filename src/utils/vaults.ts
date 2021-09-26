@@ -14,8 +14,6 @@ export function calculateReward(reward: Reward, accPerReward: number) {
   return amount.multipliedBy(acc).minus(rewardDebt);
 }
 
-export const RAYDIUM_STAKE_PROGRAM_ID = 'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q';
-
 export const USER_STATES: UserState[] = [
   {
     vaultId: 1,
@@ -65,9 +63,8 @@ export const VAULTS: Vault[] = [
   {
     id: 1,
     fees: BASE_FEE,
-    depositToken: LP_TOKENS['RAY-USDC-V3'],
+    depositToken: LP_TOKENS['RAY-USDT-V4'],
     totalDepositAmount: 540120439.512,
-    farmId: RAYDIUM_STAKE_PROGRAM_ID,
     strategies: [
       {
         rewardToken: "BTC",
@@ -104,9 +101,8 @@ export const VAULTS: Vault[] = [
   {
     id: 2,
     fees: BASE_FEE,
-    depositToken: LP_TOKENS['RAY-ETH-V3'],
+    depositToken: LP_TOKENS['FIDA-RAY-V4'],
     totalDepositAmount: 540120439.512,
-    farmId: RAYDIUM_STAKE_PROGRAM_ID,
     strategies: [
       {
         rewardToken: "BTC",
@@ -143,9 +139,8 @@ export const VAULTS: Vault[] = [
   {
     id: 3,
     fees: BASE_FEE,
-    depositToken: LP_TOKENS['ETH-USDC-V4'],
+    depositToken: LP_TOKENS['RAY-USDC-V4'],
     totalDepositAmount: 540120439.512,
-    farmId: RAYDIUM_STAKE_PROGRAM_ID,
     strategies: [
       {
         rewardToken: "BTC",
@@ -182,9 +177,8 @@ export const VAULTS: Vault[] = [
   {
     id: 4,
     fees: BASE_FEE,
-    depositToken: LP_TOKENS['BTC-USDC-V4'],
+    depositToken: LP_TOKENS['RAY-SOL-V4'],
     totalDepositAmount: 540120439.512,
-    farmId: RAYDIUM_STAKE_PROGRAM_ID,
     strategies: [
       {
         rewardToken: "BTC",

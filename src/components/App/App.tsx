@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
+import { conn, pairsInfo, popupState, rewardPrices, tokenInfos } from "recoil/atoms";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -9,7 +10,6 @@ import {
 import { clusterApiUrl, Connection } from '@solana/web3.js';
 import { SnackbarProvider } from 'notistack';
 import { Route as RouteType } from 'types';
-import { conn, popupState, rewardPrices } from "recoil/atoms";
 import { getPrices } from "api/prices";
 import { TIMEOUT_DEFAULT } from "utils/constants";
 
@@ -20,11 +20,13 @@ import Zap from "pages/Zap";
 import Vault from "pages/Vault";
 import Snackbar from "components/Snackbar";
 import VaultDetail from "pages/VaultDetail";
+import { getPairs, requestLiquidityInfo } from "api/pools";
+import { loadTokenInfo } from "utils/tokens";
 
 const useStyles = makeStyles({
   containerRoot: {
     top: 136,
-    right: 80, 
+    right: 80,
   },
   "@global": {
     input: {
@@ -41,8 +43,7 @@ const routeList: RouteType[] = [
 
 function App() {
   const popup = useRecoilValue(popupState);
-
-  const setWeb3Connection = useSetRecoilState(conn);
+  const [connState, setWeb3Connection] = useRecoilState(conn);
   const classes = useStyles();
   const network = WalletAdapterNetwork.Mainnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -56,22 +57,37 @@ function App() {
       'confirmed',
     );
     setWeb3Connection(connection);
-  })
+  }, []);
 
   const setPrices = useSetRecoilState(rewardPrices);
+  const setPairsInfo = useSetRecoilState(pairsInfo);
+  const setTokenInfo = useSetRecoilState(tokenInfos);
 
-  const updatePriceInfo = async () => {
+  const updateInfos = async () => {
     const priceData = await getPrices();
     setPrices(priceData);
+    const pairsData = await getPairs();
+    setPairsInfo(pairsData);
+    if (connState) {
+      const liquidityPools = await requestLiquidityInfo(connState);
+      console.log(liquidityPools)
+    }
   }
 
   useEffect(() => {
-    updatePriceInfo();
+    (async () => {
+      const tokenInfoData = await loadTokenInfo();
+      setTokenInfo(tokenInfoData);
+    })();
   }, []);
 
   useEffect(() => {
+    updateInfos();
+  }, [connState]);
+
+  useEffect(() => {
     const timer = setInterval(async () => {
-      await updatePriceInfo();
+      await updateInfos();
     }, TIMEOUT_DEFAULT);
 
     return () => clearTimeout(timer);

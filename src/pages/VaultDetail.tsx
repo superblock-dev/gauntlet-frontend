@@ -269,7 +269,7 @@ function VaultDetail() {
         marginTop: 52,
       }}>
         <MediumButton text="Create LP" link={vault.depositToken.url} external />
-        <MediumButton text="Farm Contract" link={`https://solscan.io/account/${vault.farmId}`} external />
+        <MediumButton text="Farm Contract" link={`https://solscan.io/account/}`} external />
         <MediumButton text="Vault Contract" external />
       </div>
     </div>

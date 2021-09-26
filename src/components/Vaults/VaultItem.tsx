@@ -4,6 +4,7 @@ import SmallButton from "components/Buttons/SmallButton";
 import LPTokenView from './LPTokenView';
 import { Link } from 'react-router-dom';
 import { Vault } from 'types';
+import { FARMS } from 'utils/farms';
 
 const useStyles = makeStyles({
   container: {
@@ -36,17 +37,19 @@ const useStyles = makeStyles({
 });
 
 interface VaultItemProps {
-  vault: Vault
+  vault: Vault;
 }
 
 function VaultItem({ vault }: VaultItemProps) {
   const classes = useStyles();
 
+  const farm = FARMS.find(f => f.lp.symbol === vault.depositToken.symbol);
+
   return (
     <>
       <Grid container className={classes.container}>
         <Grid item xs={4} className={classes.itemContainer}>
-          <LPTokenView lp={vault.depositToken} />
+          <LPTokenView lp={vault.depositToken} name={farm?.name} />
         </Grid>
         <Grid item xs={3} className={classes.itemContainer}>540.1 M</Grid>
         <Grid item xs={3} className={classes.itemContainer}>118.0%</Grid>

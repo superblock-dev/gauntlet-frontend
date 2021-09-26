@@ -2,9 +2,12 @@ import { LPToken } from 'utils/tokens';
 import { makeStyles } from '@material-ui/core';
 import IconToken from 'assets/svgs/IconToken.svg';
 import DefaultToken from 'assets/tokens/Default.svg';
+import { useRecoilValue } from 'recoil';
+import { tokenInfos } from 'recoil/atoms';
 
 interface LPTokenProps {
   lp: LPToken,
+  name?: string,
   linkVisible?: boolean,
 }
 
@@ -65,10 +68,22 @@ const useStyles = makeStyles({
   },
 });
 
-function LPTokenView({ lp, linkVisible }: LPTokenProps) {
+function LPTokenView({ lp, name, linkVisible }: LPTokenProps) {
   const classes = useStyles();
-
-
+  const tokens = useRecoilValue(tokenInfos);
+  let pcIcon;
+  let coinIcon;
+  console.log(tokens)
+  
+  if (lp.pc) {
+    const pc = tokens[lp.pc.symbol]
+    pcIcon = pc?.icon
+  }
+  if (lp.coin) {
+    const coin = tokens[lp.coin.symbol]
+    coinIcon = coin?.icon
+  }
+  
   return (
     <div className={classes.root}>
       {/* token 2 */}
@@ -80,7 +95,7 @@ function LPTokenView({ lp, linkVisible }: LPTokenProps) {
           top: 20,
         }}
       >
-        <img src={lp.pc.icon ? lp.pc.icon : DefaultToken} />
+        <img src={pcIcon ? pcIcon : DefaultToken} />
       </div>
       {/* token 1 */}
       <div
@@ -91,7 +106,7 @@ function LPTokenView({ lp, linkVisible }: LPTokenProps) {
           top: 20,
         }}
       >
-        <img src={lp.coin.icon ? lp.coin.icon : DefaultToken} />
+        <img src={coinIcon ? coinIcon : DefaultToken} />
       </div>
       {
         linkVisible ?
@@ -106,7 +121,7 @@ function LPTokenView({ lp, linkVisible }: LPTokenProps) {
             <div className={classes.lpName} style={{ 
               fontSize: 20,
               height: 30,
-            }}>{lp.name}</div>
+            }}>{name}</div>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -115,12 +130,12 @@ function LPTokenView({ lp, linkVisible }: LPTokenProps) {
               <div className={classes.linkHelper} style={{
                 fontSize: 12,
                 height: 14,
-              }}>{`from ${lp.urlHelper}`}</div>
+              }}>{lp.urlHelper ? `from ${lp.urlHelper}` : 0}</div>
               <a href={lp.url} target="_blank" className={classes.link}>{`+ Add ${lp.name} LP`}</a>
             </div>
           </div> :
           <div className={classes.lpNameContainer}>
-            <div className={classes.lpName}>{lp.name}</div>
+            <div className={classes.lpName}>{name}</div>
             <div className={classes.linkHelper}>{`from ${lp.urlHelper}`}</div>
           </div>
       }

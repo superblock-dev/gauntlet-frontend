@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import { atom } from "recoil";
 import { Connection } from '@solana/web3.js';
+import { PairInfo } from "types";
+import { Token, TOKENS } from "utils/tokens";
 
 export const popupState = atom<ReactNode | ReactNode[] | undefined>({
   key: "popup",
@@ -25,6 +27,11 @@ export const rewardPrices = atom<{[key: string]: number}>({
   default: INITIAL_PRICES,
 });
 
+export const pairsInfo = atom<PairInfo[]>({
+  key: "pairsInfo",
+  default: [],
+});
+
 export const isDeposit = atom<boolean>({
   key: "isDeposit",
   default: true,
@@ -33,4 +40,9 @@ export const isDeposit = atom<boolean>({
 export const amountState = atom<number>({
   key: "amountState",
   default: 0,
+});
+
+export const tokenInfos = atom<{[key: string]: Token}>({
+  key: "tokens",
+  default: TOKENS,
 });

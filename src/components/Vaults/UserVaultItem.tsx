@@ -17,6 +17,7 @@ import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import LPTokenView from './LPTokenView';
 import CursorPointer from 'assets/CursorPointer.svg';
 import { calculateReward } from 'utils/vaults';
+import { FARMS } from 'utils/farms';
 
 const AccordionSummary = withStyles({
   root: {
@@ -155,11 +156,13 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
     return BigNumber.sum(total, calculateReward(reward, strategy.accRewardPerShare).multipliedBy(prices[reward.token]));
   }, new BigNumber(0));
 
+  const farm = FARMS.find(f => f.lp.symbol === vault.depositToken.symbol);
+
   return (
     <>
       <Grid container className={classes.container}>
         <Grid item xs={3} className={classes.itemContainer} >
-          <LPTokenView lp={vault.depositToken} />
+          <LPTokenView lp={vault.depositToken} name={farm?.name} />
         </Grid>
         <Grid item xs={2} className={classes.itemContainer} >540.1 M</Grid>
         <Grid item xs={2} className={classes.itemContainer} >118.0%</Grid>
