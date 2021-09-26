@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { amountState, isDeposit as depositState } from "recoil/atoms";
 import CursorPointer from 'assets/CursorPointer.svg';
 import { makeStyles } from "@material-ui/core"
-
 import dot from "../../assets/svgs/Dot.svg";
 import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
-import { Reward, Strategy, TokenName, UserState } from "types";
+import { TokenName } from "types";
 import { STONES } from "utils/stones";
 import LargeFlag from "../../assets/svgs/flags/large.svg";
 import SmallFlag from "../../assets/svgs/flags/small.svg";
@@ -207,6 +207,7 @@ function ConfirmFlag({ tokenName, deposited, balance, onClick, isDeposit }: Acti
 function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit, onChange }: ActiveFlagProps) {
   const classes = useStyles();
   const prices = useRecoilValue(rewardPrices);
+  const [amount, setAmount] = useRecoilState(amountState);
 
   const mode = isDeposit ? "Deposit" : "Withdraw";
   const stone = STONES[tokenName].xxlarge;
@@ -234,8 +235,22 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
         </div>
       </div>
       <div className={classes.inputContainer}>
-        <input className={classes.input} placeholder="0.000" />
-        <div className={classes.maxButton}>MAX</div>
+        <input 
+          className={classes.input}
+          type='number'
+          step='0.1'
+          placeholder="0.000" 
+          value={amount}
+          onChange={(e) => setAmount(parseFloat(e.target.value))}
+        />
+        <div 
+          className={classes.maxButton}
+          onClick={() => {
+            isDeposit ?
+            setAmount(balance) :
+            setAmount(deposited) 
+          }}
+        >MAX</div>
       </div>
       <div className={classes.labelContainer}>
         <span className={classes.textLabel}>{`Deposit: ${(deposited).toFixed(6)}`}</span>
@@ -249,25 +264,20 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
 }
 
 function ActiveFlag({ tokenName, deposited, balance, reward }: ActiveFlagProps) {
-  const [needApprove, setNeedApprove] = useState(false);
-  const [isDeposit, setIsDeposit] = useState(true);
+  const [isDeposit, setIsDeposit] = useRecoilState(depositState);
+  const resetAmount = useResetRecoilState(amountState);
 
-  return needApprove
-    ? <ConfirmFlag
-      tokenName={tokenName}
-      deposited={deposited}
-      balance={balance}
-      reward={reward}
-      isDeposit={isDeposit}
-      onClick={() => setNeedApprove(false)} />
-    : <NormalFlag
-      tokenName={tokenName}
-      deposited={deposited}
-      balance={balance}
-      reward={reward}
-      isDeposit={isDeposit}
-      onClick={() => setNeedApprove(true)}
-      onChange={(mode) => setIsDeposit(mode)} />;
+  return <NormalFlag
+    tokenName={tokenName}
+    deposited={deposited}
+    balance={balance}
+    reward={reward}
+    isDeposit={isDeposit}
+    onClick={() => { return }}
+    onChange={(mode) => {
+      setIsDeposit(mode);
+      resetAmount();
+    }} />;
 }
 
 function InActiveFlag({ tokenName }: FlagProps) {

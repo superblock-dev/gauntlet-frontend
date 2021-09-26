@@ -24,3 +24,13 @@ export const rewardPrices = atom<{[key: string]: number}>({
   key: "rewardPrices",
   default: INITIAL_PRICES,
 });
+
+export const isDeposit = atom<boolean>({
+  key: "isDeposit",
+  default: true,
+});
+
+export const amountState = atom<number>({
+  key: "amountState",
+  default: 0,
+});

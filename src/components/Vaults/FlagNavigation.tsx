@@ -21,20 +21,20 @@ const NavigationButtons = styled.div`
 `;
 
 interface FlagNavigationProps {
-    onClick: (direction: number) => void
+  onClick: (direction: number) => void
 }
 
 export default function FlagNavigation({ onClick }: FlagNavigationProps) {
-    return (
-        <NavigationButtons>
-            <img
-            src={leftNavigation}
-            onClick={() => onClick(-1)}
-            style={{ marginRight: "2rem" }} />
-            <img
-            src={rightNavigation}
-            onClick={() => onClick(1)}
-            style={{ marginLeft: "2rem" }} />
-        </NavigationButtons>
-    );
+  return (
+    <NavigationButtons>
+      <img
+        src={leftNavigation}
+        onClick={() => onClick(-1)}
+        style={{ marginRight: "2rem" }} />
+      <img
+        src={rightNavigation}
+        onClick={() => onClick(1)}
+        style={{ marginLeft: "2rem" }} />
+    </NavigationButtons>
+  );
 }

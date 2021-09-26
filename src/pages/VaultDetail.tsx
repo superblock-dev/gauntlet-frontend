@@ -163,7 +163,7 @@ function VaultDetail() {
 
   if (vId === undefined || vault === undefined) return <></> // TODO: Page not found
 
-  const lpBalance: number = 939.2 // User LP Token Balance
+  const lpBalance: number = 939.212316 // User LP Token Balance
 
   const flags = createRewardsListFromUserState(
     vault,
