@@ -60,7 +60,6 @@ export const requestLiquidityInfo = async (conn: Connection) => {
             const parsed = TOKEN_ACCOUNT_LAYOUT.decode(data)
             // quick fix: Number can only safely store up to 53 bits
             poolInfo.coin.balance.wei = poolInfo.coin.balance.wei.plus(getBigNumber(parsed.amount))
-
             break
           }
           case 'poolPcTokenAccount': {

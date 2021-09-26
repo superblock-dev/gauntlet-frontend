@@ -1,6 +1,6 @@
+import Countup from 'react-countup';
 import { makeStyles } from "@material-ui/core";
 import BGVaultSummary from 'assets/svgs/BGVaultSummary.svg';
-import { UserState, Vault } from "types";
 
 const useStyles = makeStyles({
   summaryContainer: {
@@ -43,12 +43,12 @@ const useStyles = makeStyles({
 });
 
 interface VaultSummaryProps {
-  vault: Vault;
-  userState?: UserState;
+  balance: number;
+  lpValueInUSD: number;
 }
 
 
-function VaultSummary({ vault, userState }: VaultSummaryProps) {
+function VaultSummary({ balance, lpValueInUSD }: VaultSummaryProps) {
   const classes = useStyles();
 
   return (
@@ -58,11 +58,31 @@ function VaultSummary({ vault, userState }: VaultSummaryProps) {
         <div className={classes.summaryHeader}>APY</div>
       </div>
       <div className={classes.summaryContent}>
-        <div className={classes.summaryBody}>{userState ? userState.balance : 0}</div>
+        <div className={classes.summaryBody}>
+          <Countup
+            start={0}
+            end={balance}
+            delay={0}
+            duration={0.75}
+            separator=","
+            decimals={3}
+            decimal="."
+          /></div>
         <div className={classes.summaryBody}>95.39%</div>
       </div>
       <div className={classes.summaryContent} style={{ marginBottom: 50, }}>
-        <div className={classes.summarySubBody}>$2.39</div>
+        <div className={classes.summarySubBody}>
+          <Countup
+            start={0}
+            end={lpValueInUSD}
+            delay={0}
+            duration={0.75}
+            separator=","
+            decimals={3}
+            decimal="."
+            prefix="$ "
+          />
+        </div>
         <div className={classes.summarySubBody}>0.05% daily</div>
       </div>
       <div className={classes.summaryContent}>

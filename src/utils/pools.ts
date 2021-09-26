@@ -1,21 +1,24 @@
-import { TOKENS, Token, LP_TOKENS } from "./tokens";
-import { 
+import { TOKENS, Token, LP_TOKENS, LPToken } from "./tokens";
+import {
   LIQUIDITY_POOL_PROGRAM_ID_V4
 } from "./ids";
+import { TokenAmount } from "./safe-math";
+import { getBigNumber } from "./layouts";
 
 export interface LiquidityPoolInfo {
   name: string
   coin: Token
   pc: Token
-  lp: Token
+  lp: LPToken
 
   version: number
   programId: string
 
   ammId: string
-  
+
   poolCoinTokenAccount: string
   poolPcTokenAccount: string
+  currentLpValue?: number
 }
 
 export function getAddressForWhat(address: string) {
@@ -32,6 +35,27 @@ export function getAddressForWhat(address: string) {
   }
 
   return {}
+}
+
+export function calculateLpValues(lpInfos: { [key: string]: LiquidityPoolInfo }, prices: { [key: string]: number }) {
+  Object.keys(lpInfos).forEach(key => {
+    let info = lpInfos[key];
+    const liquidityCoinValue =
+      getBigNumber((info.coin.balance as TokenAmount).toEther()) *
+      prices[info.coin.symbol as string];
+
+    const liquidityPcValue =
+      getBigNumber((info.pc.balance as TokenAmount).toEther()) *
+      prices[info.pc.symbol as string];
+
+    const liquidityTotalValue = liquidityPcValue + liquidityCoinValue;
+
+    if (!info.lp.totalSupply) { return info.currentLpValue = 0; }
+    const liquidityTotalSupply = getBigNumber((info.lp.totalSupply as TokenAmount).toEther());
+    const liquidityItemValue = liquidityTotalValue / liquidityTotalSupply
+
+    info.currentLpValue = liquidityItemValue;
+  })
 }
 
 // Pools for calculate APR, TVL etc

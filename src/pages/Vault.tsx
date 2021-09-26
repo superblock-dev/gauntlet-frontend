@@ -1,13 +1,11 @@
 import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
-import UserVaultsSummary from "components/Vaults/UserVaultsSummary";
-import UserVaultItem from "components/Vaults/UserVaultItem";
 import VaultItem from "components/Vaults/VaultItem";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import IconHelp from 'assets/svgs/IconHelp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
-import { ReactComponent as LineDivider } from 'assets/svgs/LineDivider.svg';
 import { USER_STATES, VAULTS } from "utils/vaults";
+import UserVaultsContainer from "components/Vaults/UserVaultsContainer";
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -63,56 +61,10 @@ function Vault() {
       title={"VAULT"}
     // subtitle={"Wherever you farm, collect what you want!"}
     >
-      <UserVaultsSummary userVaults={userVaults} userStates={USER_STATES} />
       <div className={classes.contentContainer}>
         {
           userVaults.length !== 0 ?
-            <>
-              <div className={classes.listTitle}>
-                My Vaults
-              </div>
-              <Grid container className={classes.tableHeader}>
-                <Grid item xs={3} className={classes.headerItem}>Vault</Grid>
-                <Grid item xs={2} className={classes.headerItem}>
-                  <div>
-                    TVL
-                  </div>
-                  <img src={IconArrowUp} className={classes.headerIcon} />
-                </Grid>
-                <Grid item xs={2} className={classes.headerItem}>
-                  <div>
-                    APR
-                  </div>
-                  <img src={IconHelp} className={classes.headerIcon} />
-                </Grid>
-                <Grid item xs={3} className={classes.headerItem}>Your Stones</Grid>
-                <Grid item xs={2} className={classes.headerItem}></Grid>
-              </Grid>
-              {
-                userVaults.map((vault, idx) => (
-                  <>
-                    <UserVaultItem
-                      vault={vault}
-                      userState={USER_STATES.find(state => state.vaultId === vault.id)} />
-                    {
-                      idx !== userVaults.length - 1 ?
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, }}>
-                          <div className={classes.divider} />
-                        </div> :
-                        null
-                    }
-                  </>
-                ))
-              }
-              <div style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                <LineDivider />
-              </div>
-            </> :
+            <UserVaultsContainer vaults={userVaults} states={USER_STATES} /> :
             null
         }
         <div className={classes.listTitle}>

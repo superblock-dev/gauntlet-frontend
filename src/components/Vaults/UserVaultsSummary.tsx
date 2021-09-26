@@ -1,13 +1,10 @@
-import { useRecoilValue } from 'recoil';
-import { rewardPrices } from 'recoil/atoms';
 import { BigNumber } from 'bignumber.js';
 import Countup from 'react-countup';
 import { STONES } from "utils/stones";
-import { TokenName, UserState, Vault } from "types";
+import { TokenName } from "types";
 import { makeStyles } from "@material-ui/core";
 import OutlineVault from 'assets/svgs/OutlineVault.svg';
 import TooltipVault from 'assets/svgs/TooltipVault.svg';
-import { calculateReward } from "utils/vaults";
 
 const useStyles = makeStyles({
   vaultSummaryContainer: {
@@ -120,11 +117,12 @@ const useStyles = makeStyles({
 });
 
 interface UserVaultsSummaryProps {
-  userVaults: Vault[];
-  userStates: UserState[];
+  totalDeposit: number;
+  totalLpValueInUSD: BigNumber;
+  totalRewardsInUSD: BigNumber;
 }
 
-function UserVaultsSummary({ userVaults, userStates }: UserVaultsSummaryProps) {
+function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD }: UserVaultsSummaryProps) {
   const classes = useStyles();
   const rewardTokenList = [
     'LET',
@@ -134,24 +132,6 @@ function UserVaultsSummary({ userVaults, userStates }: UserVaultsSummaryProps) {
     'ETH',
     'BTC'
   ];
-  const prices = useRecoilValue(rewardPrices);
-
-  const [totalDeposit, totalReward] = userStates.reduce((curr, state) => {
-    const strategies = userVaults.find(v => v.id === state.vaultId)?.strategies;
-    curr[0] += state.balance;
-
-    if (strategies) {
-      curr[1] = BigNumber.sum(state.rewards.reduce((total, reward) => {
-        const strategy = strategies.find(s => s.rewardToken === reward.token);
-        if (strategy) {
-          return BigNumber.sum(total, calculateReward(reward, strategy.accRewardPerShare).multipliedBy(prices[reward.token]));
-        }
-        return total;
-      }, new BigNumber(0)), curr[1]);
-    }
-
-    return curr;
-  }, [0, new BigNumber(0)]);
 
   return (
     <div className={classes.vaultSummaryContainer}>
@@ -176,7 +156,18 @@ function UserVaultsSummary({ userVaults, userStates }: UserVaultsSummaryProps) {
                 prefix=""
               />
             </div>
-            <div className={classes.summarySubBody}>$2.39</div>
+            <div className={classes.summarySubBody}>
+              <Countup
+                start={0}
+                end={totalLpValueInUSD.toNumber()}
+                delay={0}
+                duration={0.75}
+                separator=","
+                decimals={3}
+                decimal="."
+                prefix="$ "
+              />
+            </div>
           </div>
           <div className={classes.summaryContent}>
             <div className={classes.summaryHeader}>Average APY</div>
@@ -189,7 +180,7 @@ function UserVaultsSummary({ userVaults, userStates }: UserVaultsSummaryProps) {
           <div className={classes.summaryBody}>
             <Countup
               start={0}
-              end={totalReward.toNumber()}
+              end={totalRewardsInUSD.toNumber()}
               delay={0}
               duration={0.75}
               separator=","

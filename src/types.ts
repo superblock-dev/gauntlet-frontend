@@ -1,5 +1,7 @@
-import { ComponentType, ReactNode } from "react";
-import { LPToken } from "utils/tokens";
+import BigNumber from "bignumber.js";
+import { ReactNode } from "react";
+import { LPToken, Token } from "utils/tokens";
+import { TokenAmount } from "utils/safe-math";
 
 export type TokenName = "BTC" | "ETH" | "SOL" | "USDT" | "USDC" | "LET" | "ETC";
 
@@ -25,15 +27,19 @@ export interface Vault {
 }
 
 export interface Reward {
-  token: TokenName;
+  tokenName: TokenName;
+  token: Token;
   amount: number;
   rewardDebt: number;
+  pendingReward?: BigNumber;
 }
 
 export interface UserState {
   vaultId: number;
   balance: number;
   rewards: Reward[];
+  totalRewardInUSD?: BigNumber;
+  lpValueInUSD?: BigNumber;
 }
 
 /** Pairs **/

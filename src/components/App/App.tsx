@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
-import { conn, pairsInfo, popupState, rewardPrices, tokenInfos } from "recoil/atoms";
+import { conn, liquidityPoolInfos, pairsInfo, popupState, rewardPrices, tokenInfos } from "recoil/atoms";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -22,6 +22,7 @@ import Snackbar from "components/Snackbar";
 import VaultDetail from "pages/VaultDetail";
 import { getPairs, requestLiquidityInfo } from "api/pools";
 import { loadTokenInfo } from "utils/tokens";
+import { calculateLpValues } from "utils/pools";
 
 const useStyles = makeStyles({
   containerRoot: {
@@ -62,6 +63,7 @@ function App() {
   const setPrices = useSetRecoilState(rewardPrices);
   const setPairsInfo = useSetRecoilState(pairsInfo);
   const setTokenInfo = useSetRecoilState(tokenInfos);
+  const setLiquidityInfo = useSetRecoilState(liquidityPoolInfos);
 
   const updateInfos = async () => {
     const priceData = await getPrices();
@@ -70,7 +72,8 @@ function App() {
     setPairsInfo(pairsData);
     if (connState) {
       const liquidityPools = await requestLiquidityInfo(connState);
-      console.log(liquidityPools)
+      calculateLpValues(liquidityPools, priceData);
+      setLiquidityInfo(liquidityPools);
     }
   }
 

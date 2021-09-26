@@ -3,6 +3,7 @@ import { atom } from "recoil";
 import { Connection } from '@solana/web3.js';
 import { PairInfo } from "types";
 import { Token, TOKENS } from "utils/tokens";
+import { LiquidityPoolInfo, LIQUIDITY_POOLS } from "utils/pools";
 
 export const popupState = atom<ReactNode | ReactNode[] | undefined>({
   key: "popup",
@@ -46,3 +47,8 @@ export const tokenInfos = atom<{[key: string]: Token}>({
   key: "tokens",
   default: TOKENS,
 });
+
+export const liquidityPoolInfos = atom<{[key: string]: LiquidityPoolInfo}>({
+  key: "liquidityPools",
+  default: {},
+})

@@ -73,7 +73,6 @@ function LPTokenView({ lp, name, linkVisible }: LPTokenProps) {
   const tokens = useRecoilValue(tokenInfos);
   let pcIcon;
   let coinIcon;
-  console.log(tokens)
   
   if (lp.pc) {
     const pc = tokens[lp.pc.symbol]
@@ -131,7 +130,7 @@ function LPTokenView({ lp, name, linkVisible }: LPTokenProps) {
                 fontSize: 12,
                 height: 14,
               }}>{lp.urlHelper ? `from ${lp.urlHelper}` : 0}</div>
-              <a href={lp.url} target="_blank" className={classes.link}>{`+ Add ${lp.name} LP`}</a>
+              <a href={lp.url} target="_blank" className={classes.link}>{`+ Add ${name} LP`}</a>
             </div>
           </div> :
           <div className={classes.lpNameContainer}>

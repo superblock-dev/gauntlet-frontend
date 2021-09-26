@@ -9,6 +9,7 @@ export interface Token {
   decimals: number,
   icon?: string,
   balance?: TokenAmount,
+  currentValue?: number,
 }
 
 export interface LPToken {
@@ -18,6 +19,7 @@ export interface LPToken {
   pc: Token,
   mintAddress: string,
   decimals: number,
+  totalSupply?: TokenAmount,
   url?: string,
   urlHelper?: string,
   balance?: TokenAmount,
@@ -401,7 +403,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.WUSDT },
 
     mintAddress: 'CzPDyvotTcxNqtPne32yUiEVQ6jk42HZi1Y3hUu7qf7f',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-SOL': {
     symbol: 'RAY-SOL',
@@ -410,7 +413,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SOL },
 
     mintAddress: '134Cct3CSdRCbYgq5SkwmHgfwjJ7EM5cG9PzqffWqECx',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'LINK-WUSDT': {
     symbol: 'LINK-WUSDT',
@@ -419,7 +423,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.WUSDT },
 
     mintAddress: 'EVDmwajM5U73PD34bYPugwiA4Eqqbrej4mLXXv15Z5qR',
-    decimals: TOKENS.LINK.decimals
+    decimals: TOKENS.LINK.decimals,
+    urlHelper: 'Raydium',
   },
   'ETH-WUSDT': {
     symbol: 'ETH-WUSDT',
@@ -428,7 +433,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.WUSDT },
 
     mintAddress: 'KY4XvwHy7JPzbWYAbk23jQvEb4qWJ8aCqYWREmk1Q7K',
-    decimals: TOKENS.ETH.decimals
+    decimals: TOKENS.ETH.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-USDC': {
     symbol: 'RAY-USDC',
@@ -437,7 +443,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'FgmBnsF5Qrnv8X9bomQfEtQTQjNNiBCWRKGpzPnE5BDg',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-SRM': {
     symbol: 'RAY-SRM',
@@ -446,7 +453,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: '5QXBMXuCL7zfAk39jEVVEvcrz1AvBGgT9wAhLLHLyyUJ',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   // v3
   'RAY-WUSDT-V3': {
@@ -456,7 +464,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.WUSDT },
 
     mintAddress: 'FdhKXYjCou2jQfgKWcNY7jb8F2DPLU1teTTTRfLBD2v1',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-USDC-V3': {
     symbol: 'RAY-USDC',
@@ -465,7 +474,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'BZFGfXMrjG2sS7QT2eiCDEevPFnkYYF7kzJpWfYxPbcx',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-SRM-V3': {
     symbol: 'RAY-SRM',
@@ -474,7 +484,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: 'DSX5E21RE9FB9hM8Nh8xcXQfPK6SzRaJiywemHBSsfup',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-SOL-V3': {
     symbol: 'RAY-SOL',
@@ -483,7 +494,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SOL },
 
     mintAddress: 'F5PPQHGcznZ2FxD9JaxJMXaf7XkaFFJ6zzTBcW8osQjw',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-ETH-V3': {
     symbol: 'RAY-ETH',
@@ -492,7 +504,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.ETH },
 
     mintAddress: '8Q6MKy5Yxb9vG1mWzppMtMb2nrhNuCRNUkJTeiE3fuwD',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   // v4
   'FIDA-RAY-V4': {
@@ -502,7 +515,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: 'DsBuznXRTmzvEdb36Dx3aVLVo1XmH7r1PRZUFugLPTFv',
-    decimals: TOKENS.FIDA.decimals
+    decimals: TOKENS.FIDA.decimals,
+    urlHelper: 'Raydium',
   },
   'OXY-RAY-V4': {
     symbol: 'OXY-RAY',
@@ -511,7 +525,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: 'FwaX9W7iThTZH5MFeasxdLpxTVxRcM7ZHieTCnYog8Yb',
-    decimals: TOKENS.OXY.decimals
+    decimals: TOKENS.OXY.decimals,
+    urlHelper: 'Raydium',
   },
   'MAPS-RAY-V4': {
     symbol: 'MAPS-RAY',
@@ -520,7 +535,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: 'CcKK8srfVdTSsFGV3VLBb2YDbzF4T4NM2C3UEjC39RLP',
-    decimals: TOKENS.MAPS.decimals
+    decimals: TOKENS.MAPS.decimals,
+    urlHelper: 'Raydium',
   },
   'KIN-RAY-V4': {
     symbol: 'KIN-RAY',
@@ -538,7 +554,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'C3sT1R3nsw4AVdepvLTLKr5Gvszr7jufyBWUCvy4TUvT',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'SOL-USDC-V4': {
     symbol: 'SOL-USDC',
@@ -547,7 +564,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '8HoQnePLqPj4M7PUDzfw8e3Ymdwgc7NLGnaTUapubyvu',
-    decimals: TOKENS.SOL.decimals
+    decimals: TOKENS.SOL.decimals,
+    urlHelper: 'Raydium',
   },
   'YFI-USDC-V4': {
     symbol: 'YFI-USDC',
@@ -556,7 +574,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '865j7iMmRRycSYUXzJ33ZcvLiX9JHvaLidasCyUyKaRE',
-    decimals: TOKENS.YFI.decimals
+    decimals: TOKENS.YFI.decimals,
+    urlHelper: 'Raydium',
   },
   'SRM-USDC-V4': {
     symbol: 'SRM-USDC',
@@ -565,7 +584,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '9XnZd82j34KxNLgQfz29jGbYdxsYznTWRpvZE3SRE7JG',
-    decimals: TOKENS.SRM.decimals
+    decimals: TOKENS.SRM.decimals,
+    urlHelper: 'Raydium',
   },
   'FTT-USDC-V4': {
     symbol: 'FTT-USDC',
@@ -574,7 +594,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '75dCoKfUHLUuZ4qEh46ovsxfgWhB4icc3SintzWRedT9',
-    decimals: TOKENS.FTT.decimals
+    decimals: TOKENS.FTT.decimals,
+    urlHelper: 'Raydium',
   },
   'BTC-USDC-V4': {
     symbol: 'BTC-USDC',
@@ -583,7 +604,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '2hMdRdVWZqetQsaHG8kQjdZinEMBz75vsoWTCob1ijXu',
-    decimals: TOKENS.BTC.decimals
+    decimals: TOKENS.BTC.decimals,
+    urlHelper: 'Raydium',
   },
   'SUSHI-USDC-V4': {
     symbol: 'SUSHI-USDC',
@@ -592,7 +614,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '2QVjeR9d2PbSf8em8NE8zWd8RYHjFtucDUdDgdbDD2h2',
-    decimals: TOKENS.SUSHI.decimals
+    decimals: TOKENS.SUSHI.decimals,
+    urlHelper: 'Raydium',
   },
   'TOMO-USDC-V4': {
     symbol: 'TOMO-USDC',
@@ -601,7 +624,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'CHyUpQFeW456zcr5XEh4RZiibH8Dzocs6Wbgz9aWpXnQ',
-    decimals: TOKENS.TOMO.decimals
+    decimals: TOKENS.TOMO.decimals,
+    urlHelper: 'Raydium',
   },
   'LINK-USDC-V4': {
     symbol: 'LINK-USDC',
@@ -610,7 +634,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'BqjoYjqKrXtfBKXeaWeAT5sYCy7wsAYf3XjgDWsHSBRs',
-    decimals: TOKENS.LINK.decimals
+    decimals: TOKENS.LINK.decimals,
+    urlHelper: 'Raydium',
   },
   'ETH-USDC-V4': {
     symbol: 'ETH-USDC',
@@ -619,7 +644,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '13PoKid6cZop4sj2GfoBeujnGfthUbTERdE5tpLCDLEY',
-    decimals: TOKENS.ETH.decimals
+    decimals: TOKENS.ETH.decimals,
+    urlHelper: 'Raydium',
   },
   'xCOPE-USDC-V4': {
     symbol: 'xCOPE-USDC',
@@ -628,7 +654,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '2Vyyeuyd15Gp8aH6uKE72c4hxc8TVSLibxDP9vzspQWG',
-    decimals: TOKENS.xCOPE.decimals
+    decimals: TOKENS.xCOPE.decimals,
+    urlHelper: 'Raydium',
   },
   'SOL-USDT-V4': {
     symbol: 'SOL-USDT',
@@ -637,7 +664,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'Epm4KfTj4DMrvqn6Bwg2Tr2N8vhQuNbuK8bESFp4k33K',
-    decimals: TOKENS.SOL.decimals
+    decimals: TOKENS.SOL.decimals,
+    urlHelper: 'Raydium',
   },
   'YFI-USDT-V4': {
     symbol: 'YFI-USDT',
@@ -646,7 +674,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'FA1i7fej1pAbQbnY8NbyYUsTrWcasTyipKreDgy1Mgku',
-    decimals: TOKENS.YFI.decimals
+    decimals: TOKENS.YFI.decimals,
+    urlHelper: 'Raydium',
   },
   'SRM-USDT-V4': {
     symbol: 'SRM-USDT',
@@ -655,7 +684,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'HYSAu42BFejBS77jZAZdNAWa3iVcbSRJSzp3wtqCbWwv',
-    decimals: TOKENS.SRM.decimals
+    decimals: TOKENS.SRM.decimals,
+    urlHelper: 'Raydium',
   },
   'FTT-USDT-V4': {
     symbol: 'FTT-USDT',
@@ -664,7 +694,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: '2cTCiUnect5Lap2sk19xLby7aajNDYseFhC9Pigou11z',
-    decimals: TOKENS.FTT.decimals
+    decimals: TOKENS.FTT.decimals,
+    urlHelper: 'Raydium',
   },
   'BTC-USDT-V4': {
     symbol: 'BTC-USDT',
@@ -673,7 +704,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'DgGuvR9GSHimopo3Gc7gfkbKamLKrdyzWkq5yqA6LqYS',
-    decimals: TOKENS.BTC.decimals
+    decimals: TOKENS.BTC.decimals,
+    urlHelper: 'Raydium',
   },
   'SUSHI-USDT-V4': {
     symbol: 'SUSHI-USDT',
@@ -682,7 +714,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'Ba26poEYDy6P2o95AJUsewXgZ8DM9BCsmnU9hmC9i4Ki',
-    decimals: TOKENS.SUSHI.decimals
+    decimals: TOKENS.SUSHI.decimals,
+    urlHelper: 'Raydium',
   },
   'TOMO-USDT-V4': {
     symbol: 'TOMO-USDT',
@@ -691,7 +724,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'D3iGro1vn6PWJXo9QAPj3dfta6dKkHHnmiiym2EfsAmi',
-    decimals: TOKENS.TOMO.decimals
+    decimals: TOKENS.TOMO.decimals,
+    urlHelper: 'Raydium',
   },
   'LINK-USDT-V4': {
     symbol: 'LINK-USDT',
@@ -700,7 +734,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'Dr12Sgt9gkY8WU5tRkgZf1TkVWJbvjYuPAhR3aDCwiiX',
-    decimals: TOKENS.LINK.decimals
+    decimals: TOKENS.LINK.decimals,
+    urlHelper: 'Raydium',
   },
   'ETH-USDT-V4': {
     symbol: 'ETH-USDT',
@@ -709,7 +744,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDT },
 
     mintAddress: 'nPrB78ETY8661fUgohpuVusNCZnedYCgghzRJzxWnVb',
-    decimals: TOKENS.ETH.decimals
+    decimals: TOKENS.ETH.decimals,
+    urlHelper: 'Raydium',
   },
   'YFI-SRM-V4': {
     symbol: 'YFI-SRM',
@@ -718,7 +754,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: 'EGJht91R7dKpCj8wzALkjmNdUUUcQgodqWCYweyKcRcV',
-    decimals: TOKENS.YFI.decimals
+    decimals: TOKENS.YFI.decimals,
+    urlHelper: 'Raydium',
   },
   'FTT-SRM-V4': {
     symbol: 'FTT-SRM',
@@ -727,7 +764,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: 'AsDuPg9MgPtt3jfoyctUCUgsvwqAN6RZPftqoeiPDefM',
-    decimals: TOKENS.FTT.decimals
+    decimals: TOKENS.FTT.decimals,
+    urlHelper: 'Raydium',
   },
   'BTC-SRM-V4': {
     symbol: 'BTC-SRM',
@@ -736,7 +774,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: 'AGHQxXb3GSzeiLTcLtXMS2D5GGDZxsB2fZYZxSB5weqB',
-    decimals: TOKENS.BTC.decimals
+    decimals: TOKENS.BTC.decimals,
+    urlHelper: 'Raydium',
   },
   'SUSHI-SRM-V4': {
     symbol: 'SUSHI-SRM',
@@ -745,7 +784,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: '3HYhUnUdV67j1vn8fu7ExuVGy5dJozHEyWvqEstDbWwE',
-    decimals: TOKENS.SUSHI.decimals
+    decimals: TOKENS.SUSHI.decimals,
+    urlHelper: 'Raydium',
   },
   'TOMO-SRM-V4': {
     symbol: 'TOMO-SRM',
@@ -754,7 +794,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: 'GgH9RnKrQpaMQeqmdbMvs5oo1A24hERQ9wuY2pSkeG7x',
-    decimals: TOKENS.TOMO.decimals
+    decimals: TOKENS.TOMO.decimals,
+    urlHelper: 'Raydium',
   },
   'LINK-SRM-V4': {
     symbol: 'LINK-SRM',
@@ -763,7 +804,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: 'GXN6yJv12o18skTmJXaeFXZVY1iqR18CHsmCT8VVCmDD',
-    decimals: TOKENS.LINK.decimals
+    decimals: TOKENS.LINK.decimals,
+    urlHelper: 'Raydium',
   },
   'ETH-SRM-V4': {
     symbol: 'ETH-SRM',
@@ -772,7 +814,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: '9VoY3VERETuc2FoadMSYYizF26mJinY514ZpEzkHMtwG',
-    decimals: TOKENS.ETH.decimals
+    decimals: TOKENS.ETH.decimals,
+    urlHelper: 'Raydium',
   },
   'SRM-SOL-V4': {
     symbol: 'SRM-SOL',
@@ -781,7 +824,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SOL },
 
     mintAddress: 'AKJHspCwDhABucCxNLXUSfEzb7Ny62RqFtC9uNjJi4fq',
-    decimals: TOKENS.SRM.decimals
+    decimals: TOKENS.SRM.decimals,
+    urlHelper: 'Raydium',
   },
   'STEP-USDC-V4': {
     symbol: 'STEP-USDC',
@@ -790,7 +834,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '3k8BDobgihmk72jVmXYLE168bxxQUhqqyESW4dQVktqC',
-    decimals: TOKENS.STEP.decimals
+    decimals: TOKENS.STEP.decimals,
+    urlHelper: 'Raydium',
   },
   'MEDIA-USDC-V4': {
     symbol: 'MEDIA-USDC',
@@ -799,7 +844,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'A5zanvgtioZGiJMdEyaKN4XQmJsp1p7uVxaq2696REvQ',
-    decimals: TOKENS.MEDIA.decimals
+    decimals: TOKENS.MEDIA.decimals,
+    urlHelper: 'Raydium',
   },
   'ROPE-USDC-V4': {
     symbol: 'ROPE-USDC',
@@ -808,7 +854,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'Cq4HyW5xia37tKejPF2XfZeXQoPYW6KfbPvxvw5eRoUE',
-    decimals: TOKENS.ROPE.decimals
+    decimals: TOKENS.ROPE.decimals,
+    urlHelper: 'Raydium',
   },
   'MER-USDC-V4': {
     symbol: 'MER-USDC',
@@ -817,7 +864,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '3H9NxvaZoxMZZDZcbBDdWMKbrfNj7PCF5sbRwDr7SdDW',
-    decimals: TOKENS.MER.decimals
+    decimals: TOKENS.MER.decimals,
+    urlHelper: 'Raydium',
   },
   'COPE-USDC-V4': {
     symbol: 'COPE-USDC',
@@ -826,7 +874,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'Cz1kUvHw98imKkrqqu95GQB9h1frY8RikxPojMwWKGXf',
-    decimals: TOKENS.COPE.decimals
+    decimals: TOKENS.COPE.decimals,
+    urlHelper: 'Raydium',
   },
   'ALEPH-USDC-V4': {
     symbol: 'ALEPH-USDC',
@@ -835,7 +884,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'iUDasAP2nXm5wvTukAHEKSdSXn8vQkRtaiShs9ceGB7',
-    decimals: TOKENS.ALEPH.decimals
+    decimals: TOKENS.ALEPH.decimals,
+    urlHelper: 'Raydium',
   },
   'TULIP-USDC-V4': {
     symbol: 'TULIP-USDC',
@@ -844,7 +894,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '2doeZGLJyACtaG9DCUyqMLtswesfje1hjNA11hMdj6YU',
-    decimals: TOKENS.TULIP.decimals
+    decimals: TOKENS.TULIP.decimals,
+    urlHelper: 'Raydium',
   },
   'WOO-USDC-V4': {
     symbol: 'WOO-USDC',
@@ -853,7 +904,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '7cu42ao8Jgrd5A3y3bNQsCxq5poyGZNmTydkGfJYQfzh',
-    decimals: TOKENS.WOO.decimals
+    decimals: TOKENS.WOO.decimals,
+    urlHelper: 'Raydium',
   },
   'SNY-USDC-V4': {
     symbol: 'SNY-USDC',
@@ -862,7 +914,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'G8qcfeFqxwbCqpxv5LpLWxUCd1PyMB5nWb5e5YyxLMKg',
-    decimals: TOKENS.SNY.decimals
+    decimals: TOKENS.SNY.decimals,
+    urlHelper: 'Raydium',
   },
   'BOP-RAY-V4': {
     symbol: 'BOP-RAY',
@@ -871,7 +924,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '9nQPYJvysyfnXhQ6nkK5V7sZG26hmDgusfdNQijRk5LD',
-    decimals: TOKENS.BOP.decimals
+    decimals: TOKENS.BOP.decimals,
+    urlHelper: 'Raydium',
   },
   'SLRS-USDC-V4': {
     symbol: 'SLRS-USDC',
@@ -880,7 +934,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '2Xxbm1hdv5wPeen5ponDSMT3VqhGMTQ7mH9stNXm9shU',
-    decimals: TOKENS.SLRS.decimals
+    decimals: TOKENS.SLRS.decimals,
+    urlHelper: 'Raydium',
   },
   'SAMO-RAY-V4': {
     symbol: 'SAMO-RAY',
@@ -889,7 +944,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: 'HwzkXyX8B45LsaHXwY8su92NoRBS5GQC32HzjQRDqPnr',
-    decimals: TOKENS.SAMO.decimals
+    decimals: TOKENS.SAMO.decimals,
+    urlHelper: 'Raydium',
   },
   'renBTC-USDC-V4': {
     symbol: 'renBTC-USDC',
@@ -898,7 +954,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'CTEpsih91ZLo5gunvryLpJ3pzMjmt5jbS6AnSQrzYw7V',
-    decimals: TOKENS.renBTC.decimals
+    decimals: TOKENS.renBTC.decimals,
+    urlHelper: 'Raydium',
   },
   'renDOGE-USDC-V4': {
     symbol: 'renDOGE-USDC',
@@ -907,7 +964,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'Hb8KnZNKvRxu7pgMRWJgoMSMcepfvNiBFFDDrdf9o3wA',
-    decimals: TOKENS.renDOGE.decimals
+    decimals: TOKENS.renDOGE.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-USDC-V4': {
     symbol: 'RAY-USDC',
@@ -916,7 +974,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'FbC6K13MzHvN42bXrtGaWsvZY9fxrackRSZcBGfjPc7m',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-SRM-V4': {
     symbol: 'RAY-SRM',
@@ -925,7 +984,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SRM },
 
     mintAddress: '7P5Thr9Egi2rvMmEuQkLn8x8e8Qro7u2U7yLD2tU2Hbe',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-ETH-V4': {
     symbol: 'RAY-ETH',
@@ -934,7 +994,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.ETH },
 
     mintAddress: 'mjQH33MqZv5aKAbKHi8dG3g3qXeRQqq1GFcXceZkNSr',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'RAY-SOL-V4': {
     symbol: 'RAY-SOL',
@@ -943,7 +1004,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SOL },
 
     mintAddress: '89ZKE4aoyfLBe2RuV6jM3JGNhaV18Nxh8eNtjRcndBip',
-    decimals: TOKENS.RAY.decimals
+    decimals: TOKENS.RAY.decimals,
+    urlHelper: 'Raydium',
   },
   'DXL-USDC-V4': {
     symbol: 'DXL-USDC',
@@ -952,7 +1014,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '4HFaSvfgskipvrzT1exoVKsUZ174JyExEsA8bDfsAdY5',
-    decimals: TOKENS.DXL.decimals
+    decimals: TOKENS.DXL.decimals,
+    urlHelper: 'Raydium',
   },
   'LIKE-USDC-V4': {
     symbol: 'LIKE-USDC',
@@ -961,7 +1024,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'cjZmbt8sJgaoyWYUttomAu5LJYU44ZrcKTbzTSEPDVw',
-    decimals: TOKENS.LIKE.decimals
+    decimals: TOKENS.LIKE.decimals,
+    urlHelper: 'Raydium',
   },
   'mSOL-USDC-V4': {
     symbol: 'mSOL-USDC',
@@ -970,7 +1034,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '4xTpJ4p76bAeggXoYywpCCNKfJspbuRzZ79R7pRhbqSf',
-    decimals: TOKENS.mSOL.decimals
+    decimals: TOKENS.mSOL.decimals,
+    urlHelper: 'Raydium',
   },
   'mSOL-SOL-V4': {
     symbol: 'mSOL-SOL',
@@ -979,7 +1044,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.SOL },
 
     mintAddress: '5ijRoAHVgd5T5CNtK5KDRUBZ7Bffb69nktMj5n6ks6m4',
-    decimals: TOKENS.mSOL.decimals
+    decimals: TOKENS.mSOL.decimals,
+    urlHelper: 'Raydium',
   },
   'MER-PAI-V4': {
     symbol: 'MER-PAI',
@@ -988,7 +1054,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.PAI },
 
     mintAddress: 'DU5RT2D9EviaSmX6Ta8MZwMm85HwSEqGMRdqUiuCGfmD',
-    decimals: TOKENS.MER.decimals
+    decimals: TOKENS.MER.decimals,
+    urlHelper: 'Raydium',
   },
   'PORT-USDC-V4': {
     symbol: 'PORT-USDC',
@@ -997,7 +1064,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '9tmNtbUCrLS15qC4tEfr5NNeqcqpZ4uiGgi2vS5CLQBS',
-    decimals: TOKENS.PORT.decimals
+    decimals: TOKENS.PORT.decimals,
+    urlHelper: 'Raydium',
   },
   'MNGO-USDC-V4': {
     symbol: 'MNGO-USDC',
@@ -1006,7 +1074,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: 'DkiqCQ792n743xjWQVCbBUaVtkdiuvQeYndM53ReWnCC',
-    decimals: TOKENS.MNGO.decimals
+    decimals: TOKENS.MNGO.decimals,
+    urlHelper: 'Raydium',
   },
   'ATLAS-USDC-V4': {
     symbol: 'ATLAS-USDC',
@@ -1015,7 +1084,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '9shGU9f1EsxAbiR567MYZ78WUiS6ZNCYbHe53WUULQ7n',
-    decimals: TOKENS.ATLAS.decimals
+    decimals: TOKENS.ATLAS.decimals,
+    urlHelper: 'Raydium',
   },
   'POLIS-USDC-V4': {
     symbol: 'POLIS-USDC',
@@ -1024,7 +1094,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.USDC },
 
     mintAddress: '8MbKSBpyXs8fVneKgt71jfHrn5SWtX8n4wMLpiVfF9So',
-    decimals: TOKENS.POLIS.decimals
+    decimals: TOKENS.POLIS.decimals,
+    urlHelper: 'Raydium',
   },
   'ATLAS-RAY-V4': {
     symbol: 'ATLAS-RAY',
@@ -1033,7 +1104,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '418MFhkaYQtbn529wmjLLqL6uKxDz7j4eZBaV1cobkyd',
-    decimals: TOKENS.ATLAS.decimals
+    decimals: TOKENS.ATLAS.decimals,
+    urlHelper: 'Raydium',
   },
   'POLIS-RAY-V4': {
     symbol: 'POLIS-RAY',
@@ -1042,7 +1114,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '9ysGKUH6WqzjQEUT4dxqYCUaFNVK9QFEa24pGzjFq8xg',
-    decimals: TOKENS.POLIS.decimals
+    decimals: TOKENS.POLIS.decimals,
+    urlHelper: 'Raydium',
   },
   'ALEPH-RAY-V4': {
     symbol: 'ALEPH-RAY',
@@ -1051,7 +1124,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: 'n76skjqv4LirhdLok2zJELXNLdRpYDgVJQuQFbamscy',
-    decimals: TOKENS.ALEPH.decimals
+    decimals: TOKENS.ALEPH.decimals,
+    urlHelper: 'Raydium',
   },
   'TULIP-RAY-V4': {
     symbol: 'TULIP-RAY',
@@ -1060,7 +1134,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '3AZTviji5qduMG2s4FfWGR3SSQmNUCyx8ao6UKCPg3oJ',
-    decimals: TOKENS.TULIP.decimals
+    decimals: TOKENS.TULIP.decimals,
+    urlHelper: 'Raydium',
   },
   'SLRS-RAY-V4': {
     symbol: 'SLRS-RAY',
@@ -1069,7 +1144,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '2pk78vsKT3jfJAcN2zbpMUnrR57SZrxHqaZYyFgp92mM',
-    decimals: TOKENS.SLRS.decimals
+    decimals: TOKENS.SLRS.decimals,
+    urlHelper: 'Raydium',
   },
   'MER-RAY-V4': {
     symbol: 'MER-RAY',
@@ -1078,7 +1154,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '214hxy3AbKoaEKgqcg2aC1cP5R67cGGAyDEg5GDwC7Ub',
-    decimals: TOKENS.MER.decimals
+    decimals: TOKENS.MER.decimals,
+    urlHelper: 'Raydium',
   },
   'MEDIA-RAY-V4': {
     symbol: 'MEDIA-RAY',
@@ -1087,7 +1164,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '9Aseg5A1JD1yCiFFdDaNNxCiJ7XzrpZFmcEmLjXFdPaH',
-    decimals: TOKENS.MEDIA.decimals
+    decimals: TOKENS.MEDIA.decimals,
+    urlHelper: 'Raydium',
   },
   'SNY-RAY-V4': {
     symbol: 'SNY-RAY',
@@ -1096,7 +1174,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '2k4quTuuLUxrSEhFH99qcoZzvgvVEc3b5sz3xz3qstfS',
-    decimals: TOKENS.SNY.decimals
+    decimals: TOKENS.SNY.decimals,
+    urlHelper: 'Raydium',
   },
   'LIKE-RAY-V4': {
     symbol: 'LIKE-RAY',
@@ -1105,7 +1184,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: '7xqDycbFSCpUpzkYapFeyPJWPwEpV7zdWbYf2MVHTNjv',
-    decimals: TOKENS.LIKE.decimals
+    decimals: TOKENS.LIKE.decimals,
+    urlHelper: 'Raydium',
   },
   'COPE-RAY-V4': {
     symbol: 'COPE-RAY',
@@ -1114,7 +1194,8 @@ export const LP_TOKENS = {
     pc: { ...TOKENS.RAY },
 
     mintAddress: 'A7GCVHA8NSsbdFscHdoNU41tL1TRKNmCH4K94CgcLK9F',
-    decimals: TOKENS.COPE.decimals
+    decimals: TOKENS.COPE.decimals,
+    urlHelper: 'Raydium',
   }
 };
 
@@ -1124,7 +1205,7 @@ export async function loadTokenInfo() {
 }
 
 function addTokensSolanaFunc(tokens: any[]) {
-  let newTokens: {[key: string]: any} = cloneDeep(TOKENS);
+  let newTokens: { [key: string]: any } = cloneDeep(TOKENS);
   tokens.forEach((itemToken: any) => {
     if (itemToken.tags && itemToken.tags.includes('lp-token')) {
       return

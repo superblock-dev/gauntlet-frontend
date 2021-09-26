@@ -16,8 +16,6 @@ import LinePurpleShort from 'assets/svgs/LinePurpleShort.svg';
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import LPTokenView from './LPTokenView';
 import CursorPointer from 'assets/CursorPointer.svg';
-import { calculateReward } from 'utils/vaults';
-import { FARMS } from 'utils/farms';
 
 const AccordionSummary = withStyles({
   root: {
@@ -148,28 +146,19 @@ interface UserVaultProps {
 
 function UserVaultItem({ vault, userState }: UserVaultProps) {
   const classes = useStyles();
-  const prices = useRecoilValue(rewardPrices);
-
-  const totalRewardInUSD = userState?.rewards.reduce((total, reward) => {
-    const strategy = vault.strategies.find(strategy => strategy.rewardToken === reward.token);
-    if (!strategy) return total;
-    return BigNumber.sum(total, calculateReward(reward, strategy.accRewardPerShare).multipliedBy(prices[reward.token]));
-  }, new BigNumber(0));
-
-  const farm = FARMS.find(f => f.lp.symbol === vault.depositToken.symbol);
 
   return (
     <>
       <Grid container className={classes.container}>
         <Grid item xs={3} className={classes.itemContainer} >
-          <LPTokenView lp={vault.depositToken} name={farm?.name} />
+          <LPTokenView lp={vault.depositToken} name={vault.depositToken.name.split('LP')[0]} />
         </Grid>
         <Grid item xs={2} className={classes.itemContainer} >540.1 M</Grid>
         <Grid item xs={2} className={classes.itemContainer} >118.0%</Grid>
         <Grid item xs={3} className={classes.itemContainer} >{
           userState?.rewards.map(reward => (
-            <div key={reward.token} className={classes.stoneContainer}>
-              <img className={classes.stoneIcon} src={SMALL_STONES[reward.token]} />
+            <div key={reward.tokenName} className={classes.stoneContainer}>
+              <img className={classes.stoneIcon} src={SMALL_STONES[reward.tokenName]} />
             </div>
           ))
         }</Grid>
@@ -233,7 +222,7 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
                 >
                   <Countup 
                     start={0} 
-                    end={totalRewardInUSD ? totalRewardInUSD.toNumber() : 0} 
+                    end={userState?.totalRewardInUSD ? userState.totalRewardInUSD.toNumber() : 0} 
                     delay={0} 
                     duration={0.75}
                     separator=","
@@ -248,9 +237,12 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
               {
                 userState?.rewards.map(reward => (
                   <div className={classes.rewardDetailContainer}>
-                    <img className={classes.rewardIcon} src={SMALL_STONES[reward.token]} />
-                    <div className={classes.rewardSymbolText}>{reward.token}</div>
-                    <div className={classes.rewardAmount}>{reward.amount.toLocaleString()}</div>
+                    <img className={classes.rewardIcon} src={SMALL_STONES[reward.tokenName]} />
+                    <div className={classes.rewardSymbolText}>{reward.tokenName}</div>
+                    <div className={classes.rewardAmount}>{
+                      reward.pendingReward ? 
+                      reward.pendingReward.toLocaleString() :
+                      ''}</div>
                   </div>
                 ))
               }
