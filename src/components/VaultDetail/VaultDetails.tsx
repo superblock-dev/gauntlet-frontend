@@ -103,12 +103,12 @@ function VaultDetails({ vault }: VaultDetailProps) {
         </div>
         <div className={classes.feeContainer}>
           <div className={classes.containerHeader}>Fees</div>
+          <div className={classes.textName}>Control fee</div>
+          <div className={classes.textValue}>{`${(vault.fees.controlFee * 100).toFixed(2)} %`}</div>
           <div className={classes.textName}>Performance fee</div>
           <div className={classes.textValue}>{`${(vault.fees.performanceFee * 100).toFixed(2)} %`}</div>
-          {/* <div className={classes.textName}>Platform fee</div>
-          <div className={classes.textValue}>2%</div>
           <div className={classes.textName}>GauntLET Staking Pool</div>
-          <div className={classes.textValue}>2.5%</div> */}
+          <div className={classes.textValue}>{`${(vault.fees.treasuryFee * 100).toFixed(2)} %`}</div>
           <div className={classes.textName}>Entrance fee</div>
           <div className={classes.textValue}>Free</div>
           <div className={classes.textName}>Withdrawal fee</div>

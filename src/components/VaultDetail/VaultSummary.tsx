@@ -1,6 +1,11 @@
+import { useWallet } from '@solana/wallet-adapter-react';
 import Countup from 'react-countup';
 import { makeStyles } from "@material-ui/core";
 import BGVaultSummary from 'assets/svgs/BGVaultSummary.svg';
+import WalletButton from 'components/Buttons/WalletButton';
+import { useSetRecoilState } from 'recoil';
+import { popupState } from 'recoil/atoms';
+import WalletConnectPopup from 'components/WalletConnectPopup';
 
 const useStyles = makeStyles({
   summaryContainer: {
@@ -13,6 +18,26 @@ const useStyles = makeStyles({
     padding: '50px 80px 48px 80px',
     display: 'flex',
     flexDirection: 'column',
+    position: 'relative',
+  },
+  connectFirstContainer: {
+    position: 'absolute',
+    width: '90%',
+    height: 224,
+    top: 24,
+    left: '5%',
+    background: 'rgba(32, 24, 48, 0.1);',
+    backdropFilter: 'blur(6px);',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  connectFirstText: {
+    fontFamily: 'Sen',
+    fontSize: 16,
+    color: '#CBA344',
+    marginBottom: 32,
   },
   summaryContent: {
     width: '100%',
@@ -47,12 +72,28 @@ interface VaultSummaryProps {
   lpValueInUSD: number;
 }
 
-
 function VaultSummary({ balance, lpValueInUSD }: VaultSummaryProps) {
   const classes = useStyles();
+  const { connected } = useWallet();
+  const setPopupState = useSetRecoilState(popupState);
+
+  const handleConnect = () => {
+    // address check
+    setPopupState(<WalletConnectPopup />);
+  }
 
   return (
     <div className={classes.summaryContainer}>
+      {
+        !connected ?
+          <div className={classes.connectFirstContainer}>
+            <div className={classes.connectFirstText}>Please Connect Your Wallet</div>
+            <div onClick={handleConnect}>
+              <WalletButton connected={connected} />
+            </div>
+          </div> :
+          null
+      }
       <div className={classes.summaryContent}>
         <div className={classes.summaryHeader}>Deposits</div>
         <div className={classes.summaryHeader}>APY</div>

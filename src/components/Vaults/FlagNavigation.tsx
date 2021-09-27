@@ -1,40 +1,43 @@
-import styled from "@emotion/styled";
+import { makeStyles } from "@material-ui/core";
 import CursorPointer from "../../assets/CursorPointer.svg";
 import leftNavigation from "../../assets/svgs/big-arrow-left.svg";
 import rightNavigation from "../../assets/svgs/big-arrow-right.svg";
 
-const NavigationButtons = styled.div`
-  position: absolute;
-  display: flex;
-  height: 40px;
-  top: 38.5%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40%;
-  margin-top: 1rem;
-  justify-content: space-between;
-  z-index: 100;
-  img {
-    height: 100%;
-    cursor: url(${CursorPointer}), pointer;
-  };
-`;
+const useStyles = makeStyles({
+  navigationIcon: {
+    position: 'absolute',
+    width: 32,
+    height: 32,
+    cursor: `url(${CursorPointer}), pointer`,
+    zIndex: 5,
+  }
+})
 
 interface FlagNavigationProps {
   onClick: (direction: number) => void
 }
 
 export default function FlagNavigation({ onClick }: FlagNavigationProps) {
+  const classes = useStyles();
+
   return (
-    <NavigationButtons>
+    <>
       <img
         src={leftNavigation}
         onClick={() => onClick(-1)}
-        style={{ marginRight: "2rem" }} />
+        className={classes.navigationIcon}
+        style={{
+          top: '37%',
+          left: '30%',
+        }} />
       <img
         src={rightNavigation}
         onClick={() => onClick(1)}
-        style={{ marginLeft: "2rem" }} />
-    </NavigationButtons>
+        className={classes.navigationIcon}
+        style={{
+          top: '37%',
+          right: '30%',
+        }} />
+    </>
   );
 }

@@ -24,6 +24,29 @@ export interface FarmInfo {
   user?: object
 }
 
+export function getAddressForWhat(address: string) {
+  // dont use forEach
+  for (const farm of FARMS) {
+    for (const [key, value] of Object.entries(farm)) {
+      // if (key === 'lp') {
+      //   if (value.mintAddress === address) {
+      //     return { key: 'poolId', poolId: farm.poolId }
+      //   }
+      // } else if (key === 'reward') {
+      //   if (value.mintAddress === address) {
+      //     return { key: 'rewardMintAddress', poolId: farm.poolId }
+      //   }
+      // } else
+
+      if (value === address) {
+        return { key, poolId: farm.poolId }
+      }
+    }
+  }
+
+  return {}
+}
+
 export const FARMS: FarmInfo[] = [
   {
     name: 'RAY-USDT',

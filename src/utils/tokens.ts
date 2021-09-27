@@ -26,6 +26,12 @@ export interface LPToken {
 }
 
 export const TOKENS: { [key: string]: Token } = {
+  LET: {
+    symbol: 'LET',
+    name: 'LET',
+    mintAddress: '',
+    decimals: 6,
+  },
   USDC: {
     symbol: 'USDC',
     name: 'USDC',

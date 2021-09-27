@@ -1,13 +1,15 @@
 import BigNumber from "bignumber.js";
 import { ReactNode } from "react";
 import { LPToken, Token } from "utils/tokens";
-import { TokenAmount } from "utils/safe-math";
+
 
 export type TokenName = "BTC" | "ETH" | "SOL" | "USDT" | "USDC" | "LET" | "ETC";
 
 // Temporary types
 export interface Fees {
+  controlFee: number;
   performanceFee: number;
+  treasuryFee: number;
   withdrawalFee: number;
 }
 

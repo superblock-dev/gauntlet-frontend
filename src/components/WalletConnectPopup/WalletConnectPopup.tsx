@@ -1,8 +1,6 @@
-import { useMemo, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { popupState } from 'recoil/atoms';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { getPhantomWallet, WalletName } from '@solana/wallet-adapter-wallets';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { makeStyles } from '@material-ui/core';
@@ -11,7 +9,6 @@ import BGConnectedWallet from 'assets/svgs/BGConnectedWallet.svg';
 import BtnExitEnabled from 'assets/svgs/BtnExitEnabled.svg';
 import BtnExitHovered from 'assets/svgs/BtnExitHovered.svg';
 import BtnExitPressed from 'assets/svgs/BtnExitPressed.svg';
-import ItemWalletType from 'assets/svgs/ItemWalletType.svg';
 import WalletIconPhantom from 'assets/svgs/WalletIconPhantom.svg';
 import LineMyAddress from 'assets/svgs/LineMyAddress.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
@@ -22,7 +19,6 @@ import DisconnectButton from 'components/Buttons/DisconnectButton';
 const useStyles = makeStyles({
   root: {
     position: 'absolute',
-    top: 0,
     width: '100vw',
     height: '100vh',
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
@@ -30,6 +26,7 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10,
   },
   box: {
     width: 448,
@@ -87,8 +84,9 @@ const useStyles = makeStyles({
     cursor: `url(${CursorPointer}), pointer`,
     display: 'flex',
     alignItems: 'center',
-    backgroundImage: `url(${ItemWalletType})`,
+    // backgroundImage: `url(${ItemWalletType})`,
     '&:hover': {
+      backgroundImage: 'radial-gradient(78.76% 933.51% at 50% 100%, rgba(0, 201, 177, 0.11) 0%, rgba(0, 201, 177, 0) 79.55%)',
     },
     '&:active': {
     },
@@ -158,6 +156,13 @@ function WalletConnectPopup() {
   const setPopupState = useSetRecoilState(popupState);
   const { wallets, connect, connected, disconnect, select, publicKey } = useWallet();
 
+  //@ts-ignore
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => document.body.style.overflow = 'unset';
+  });
+
   const handleExit = () => {
     setPopupState(undefined);
   }
@@ -196,7 +201,9 @@ function WalletConnectPopup() {
   const address = publicKey?.toBase58();
 
   return (
-    <div className={classes.root} onClick={handleExit}>
+    <div className={classes.root} style={{
+      top: document.documentElement.scrollTop,
+    }} onClick={handleExit} >
       <div className={connected ? classes.connectedBox : classes.box} onClick={handleInvalidClick}>
         <div className={classes.titleContainer}>
           <div className={classes.title}>{

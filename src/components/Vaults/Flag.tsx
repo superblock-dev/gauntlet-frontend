@@ -217,7 +217,7 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${LargeFlag})` }}>
       <img className={classes.xxlargeSoul} src={stone} />
       <div className={classes.tokenName}>{tokenName}</div>
-      <div className={classes.reward}>{`${reward ? reward.toFixed(6) : 0}`}</div>
+      <div className={classes.reward}>{`${reward ? reward : 0}`}</div>
       <div className={classes.rewardInUSD}>{`$ ${price.toFixed(3)}`}</div>
       <div className={classes.claimButton}>
         <SmallButton text="CLAIM" />

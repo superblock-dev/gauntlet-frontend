@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { liquidityPoolInfos } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
 import { BigNumber } from 'bignumber.js';
 
@@ -72,6 +74,12 @@ const REWARDS: Reward[] = [
     amount: 0,
     rewardDebt: 0,
   },
+  {
+    tokenName: 'LET',
+    token: TOKENS.LET,
+    amount: 0,
+    rewardDebt: 0,
+  },
 ]
 
 function createRewardsListFromUserState(
@@ -82,11 +90,11 @@ function createRewardsListFromUserState(
   userState?: UserState,
 ) {
   if (!userState) {
-    return ([...REWARDS, ...REWARDS]).map((reward, idx) => {
+    return ([...REWARDS]).map((reward, idx) => {
       return createSlide(vault, reward, balance, slideIndex === idx, () => onClick(idx));
     });
   }
-  return ([...REWARDS, ...REWARDS]).map((reward, idx) => {
+  return ([...REWARDS]).map((reward, idx) => {
     const userReward = userState.rewards.find(state => state.tokenName === reward.tokenName);
     if (userReward) {
       return createSlide(vault, userReward, balance, slideIndex === idx, () => onClick(idx));
@@ -157,13 +165,30 @@ const useStyles = makeStyles({
 function VaultDetail() {
   const classes = useStyles();
   const { goBack } = useHistory();
+  const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const [slideIndex, setSlideIndex] = useState(0);
   let { vaultId } = useParams<VaultDetailParams>();
   let vId = parseInt(vaultId);
   const vault = VAULTS.find(v => v.id === vId);
-  const userState = USER_STATES.find(s => s.vaultId === vId);
+  let userState = USER_STATES.find(s => s.vaultId === vId);
 
   if (vId === undefined || vault === undefined) return <></> // TODO: Page not found
+
+  if (!userState) {
+    userState = {
+      vaultId: vId,
+      balance: 0,
+      rewards: [],
+      lpValueInUSD: new BigNumber(0),
+    } as UserState
+  }
+
+  if ((vault.depositToken.mintAddress in liquidityPools)) { 
+  const lpValue = liquidityPools[vault.depositToken.mintAddress].currentLpValue;
+    if (lpValue) {
+      userState.lpValueInUSD = new BigNumber(userState.balance).multipliedBy(lpValue)
+    }
+  }
 
   const lpBalance: number = 939.212316 // User LP Token Balance
 
@@ -196,10 +221,14 @@ function VaultDetail() {
       token: 'USDT',
       value: 1.25131,
     },
+    {
+      token: 'LET',
+      value: 1.8913,
+    },
   ];
 
   const stones: { [key: string]: BigNumber } = {};
-  userState?.rewards.forEach((reward) => {
+  userState.rewards.forEach((reward) => {
     stones[reward.tokenName.toString()] = calculateReward(reward, vault);
   });
 
@@ -220,7 +249,7 @@ function VaultDetail() {
           marginLeft: 8,
         }}>
           <div style={{ width: 800, }}>
-            <LPTokenView lp={vault.depositToken} name={vault.depositToken.name.split('LP')[0]} linkVisible />
+            <LPTokenView lp={vault.depositToken} name={vault.depositToken.name.split(' LP')[0]} linkVisible />
           </div>
           <div style={{
             display: 'flex',
@@ -237,8 +266,8 @@ function VaultDetail() {
       </div>
 
       <VaultSummary
-        balance={userState ? userState.balance : 0}
-        lpValueInUSD={userState && userState.lpValueInUSD ? userState.lpValueInUSD.toNumber() : 0}
+        balance={userState.balance}
+        lpValueInUSD={userState.lpValueInUSD ? userState.lpValueInUSD.toNumber() : 0}
       />
 
       <div className={classes.divider} />
@@ -250,12 +279,12 @@ function VaultDetail() {
       <div className={classes.divider} />
 
       <div className={classes.sliderContainer}>
-        <Slider index={slideIndex} slides={flags} />
         <FlagNavigation onClick={(direction: number) => {
           const index = slideIndex + direction;
           const nextIndex = index >= flags.length ? 0 : index < 0 ? flags.length - 1 : index;
           setSlideIndex(nextIndex);
         }} />
+        <Slider index={slideIndex} slides={flags} />
       </div>
 
       <RewardList

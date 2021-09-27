@@ -148,7 +148,7 @@ export interface RewardListProps {
 
 function RewardList({ rewards, mainIndex }: RewardListProps) {
   const classes = useStyles();
-  const index = mainIndex % 5;
+  const index = mainIndex % 6;
 
   return (
     <>

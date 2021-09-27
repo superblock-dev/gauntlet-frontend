@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
 import { conn, liquidityPoolInfos, pairsInfo, popupState, rewardPrices, tokenInfos } from "recoil/atoms";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, useHistory } from "react-router-dom";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
@@ -16,13 +16,15 @@ import { TIMEOUT_DEFAULT } from "utils/constants";
 import { makeStyles } from "@material-ui/core";
 import Header from 'components/Header';
 import Popup from 'components/Popup';
-import Zap from "pages/Zap";
+import Swap from "pages/Swap";
 import Vault from "pages/Vault";
 import Snackbar from "components/Snackbar";
 import VaultDetail from "pages/VaultDetail";
 import { getPairs, requestLiquidityInfo } from "api/pools";
 import { loadTokenInfo } from "utils/tokens";
 import { calculateLpValues } from "utils/pools";
+import ScrollToTop from "./ScrollToTop";
+import { requestFarmInfo } from "api/farms";
 
 const useStyles = makeStyles({
   containerRoot: {
@@ -37,7 +39,7 @@ const useStyles = makeStyles({
 })
 
 const routeList: RouteType[] = [
-  // { label: "ZAP", path: "/zap" },
+  { label: "SWAP", path: "/swap" },
   { label: "VAULT", path: "/vault" },
   // { label: "SWAP", path: "/swap" },
 ]
@@ -75,6 +77,10 @@ function App() {
       calculateLpValues(liquidityPools, priceData);
       setLiquidityInfo(liquidityPools);
     }
+    if (connState) {
+      const farmInfos = await requestFarmInfo(connState);
+      console.log(farmInfos)
+    }
   }
 
   useEffect(() => {
@@ -96,7 +102,6 @@ function App() {
     return () => clearTimeout(timer);
   });
 
-
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets}>
@@ -113,11 +118,12 @@ function App() {
           content={(key, msg) => <Snackbar id={key} message={msg} />}
         >
           <Router>
+            <ScrollToTop />
             <Header routeList={routeList} />
             <Switch>
               <Route exact path={"/vault"} component={() => <Vault />} />
               <Route path={"/vault/:vaultId"} component={() => <VaultDetail />} />
-              {/* <Route path={"/swap"} component={() => <></>} /> */}
+              <Route path={"/swap"} component={() => <Swap />} />
               {/* <Route path={"/zap"} component={() => <Zap />} /> */}
               <Route path={"/"} component={() => <></>} />
             </Switch>

@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
 });
 
-function Zap() {
+function Swap() {
   const classes = useStyles();
   const [] = useState();
 
@@ -29,4 +29,4 @@ function Zap() {
   )
 };
 
-export default Zap;
+export default Swap;

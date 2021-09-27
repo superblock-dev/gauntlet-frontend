@@ -5,7 +5,9 @@ import { TokenAmount } from "./safe-math";
 import { LP_TOKENS, TOKENS } from "./tokens";
 
 export const BASE_FEE: Fees = {
-  performanceFee: 0.03,
+  controlFee: 0.005,
+  performanceFee: 0.02,
+  treasuryFee: 0.025,
   withdrawalFee: 0.001,
 };
 
