@@ -1,5 +1,5 @@
 import { useRecoilValue } from 'recoil';
-import { liquidityPoolInfos, rewardPrices } from 'recoil/atoms';
+import { farmInfos, liquidityPoolInfos, pairsInfo, rewardPrices } from 'recoil/atoms';
 import { BigNumber } from 'bignumber.js';
 import { Grid, makeStyles } from "@material-ui/core";
 import UserVaultsSummary from "components/Vaults/UserVaultsSummary";
@@ -8,9 +8,8 @@ import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import IconHelp from 'assets/svgs/IconHelp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import { ReactComponent as LineDivider } from 'assets/svgs/LineDivider.svg';
-import { calculateReward, getStrategyByTokenName, getVaultById, USER_STATES, } from "utils/vaults";
+import { calculateReward, getVaultById, USER_STATES, } from "utils/vaults";
 import { UserState, Vault } from "types";
-
 const useStyles = makeStyles({
   contentContainer: {
     width: 960,
@@ -63,23 +62,37 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
   const classes = useStyles();
   const prices = useRecoilValue(rewardPrices);
   const liquidityPools = useRecoilValue(liquidityPoolInfos);
+  const farms = useRecoilValue(farmInfos);
 
   // 각 state들마다 pending reward 계산
   states.forEach(s => {
     const v = getVaultById(s.vaultId);
     if (!v) return
+
     s.rewards.forEach(r => {
       r.pendingReward = calculateReward(r, v);
-    })
-    s.totalRewardInUSD = s.rewards.reduce((total, r) => {
-      return r.pendingReward ?
-        BigNumber.sum(total, r.pendingReward?.multipliedBy(prices[r.tokenName])) :
-        total
-    }, new BigNumber(0));
-    if (!(v.depositToken.mintAddress in liquidityPools)) { return s.lpValueInUSD = new BigNumber(0);}
+    });
+    s.totalRewardInUSD = s.rewards.reduce((t, r) => {
+      if (r.pendingReward) {
+        t += r.pendingReward * prices[r.tokenName];
+      }
+      return t;
+    }, 0);
+
+    if (!(v.depositToken.mintAddress in liquidityPools)) { return s.lpValueInUSD = new BigNumber(0); }
     const lpValue = liquidityPools[v.depositToken.mintAddress].currentLpValue;
     if (!lpValue) { return s.lpValueInUSD = new BigNumber(0); }
     s.lpValueInUSD = new BigNumber(s.balance).multipliedBy(lpValue);
+
+    const f = Object.values(farms).find(f => f.lp.symbol === v.depositToken.symbol);
+    let totalApr = new BigNumber(0);
+    if (f && f.apr) {
+      totalApr = BigNumber.sum(totalApr, Number(f.apr))
+    }
+    if (f && f.fees) {
+      totalApr = BigNumber.sum(totalApr, Number(f.fees))
+    }
+    s.totalApr = totalApr;
   })
 
   // 모든 vault의 total reward 계산
@@ -89,9 +102,13 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
     if (s.totalRewardInUSD) total[2] = BigNumber.sum(total[2], s.totalRewardInUSD);
     return total
   }, [0, new BigNumber(0), new BigNumber(0)]);
-  
-  // 각 vault의 APR 계산
 
+  const avgApr = states.reduce((weighted, s) => {
+    if (s.totalApr) {
+      weighted = BigNumber.sum(weighted, s.totalApr.multipliedBy(s.balance))
+    }
+    return weighted;
+  }, new BigNumber(0)).dividedBy(totalDeposit);
 
   return (
     <>
@@ -99,6 +116,7 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
         totalDeposit={totalDeposit}
         totalLpValueInUSD={totalLpValueInUSD}
         totalRewardsInUSD={totalRewardsInUSD}
+        avgApr={avgApr}
       />
       <div className={classes.listTitle}>
         My Vaults

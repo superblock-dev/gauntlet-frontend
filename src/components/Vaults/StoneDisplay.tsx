@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 })
 
 interface StoneDisplayProps {
-  items: {[key: string]: BigNumber},
+  items: {[key: string]: number},
 }
 
 export default function StoneDisplay({ items }: StoneDisplayProps) {
@@ -22,7 +22,7 @@ export default function StoneDisplay({ items }: StoneDisplayProps) {
 
   return (
     <div className={classes.container}>
-      {tokens.map((item => <Stone tokenName={item} amount={item in items ? items[item].toNumber() : 0} />))}
+      {tokens.map((item => <Stone tokenName={item} amount={item in items ? items[item] : 0} />))}
     </div>
   )
 

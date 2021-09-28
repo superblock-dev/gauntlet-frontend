@@ -30,7 +30,7 @@ function createItem(vault: Vault, reward: Reward, balance: number, active: boole
       tokenName={reward.tokenName}
       deposited={reward.amount}
       balance={balance}
-      reward={pendingReward.toNumber()}
+      reward={pendingReward}
       active={active} />
   );
 }
@@ -227,7 +227,7 @@ function VaultDetail() {
     },
   ];
 
-  const stones: { [key: string]: BigNumber } = {};
+  const stones: { [key: string]: number } = {};
   userState.rewards.forEach((reward) => {
     stones[reward.tokenName.toString()] = calculateReward(reward, vault);
   });

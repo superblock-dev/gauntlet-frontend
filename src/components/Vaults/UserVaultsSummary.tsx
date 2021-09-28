@@ -120,9 +120,10 @@ interface UserVaultsSummaryProps {
   totalDeposit: number;
   totalLpValueInUSD: BigNumber;
   totalRewardsInUSD: BigNumber;
+  avgApr: BigNumber;
 }
 
-function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD }: UserVaultsSummaryProps) {
+function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD, avgApr }: UserVaultsSummaryProps) {
   const classes = useStyles();
   const rewardTokenList = [
     'LET',
@@ -170,9 +171,30 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD 
             </div>
           </div>
           <div className={classes.summaryContent}>
-            <div className={classes.summaryHeader}>Average APY</div>
-            <div className={classes.summaryBody}>95.39%</div>
-            <div className={classes.summarySubBody}>Daily 3.49%</div>
+            <div className={classes.summaryHeader}>Average APR</div>
+            <div className={classes.summaryBody}>
+              <Countup
+                start={0}
+                end={avgApr.toNumber()}
+                delay={0}
+                duration={0.75}
+                decimals={2}
+                decimal="."
+                suffix=" %"
+              />
+            </div>
+            <div className={classes.summarySubBody}>
+              <Countup
+                start={0}
+                end={avgApr.dividedBy(365).toNumber()}
+                delay={0}
+                duration={0.75}
+                decimals={2}
+                decimal="."
+                prefix="Daily "
+                suffix=" %"
+              />
+            </div>
           </div>
         </div>
         <div className={classes.summaryContent}>

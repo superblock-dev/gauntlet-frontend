@@ -1,5 +1,10 @@
+import { cloneDeep } from 'lodash';
+import { getBigNumber } from 'utils/layouts';
 import { STAKE_PROGRAM_ID, STAKE_PROGRAM_ID_V4, STAKE_PROGRAM_ID_V5 } from 'utils/ids'
 import { LPToken, LP_TOKENS, Token, TOKENS } from 'utils/tokens'
+import { TokenAmount } from 'utils/safe-math';
+import { LiquidityPoolInfo } from './pools';
+import { PairInfo } from 'types';
 
 
 export interface FarmInfo {
@@ -22,6 +27,9 @@ export interface FarmInfo {
   poolRewardTokenAccountB?: string
 
   user?: object
+  apr?: number
+  aprTotal?: number
+  fees?: number;
 }
 
 export function getAddressForWhat(address: string) {
@@ -47,6 +55,183 @@ export function getAddressForWhat(address: string) {
   return {}
 }
 
+export function calculateAprValues(
+  farms: {[key: string]: FarmInfo}, 
+  pairs: PairInfo[],
+  liquidityPools: {[key: string]: LiquidityPoolInfo},
+  prices: {[key: string]: number},
+) {
+
+  // 각 vault의 APR 계산
+  Object.keys(farms).forEach(async fId => {
+    const farm = farms[fId];
+
+    const isFusion = Boolean((farm as any).fusion)
+    // @ts-ignore
+    if (!farm.isStake) {
+      // @ts-ignore
+      const { rewardPerShareNet, rewardPerBlock, perShare, perBlock, perShareB, perBlockB } = farm.poolInfo
+      // @ts-ignore
+      const { reward, rewardB, lp } = farm
+
+      // @ts-ignore
+      const poolsLp = pairs.find((item) => item.lp_mint === lp.mintAddress)
+
+      if (poolsLp) {
+        // @ts-ignore
+        farm.fees = poolsLp.apy
+      }
+
+      // for fusion
+      if (isFusion && reward && rewardB && lp) {
+        const rewardPerBlockAmount = new TokenAmount(getBigNumber(perBlock), reward.decimals)
+        const rewardBPerBlockAmount = new TokenAmount(getBigNumber(perBlockB), rewardB.decimals)
+        const liquidityItem = liquidityPools[lp.mintAddress]
+
+        const rewardPerBlockAmountTotalValue =
+          getBigNumber(rewardPerBlockAmount.toEther()) *
+          2 *
+          60 *
+          60 *
+          24 *
+          365 *
+          prices[reward.symbol as string]
+        const rewardBPerBlockAmountTotalValue =
+          getBigNumber(rewardBPerBlockAmount.toEther()) *
+          2 *
+          60 *
+          24 *
+          365 *
+          prices[rewardB.symbol as string]
+
+        const liquidityCoinValue =
+          getBigNumber((liquidityItem?.coin.balance as TokenAmount).toEther()) *
+          prices[liquidityItem?.coin.symbol as string]
+        const liquidityPcValue =
+          getBigNumber((liquidityItem?.pc.balance as TokenAmount).toEther()) *
+          prices[liquidityItem?.pc.symbol as string]
+
+        const liquidityTotalValue = liquidityPcValue + liquidityCoinValue
+        const liquidityTotalSupply = getBigNumber((liquidityItem?.lp.totalSupply as TokenAmount).toEther())
+        const liquidityItemValue = liquidityTotalValue / liquidityTotalSupply
+
+        // @ts-ignore
+        const liquidityUsdValue = getBigNumber(lp.balance.toEther()) * liquidityItemValue
+        const apr = ((rewardPerBlockAmountTotalValue / liquidityUsdValue) * 100).toFixed(2)
+        const aprB = ((rewardBPerBlockAmountTotalValue / liquidityUsdValue) * 100).toFixed(2)
+        const aprTotal = (
+          (rewardPerBlockAmountTotalValue / liquidityUsdValue) * 100 +
+          (rewardBPerBlockAmountTotalValue / liquidityUsdValue) * 100
+        ).toFixed(2)
+
+        // @ts-ignore
+        farm.apr = apr
+        // @ts-ignore
+        farm.aprB = aprB
+        // @ts-ignore
+        farm.aprTotal = aprTotal
+        // @ts-ignore
+        farm.liquidityUsdValue = liquidityUsdValue
+
+      } else if (!isFusion && reward && lp) {
+        const rewardPerBlockAmount = new TokenAmount(getBigNumber(rewardPerBlock), reward.decimals)
+        const liquidityItem = liquidityPools[lp.mintAddress]
+
+        const rewardPerBlockAmountTotalValue =
+          getBigNumber(rewardPerBlockAmount.toEther()) *
+          2 *
+          60 *
+          60 *
+          24 *
+          365 *
+          prices[reward.symbol as string]
+
+        const liquidityCoinValue =
+          getBigNumber((liquidityItem?.coin.balance as TokenAmount).toEther()) *
+          prices[liquidityItem?.coin.symbol as string]
+        const liquidityPcValue =
+          getBigNumber((liquidityItem?.pc.balance as TokenAmount).toEther()) *
+          prices[liquidityItem?.pc.symbol as string]
+
+        const liquidityTotalValue = liquidityPcValue + liquidityCoinValue
+        const liquidityTotalSupply = getBigNumber((liquidityItem?.lp.totalSupply as TokenAmount).toEther())
+        const liquidityItemValue = liquidityTotalValue / liquidityTotalSupply
+
+        // @ts-ignore
+        const liquidityUsdValue = getBigNumber(lp.balance.toEther()) * liquidityItemValue
+        const apr = ((rewardPerBlockAmountTotalValue / liquidityUsdValue) * 100).toFixed(2)
+
+        // @ts-ignore
+        farm.apr = apr
+        // @ts-ignore
+        farm.liquidityUsdValue = liquidityUsdValue
+      }
+      if (isFusion) {
+        //   if (userInfo) {
+        //     userInfo = cloneDeep(userInfo)
+
+        //     const { rewardDebt, rewardDebtB, depositBalance } = userInfo
+
+        //     let d = 0
+        //     // @ts-ignore
+        //     if (farm.version === 5) {
+        //       d = 1e15
+        //     } else {
+        //       d = 1e9
+        //     }
+        //     const pendingReward = depositBalance.wei
+        //       .multipliedBy(getBigNumber(perShare))
+        //       .dividedBy(d)
+        //       .minus(rewardDebt.wei)
+        //     const pendingRewardB = depositBalance.wei
+        //       .multipliedBy(getBigNumber(perShareB))
+        //       .dividedBy(d)
+        //       .minus(rewardDebtB.wei)
+
+        //     userInfo.pendingReward = new TokenAmount(pendingReward, rewardDebt.decimals)
+        //     userInfo.pendingRewardB = new TokenAmount(pendingRewardB, rewardDebtB.decimals)
+        //   } else {
+        //     userInfo = {
+        //       // @ts-ignore
+        //       depositBalance: new TokenAmount(0, farm.lp.decimals),
+        //       // @ts-ignore
+        //       pendingReward: new TokenAmount(0, farm.reward.decimals),
+        //       // @ts-ignore
+        //       pendingRewardB: new TokenAmount(0, farm.rewardB?.decimals)
+        //     }
+        //   }
+        // }
+        // if (!isFusion) {
+        //   if (userInfo) {
+        //     userInfo = cloneDeep(userInfo)
+
+        //     const { rewardDebt, depositBalance } = userInfo
+
+        //     const pendingReward = depositBalance.wei
+        //       .multipliedBy(getBigNumber(rewardPerShareNet))
+        //       .dividedBy(1e9)
+        //       .minus(rewardDebt.wei)
+
+        //     userInfo.pendingReward = new TokenAmount(pendingReward, rewardDebt.decimals)
+        //   } else {
+        //     userInfo = {
+        //       // @ts-ignore
+        //       depositBalance: new TokenAmount(0, farm.lp.decimals),
+        //       // @ts-ignore
+        //       pendingReward: new TokenAmount(0, farm.reward.decimals)
+        //     }
+        //   }
+        // }
+
+        // farms.push({
+        //   userInfo,
+        //   farm: farm
+        // })
+      }
+    }
+  });
+}
+
 export const FARMS: FarmInfo[] = [
   {
     name: 'RAY-USDT',
@@ -66,25 +251,6 @@ export const FARMS: FarmInfo[] = [
     poolRewardTokenAccount: 'HCHNuGzkqSnw9TbwpPv1gTnoqnqYepcojHw9DAToBrUj' // reward vault
   },
   // Reward double
-  {
-    name: 'FIDA-RAY',
-    lp: { ...LP_TOKENS['FIDA-RAY-V4'] },
-    reward: { ...TOKENS.RAY },
-    rewardB: { ...TOKENS.FIDA },
-    isStake: false,
-
-    fusion: true,
-    legacy: false,
-    dual: true,
-    version: 4,
-    programId: STAKE_PROGRAM_ID_V4,
-
-    poolId: '8rAdapvcC5vYNLXzChMgt56s6HCQGE6Lbo469g3WRTUh',
-    poolAuthority: 'EcCKf3mgPtL6dNNAVG4gQQtLkAoTAUdf5vzFukkrviWq',
-    poolLpTokenAccount: 'H6kzwNNg9zbgC1YBjvCN4BdebtA4NusvgUhUSDZoz8rP', // lp vault
-    poolRewardTokenAccount: '7vnPTB2HAXFUAV5iiVZTNHgAnVYjgXcdumbbqfeK6ugp', // reward vault A
-    poolRewardTokenAccountB: 'EGHdQm9KGLz6nw7W4rK13DyAMMJcGP9RpzCJaXiq75kQ' // reward vault B
-  },
   {
     name: 'OXY-RAY',
     lp: { ...LP_TOKENS['OXY-RAY-V4'] },

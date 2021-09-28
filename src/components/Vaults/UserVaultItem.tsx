@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { rewardPrices } from 'recoil/atoms';
 import { UserState, Vault } from 'types';
-import { BigNumber } from 'bignumber.js';
 
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -154,7 +151,17 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
           <LPTokenView lp={vault.depositToken} name={vault.depositToken.name.split('LP')[0]} />
         </Grid>
         <Grid item xs={2} className={classes.itemContainer} >540.1 M</Grid>
-        <Grid item xs={2} className={classes.itemContainer} >118.0%</Grid>
+        <Grid item xs={2} className={classes.itemContainer} >
+          <Countup
+            start={0}
+            end={userState && userState.totalApr ? userState.totalApr.toNumber() : 0}
+            delay={0}
+            duration={0.75}
+            decimals={2}
+            decimal="."
+            suffix=" %"
+          />
+        </Grid>
         <Grid item xs={3} className={classes.itemContainer} >{
           userState?.rewards.map(reward => (
             <div key={reward.tokenName} className={classes.stoneContainer}>
@@ -171,7 +178,7 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
             }
           }}>
             <SmallButton />
-          </Link> 
+          </Link>
         </Grid>
       </Grid>
       <div className={classes.shortDivider}>
@@ -220,10 +227,10 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
                     top: 7,
                   }}
                 >
-                  <Countup 
-                    start={0} 
-                    end={userState?.totalRewardInUSD ? userState.totalRewardInUSD.toNumber() : 0} 
-                    delay={0} 
+                  <Countup
+                    start={0}
+                    end={userState?.totalRewardInUSD ? userState.totalRewardInUSD : 0}
+                    delay={0}
                     duration={0.75}
                     separator=","
                     decimals={3}
@@ -240,9 +247,9 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
                     <img className={classes.rewardIcon} src={SMALL_STONES[reward.tokenName]} />
                     <div className={classes.rewardSymbolText}>{reward.tokenName}</div>
                     <div className={classes.rewardAmount}>{
-                      reward.pendingReward ? 
-                      reward.pendingReward.toLocaleString() :
-                      ''}</div>
+                      reward.pendingReward ?
+                        reward.pendingReward :
+                        ''}</div>
                   </div>
                 ))
               }

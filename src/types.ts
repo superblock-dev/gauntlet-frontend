@@ -33,15 +33,16 @@ export interface Reward {
   token: Token;
   amount: number;
   rewardDebt: number;
-  pendingReward?: BigNumber;
+  pendingReward?: number;
 }
 
 export interface UserState {
   vaultId: number;
   balance: number;
   rewards: Reward[];
-  totalRewardInUSD?: BigNumber;
+  totalRewardInUSD?: number;
   lpValueInUSD?: BigNumber;
+  totalApr?: BigNumber;
 }
 
 /** Pairs **/

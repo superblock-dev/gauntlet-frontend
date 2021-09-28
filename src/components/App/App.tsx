@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
-import { conn, liquidityPoolInfos, pairsInfo, popupState, rewardPrices, tokenInfos } from "recoil/atoms";
+import { conn, farmInfos, liquidityPoolInfos, pairsInfo, popupState, rewardPrices, tokenInfos } from "recoil/atoms";
 import { BrowserRouter as Router, Route, Switch, useHistory } from "react-router-dom";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -16,15 +16,17 @@ import { TIMEOUT_DEFAULT } from "utils/constants";
 import { makeStyles } from "@material-ui/core";
 import Header from 'components/Header';
 import Popup from 'components/Popup';
-import Swap from "pages/Swap";
-import Vault from "pages/Vault";
 import Snackbar from "components/Snackbar";
+import Swap from "pages/Swap";
+import Staking from 'pages/Staking';
+import Vault from "pages/Vault";
 import VaultDetail from "pages/VaultDetail";
 import { getPairs, requestLiquidityInfo } from "api/pools";
 import { loadTokenInfo } from "utils/tokens";
 import { calculateLpValues } from "utils/pools";
 import ScrollToTop from "./ScrollToTop";
 import { requestFarmInfo } from "api/farms";
+import { calculateAprValues } from "utils/farms";
 
 const useStyles = makeStyles({
   containerRoot: {
@@ -41,7 +43,7 @@ const useStyles = makeStyles({
 const routeList: RouteType[] = [
   { label: "SWAP", path: "/swap" },
   { label: "VAULT", path: "/vault" },
-  // { label: "SWAP", path: "/swap" },
+  { label: "STAKING", path: "/staking" },
 ]
 
 function App() {
@@ -66,6 +68,7 @@ function App() {
   const setPairsInfo = useSetRecoilState(pairsInfo);
   const setTokenInfo = useSetRecoilState(tokenInfos);
   const setLiquidityInfo = useSetRecoilState(liquidityPoolInfos);
+  const setFarmInfo = useSetRecoilState(farmInfos);
 
   const updateInfos = async () => {
     const priceData = await getPrices();
@@ -76,10 +79,10 @@ function App() {
       const liquidityPools = await requestLiquidityInfo(connState);
       calculateLpValues(liquidityPools, priceData);
       setLiquidityInfo(liquidityPools);
-    }
-    if (connState) {
+
       const farmInfos = await requestFarmInfo(connState);
-      console.log(farmInfos)
+      calculateAprValues(farmInfos, pairsData, liquidityPools, priceData);
+      setFarmInfo(farmInfos);
     }
   }
 
@@ -124,7 +127,7 @@ function App() {
               <Route exact path={"/vault"} component={() => <Vault />} />
               <Route path={"/vault/:vaultId"} component={() => <VaultDetail />} />
               <Route path={"/swap"} component={() => <Swap />} />
-              {/* <Route path={"/zap"} component={() => <Zap />} /> */}
+              <Route path={"/staking"} component={() => <Staking />} />
               <Route path={"/"} component={() => <></>} />
             </Switch>
             {popup ? <Popup>{popup}</Popup> : undefined}

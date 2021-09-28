@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { PublicKey, Connection } from '@solana/web3.js';
+import { PublicKey, Connection, AccountInfo } from '@solana/web3.js';
+import { OpenOrders } from '@project-serum/serum';
 import { cloneDeep } from 'lodash';
+import { MARKET_STATE_LAYOUT_V2 } from '@project-serum/serum/lib/market'
 
-import { getAddressForWhat, LIQUIDITY_POOLS } from 'utils/pools';
+import { getAddressForWhat, LiquidityPoolInfo, LIQUIDITY_POOLS } from 'utils/pools';
 import { TokenAmount } from 'utils/safe-math';
-import { getMultipleAccounts } from 'utils/web3';
+import { createAmmAuthority, getFilteredProgramAccountsAmmOrMarketCache, getMultipleAccounts } from 'utils/web3';
 import {
   getBigNumber,
   TOKEN_ACCOUNT_LAYOUT,
@@ -15,6 +17,9 @@ import {
 } from 'utils/layouts';
 
 import { PairInfo } from 'types';
+import { LIQUIDITY_POOL_PROGRAM_ID_V4, SERUM_PROGRAM_ID_V3 } from 'utils/ids';
+import { getLpMintListDecimals } from 'utils/liquidity';
+import { LP_TOKENS, TOKENS } from 'utils/tokens';
 
 export async function getPairs() {
   const res = await axios.get('https://api.raydium.io/pairs');
@@ -26,22 +31,24 @@ export const requestLiquidityInfo = async (conn: Connection) => {
   const publicKeys = [] as any
 
   LIQUIDITY_POOLS.forEach((pool) => {
-    const { poolCoinTokenAccount, poolPcTokenAccount, ammId, coin, pc, lp } = pool;
+    const { poolCoinTokenAccount, poolPcTokenAccount, ammOpenOrders, ammId, coin, pc, lp } = pool
 
     publicKeys.push(
       new PublicKey(poolCoinTokenAccount),
       new PublicKey(poolPcTokenAccount),
+      new PublicKey(ammOpenOrders),
       new PublicKey(ammId),
       new PublicKey(lp.mintAddress)
-    );
+    )
 
-    const poolInfo = cloneDeep(pool);
+    const poolInfo = cloneDeep(pool)
 
     poolInfo.coin.balance = new TokenAmount(0, coin.decimals)
     poolInfo.pc.balance = new TokenAmount(0, pc.decimals)
 
     liquidityPools[lp.mintAddress] = poolInfo
-  });
+  })
+
 
   const multipleInfo = await getMultipleAccounts(conn, publicKeys, "confirmed");
 
@@ -60,12 +67,23 @@ export const requestLiquidityInfo = async (conn: Connection) => {
             const parsed = TOKEN_ACCOUNT_LAYOUT.decode(data)
             // quick fix: Number can only safely store up to 53 bits
             poolInfo.coin.balance.wei = poolInfo.coin.balance.wei.plus(getBigNumber(parsed.amount))
+
             break
           }
           case 'poolPcTokenAccount': {
             const parsed = TOKEN_ACCOUNT_LAYOUT.decode(data)
 
             poolInfo.pc.balance.wei = poolInfo.pc.balance.wei.plus(getBigNumber(parsed.amount))
+
+            break
+          }
+          case 'ammOpenOrders': {
+            const OPEN_ORDERS_LAYOUT = OpenOrders.getLayout(new PublicKey(poolInfo.serumProgramId))
+            const parsed = OPEN_ORDERS_LAYOUT.decode(data)
+
+            const { baseTokenTotal, quoteTokenTotal } = parsed
+            poolInfo.coin.balance.wei = poolInfo.coin.balance.wei.plus(getBigNumber(baseTokenTotal))
+            poolInfo.pc.balance.wei = poolInfo.pc.balance.wei.plus(getBigNumber(quoteTokenTotal))
 
             break
           }
@@ -89,7 +107,7 @@ export const requestLiquidityInfo = async (conn: Connection) => {
             poolInfo.status = getBigNumber(status)
             poolInfo.coin.balance.wei = poolInfo.coin.balance.wei.minus(getBigNumber(needTakePnlCoin))
             poolInfo.pc.balance.wei = poolInfo.pc.balance.wei.minus(getBigNumber(needTakePnlPc))
-
+            
             break
           }
           // getLpSupply

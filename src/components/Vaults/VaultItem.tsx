@@ -1,10 +1,13 @@
+import { useRecoilValue } from 'recoil';
+import Countup from 'react-countup';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from "@material-ui/core";
 import SmallButton from "components/Buttons/SmallButton";
 import LPTokenView from './LPTokenView';
 import { Link } from 'react-router-dom';
 import { Vault } from 'types';
-import { FARMS } from 'utils/farms';
+import { farmInfos } from 'recoil/atoms';
+import BigNumber from 'bignumber.js';
 
 const useStyles = makeStyles({
   container: {
@@ -43,7 +46,18 @@ interface VaultItemProps {
 function VaultItem({ vault }: VaultItemProps) {
   const classes = useStyles();
 
-  const farm = FARMS.find(f => f.lp.symbol === vault.depositToken.symbol);
+  const farms = useRecoilValue(farmInfos);
+
+  const farm = Object.values(farms).find(f => f.lp.symbol === vault.depositToken.symbol);
+
+  let totalApr = new BigNumber(0);
+  if (farm && farm.apr) {
+    totalApr = BigNumber.sum(totalApr, Number(farm.apr))
+  }
+
+  if (farm && farm.fees) {
+    totalApr = BigNumber.sum(totalApr, Number(farm.fees))
+  }
 
   return (
     <>
@@ -52,7 +66,17 @@ function VaultItem({ vault }: VaultItemProps) {
           <LPTokenView lp={vault.depositToken} name={farm?.name} />
         </Grid>
         <Grid item xs={3} className={classes.itemContainer}>540.1 M</Grid>
-        <Grid item xs={3} className={classes.itemContainer}>118.0%</Grid>
+        <Grid item xs={3} className={classes.itemContainer}>
+          <Countup
+            start={0}
+            end={totalApr.toNumber()}
+            delay={0}
+            duration={0.75}
+            decimals={2}
+            decimal="."
+            suffix=" %"
+          />
+        </Grid>
         <Grid item xs={2} className={classes.btnContainer}>
           <Link to={`/vault/${vault.id}`}>
             <SmallButton />

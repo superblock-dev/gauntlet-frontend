@@ -44,7 +44,7 @@ const useStyles = makeStyles({
     fontSize: 16,
     fontWeight: 700,
     backgroundColor: 'transparent',
-    background: 'linear-gradient(175.49deg, #FFD271 26.78%, #825900 64.2%)',
+    background: 'linear-gradient(#FFD271, #825900)',
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent',
     lineHeight: '24.5px',

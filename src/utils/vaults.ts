@@ -15,9 +15,11 @@ export function calculateReward(reward: Reward, vault: Vault) {
   const amount = new TokenAmount(getBigNumber(reward.amount), reward.token.decimals);
   const rewardDebt = new TokenAmount(getBigNumber(reward.rewardDebt), reward.token.decimals);
   const strategy = getStrategyByTokenName(vault, reward.tokenName);
-  if (!strategy) return new BigNumber(0)
+  if (!strategy) return 0;
   const acc = new BigNumber(strategy.accRewardPerShare);
-  return amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther());
+  const rewardAmount = amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther());
+  
+  return Math.floor(rewardAmount.multipliedBy(Math.pow(10, reward.token.decimals)).toNumber()) / Math.pow(10, reward.token.decimals);
 }
 
 export function getVaultById(id: number) {
@@ -31,7 +33,7 @@ export function getStrategyByTokenName(vault: Vault, tname: TokenName) {
 export const USER_STATES: UserState[] = [
   {
     vaultId: 1,
-    balance: 480,
+    balance: 500,
     rewards: [
       {
         tokenName: 'BTC',
@@ -55,7 +57,7 @@ export const USER_STATES: UserState[] = [
   },
   {
     vaultId: 3,
-    balance: 480,
+    balance: 400,
     rewards: [
       {
         tokenName: 'BTC',
@@ -121,7 +123,7 @@ export const VAULTS: Vault[] = [
   {
     id: 2,
     fees: BASE_FEE,
-    depositToken: LP_TOKENS['FIDA-RAY-V4'],
+    depositToken: LP_TOKENS['RAY-SRM-V4'],
     totalDepositAmount: 540120439.512,
     strategies: [
       {
