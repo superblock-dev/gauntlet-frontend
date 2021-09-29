@@ -8,6 +8,7 @@ const Wrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 760px;
 `;
 
 class CustomCarousel extends Carousel {

@@ -1,23 +1,31 @@
-import { useRecoilState, useResetRecoilState } from "recoil";
-import { amountState, isDeposit as depositState } from "recoil/atoms";
-import CursorPointer from 'assets/CursorPointer.svg';
+import {
+  useRecoilState,
+  useResetRecoilState,
+  useRecoilValue,
+  useSetRecoilState
+} from "recoil";
+import {
+  amountState,
+  rewardPrices,
+  popupState,
+  isDeposit as depositState,
+} from "recoil/atoms";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { makeStyles } from "@material-ui/core"
-import dot from "../../assets/svgs/Dot.svg";
+import WalletConnectPopup from "components/WalletConnectPopup";
 import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
 import { TokenName } from "types";
 import { STONES } from "utils/stones";
-import LargeFlag from "../../assets/svgs/flags/large.svg";
-import SmallFlag from "../../assets/svgs/flags/small.svg";
-import MiniFlag from "../../assets/svgs/flags/mini-1.svg";
-import { useRecoilValue } from "recoil";
-import { rewardPrices } from "recoil/atoms";
-
+import CursorPointer from 'assets/CursorPointer.svg';
+import LargeFlag from "assets/svgs/flags/large.svg";
+import SmallFlag from "assets/svgs/flags/small.svg";
+import MiniFlag from "assets/svgs/flags/mini-1.svg";
+import dot from "assets/svgs/Dot.svg";
 
 const useStyles = makeStyles({
   activeFlag: {
     backgroundRepeat: "no-repeat",
-    height: 726,
     width: 420,
     display: "flex",
     alignItems: "center",
@@ -31,18 +39,19 @@ const useStyles = makeStyles({
     position: "relative",
   },
   xxlargeSoul: {
-    width: 187.28,
-    height: 161.71,
+    marginTop: 32,
+    width: 120,
+    height: 120,
+    position: 'relative',
   },
   xlargeSoul: {
     position: "absolute",
-    top: 53.33,
+    top: 92,
     left: "50%",
     transform: "translate(-50%, 0)"
   },
   tokenName: {
-    fontFamily: "Spectral SC",
-    marginTop: "-12px",
+    marginTop: 8,
     fontSize: 24,
     fontWeight: "bold",
     background: "linear-gradient(#FFD271, #825900)",
@@ -50,7 +59,7 @@ const useStyles = makeStyles({
     WebkitBackgroundClip: "text",
   },
   reward: {
-    fontFamily: "Spectral SC",
+    marginTop: 5,
     textAlign: 'center',
     fontSize: 18,
     fontWeight: "bold",
@@ -59,15 +68,14 @@ const useStyles = makeStyles({
   rewardInUSD: {
     fontFamily: "Spectral SC",
     textAlign: 'center',
-    marginTop: 5,
     fontSize: 14,
     fontWeight: "bold",
     color: "#FFD271",
   },
   claimButton: {
+    marginTop: 8,
     width: 104,
     height: 32,
-    marginTop: 12,
   },
   topDivider0: { // TODO: reuse
     marginTop: 32,
@@ -162,8 +170,13 @@ const useStyles = makeStyles({
     lineHeight: "14px",
     color: "#CBA344"
   },
+  connectBtn: {
+    marginTop: 32,
+    marginBottom: 184,
+  },
   confirmBtn: {
-    marginTop: 31
+    marginTop: 32,
+    marginBottom: 154,
   }
 });
 
@@ -181,23 +194,31 @@ type ActiveFlagProps = {
   onChange?: (mode: boolean) => void;
 } & FlagProps;
 
-function ConfirmFlag({ tokenName, deposited, balance, onClick, isDeposit }: ActiveFlagProps) {
+function NotConnectedFlag({ tokenName, deposited, balance, onClick }: ActiveFlagProps) {
   const classes = useStyles();
   const stone = STONES[tokenName].xxlarge;
 
   return (
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${SmallFlag})` }}>
-      <img className={classes.xxlargeSoul} src={stone} />
+      <div className={classes.xxlargeSoul}>
+        <img src={stone}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }} />
+      </div>
       <div className={classes.tokenName}>{tokenName}</div>
-      <div className={classes.inputContainer}>
+      <div className={classes.inputContainer} style={{ marginTop: 32, }}>
         <input className={classes.input} placeholder="0.000" />
       </div>
       <div className={classes.labelContainer}>
         <span className={classes.textLabel}>{`Deposit: ${(deposited).toFixed(6)}`}</span>
         <span className={classes.textLabel}>{`Balance: ${(balance).toFixed(6)}`}</span>
       </div>
-      <div className={classes.confirmBtn} onClick={onClick}>
-        <SmallPrimaryButton>Approve</SmallPrimaryButton>
+      <div className={classes.connectBtn} onClick={onClick}>
+        <SmallPrimaryButton>Connect Wallet</SmallPrimaryButton>
       </div>
     </div>
 
@@ -215,12 +236,20 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
 
   return (
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${LargeFlag})` }}>
-      <img className={classes.xxlargeSoul} src={stone} />
+      <div className={classes.xxlargeSoul}>
+        <img src={stone}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }} />
+      </div>
       <div className={classes.tokenName}>{tokenName}</div>
       <div className={classes.reward}>{`${reward ? reward : 0}`}</div>
       <div className={classes.rewardInUSD}>{`$ ${price.toFixed(3)}`}</div>
       <div className={classes.claimButton}>
-        <SmallButton text="CLAIM" />
+        <SmallButton text="claim" />
       </div>
       <div className={classes.topDivider0} />
       <div className={classes.topDivider1} />
@@ -235,20 +264,20 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
         </div>
       </div>
       <div className={classes.inputContainer}>
-        <input 
+        <input
           className={classes.input}
           type='number'
           step='0.1'
-          placeholder="0.000" 
+          placeholder="0.000"
           value={amount}
           onChange={(e) => setAmount(parseFloat(e.target.value))}
         />
-        <div 
+        <div
           className={classes.maxButton}
           onClick={() => {
             isDeposit ?
-            setAmount(balance) :
-            setAmount(deposited) 
+              setAmount(balance) :
+              setAmount(deposited)
           }}
         >MAX</div>
       </div>
@@ -265,19 +294,35 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
 
 function ActiveFlag({ tokenName, deposited, balance, reward }: ActiveFlagProps) {
   const [isDeposit, setIsDeposit] = useRecoilState(depositState);
+  const setPopupState = useSetRecoilState(popupState);
   const resetAmount = useResetRecoilState(amountState);
+  const { connected } = useWallet();
 
-  return <NormalFlag
-    tokenName={tokenName}
-    deposited={deposited}
-    balance={balance}
-    reward={reward}
-    isDeposit={isDeposit}
-    onClick={() => { return }}
-    onChange={(mode) => {
-      setIsDeposit(mode);
-      resetAmount();
-    }} />;
+  const handleConnect = () => {
+    // address check
+    setPopupState(<WalletConnectPopup />);
+  }
+
+  return connected ?
+    <NormalFlag
+      tokenName={tokenName}
+      deposited={deposited}
+      balance={balance}
+      reward={reward}
+      isDeposit={isDeposit}
+      onClick={() => { return }}
+      onChange={(mode) => {
+        setIsDeposit(mode);
+        resetAmount();
+      }} /> :
+    <NotConnectedFlag
+      tokenName={tokenName}
+      deposited={deposited}
+      balance={balance}
+      reward={reward}
+      onClick={handleConnect}
+    />
+
 }
 
 function InActiveFlag({ tokenName }: FlagProps) {

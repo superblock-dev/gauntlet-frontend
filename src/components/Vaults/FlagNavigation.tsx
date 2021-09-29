@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core";
-import CursorPointer from "../../assets/CursorPointer.svg";
-import leftNavigation from "../../assets/svgs/big-arrow-left.svg";
-import rightNavigation from "../../assets/svgs/big-arrow-right.svg";
+import CursorPointer from "assets/CursorPointer.svg";
+import leftNavigation from "assets/svgs/big-arrow-left.svg";
+import rightNavigation from "assets/svgs/big-arrow-right.svg";
 
 const useStyles = makeStyles({
   navigationIcon: {

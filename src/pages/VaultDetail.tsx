@@ -21,6 +21,7 @@ import StoneDisplay from "components/Vaults/StoneDisplay";
 import { Reward, Strategy, UserState, Vault } from "types";
 import { calculateReward, USER_STATES, VAULTS } from "utils/vaults";
 import { TOKENS } from "utils/tokens";
+import SmallButton from "components/Buttons/SmallButton";
 
 function createItem(vault: Vault, reward: Reward, balance: number, active: boolean) {
   const pendingReward = calculateReward(reward, vault);
@@ -144,7 +145,7 @@ const useStyles = makeStyles({
   },
   divider: {
     marginTop: 80,
-    marginBottom: 40,
+    marginBottom: 0,
     height: 20,
     width: 388,
     backgroundImage: `url(${LineMixPurpleAndGold})`,
@@ -154,12 +155,16 @@ const useStyles = makeStyles({
   },
   sliderContainer: {
     width: 1440,
-    height: 960,
+    minHeight: 760,
+    height: 'auto',
     position: "relative",
   },
   stoneDisplayContainer: {
-    width: 1440,
-  }
+    overflowX: 'hidden',
+    width: 760,
+    height: 160,
+    position: 'relative',
+  },
 });
 
 function VaultDetail() {
@@ -183,8 +188,8 @@ function VaultDetail() {
     } as UserState
   }
 
-  if ((vault.depositToken.mintAddress in liquidityPools)) { 
-  const lpValue = liquidityPools[vault.depositToken.mintAddress].currentLpValue;
+  if ((vault.depositToken.mintAddress in liquidityPools)) {
+    const lpValue = liquidityPools[vault.depositToken.mintAddress].currentLpValue;
     if (lpValue) {
       userState.lpValueInUSD = new BigNumber(userState.balance).multipliedBy(lpValue)
     }
@@ -275,8 +280,8 @@ function VaultDetail() {
       <div className={classes.stoneDisplayContainer}>
         <StoneDisplay items={stones} />
       </div>
-
-      <div className={classes.divider} />
+      <SmallButton text={'claim all'} />
+      <div className={classes.divider} style={{ marginTop: 48 }} />
 
       <div className={classes.sliderContainer}>
         <FlagNavigation onClick={(direction: number) => {

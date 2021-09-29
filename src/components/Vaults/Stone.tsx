@@ -6,13 +6,14 @@ import TooltipVaultDetail from 'assets/svgs/TooltipVaultDetail.svg';
 const useStyles = makeStyles({
   container: {
     position: "relative",
+    display: 'inline-block',
     width: 114,
     height: 120,
     '&:hover $tooltipBox': {
-      display: 'block',
+      display: 'inline-block',
     },
     '&:hover $tooltipText': {
-      display: 'block',
+      display: 'inline-block',
     },
   },
   tooltipBox: {

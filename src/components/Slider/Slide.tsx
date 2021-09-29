@@ -3,17 +3,11 @@ import { Spring } from "react-spring/renderprops";
 
 const SlideContainer = styled.div`
   position: absolute;
-  height: 100%;
   top: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transform-origin: 50% 50%;
-  img {
-    object-fit: scale-down;
-    display: block;
-    max-height: 100%;
-  }
 `;
 
 interface IProps {
