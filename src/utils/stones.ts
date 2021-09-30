@@ -4,6 +4,7 @@ import SmallStoneSOL from 'assets/svgs/stones_small/SOL.svg';
 import SmallStoneUSDC from 'assets/svgs/stones_small/USDC.svg';
 import SmallStoneUSDT from 'assets/svgs/stones_small/USDT.svg';
 import SmallStoneLET from 'assets/svgs/stones_small/LET.svg';
+import SmallStoneRAY from 'assets/svgs/stones_small/RAY.svg';
 import SmallStoneETC from 'assets/svgs/stones_small/ETC.svg';
 
 import StoneBTC from 'assets/svgs/stones/BTC.svg';
@@ -12,6 +13,7 @@ import StoneSOL from 'assets/svgs/stones/SOL.svg';
 import StoneUSDC from 'assets/svgs/stones/USDC.svg';
 import StoneUSDT from 'assets/svgs/stones/USDT.svg';
 import StoneLET from 'assets/svgs/stones/LET.svg';
+import StoneRAY from 'assets/svgs/stones/RAY.svg';
 import StoneETC from 'assets/svgs/stones/ETC.svg';
 
 import XLargeStoneBTC from 'assets/svgs/stones_xlarge/BTC.svg';
@@ -20,6 +22,7 @@ import XLargeStoneSOL from 'assets/svgs/stones_xlarge/SOL.svg';
 import XLargeStoneUSDC from 'assets/svgs/stones_xlarge/USDC.svg';
 import XLargeStoneUSDT from 'assets/svgs/stones_xlarge/USDT.svg';
 import XLargeStoneLET from 'assets/svgs/stones_xlarge/LET.svg';
+import XLargeStoneRAY from 'assets/svgs/stones_xlarge/RAY.svg';
 import XLargeStoneETC from 'assets/svgs/stones_xlarge/ETC.svg';
 
 import XLargeStoneBgEffectBTC from 'assets/svgs/stones_xlarge_bg_effect/BTC.svg';
@@ -28,6 +31,7 @@ import XLargeStoneBgEffectSOL from 'assets/svgs/stones_xlarge_bg_effect/SOL.svg'
 import XLargeStoneBgEffectUSDC from 'assets/svgs/stones_xlarge_bg_effect/USDC.svg';
 import XLargeStoneBgEffectUSDT from 'assets/svgs/stones_xlarge_bg_effect/USDT.svg';
 import XLargeStoneBgEffectLET from 'assets/svgs/stones_xlarge_bg_effect/LET.svg';
+import XLargeStoneBgEffectRAY from 'assets/svgs/stones_xlarge_bg_effect/RAY.svg';
 import XLargeStoneBgEffectETC from 'assets/svgs/stones_xlarge_bg_effect/ETC.svg';
 
 import XLargeStoneDeactivatedBTC from 'assets/svgs/stones_xlarge_deactivated/BTC.svg';
@@ -36,6 +40,7 @@ import XLargeStoneDeactivatedSOL from 'assets/svgs/stones_xlarge_deactivated/SOL
 import XLargeStoneDeactivatedUSDC from 'assets/svgs/stones_xlarge_deactivated/USDC.svg';
 import XLargeStoneDeactivatedUSDT from 'assets/svgs/stones_xlarge_deactivated/USDT.svg';
 import XLargeStoneDeactivatedLET from 'assets/svgs/stones_xlarge_deactivated/LET.svg';
+import XLargeStoneDeactivatedRAY from 'assets/svgs/stones_xlarge_deactivated/RAY.svg';
 import XLargeStoneDeactivatedETC from 'assets/svgs/stones_xlarge_deactivated/ETC.svg';
 
 import XLargeStoneOutlineBTC from 'assets/svgs/stones_xlarge_outline/BTC.svg';
@@ -44,6 +49,7 @@ import XLargeStoneOutlineSOL from 'assets/svgs/stones_xlarge_outline/SOL.svg';
 import XLargeStoneOutlineUSDC from 'assets/svgs/stones_xlarge_outline/USDC.svg';
 import XLargeStoneOutlineUSDT from 'assets/svgs/stones_xlarge_outline/USDT.svg';
 import XLargeStoneOutlineLET from 'assets/svgs/stones_xlarge_outline/LET.svg';
+import XLargeStoneOutlineRAY from 'assets/svgs/stones_xlarge_outline/RAY.svg';
 import XLargeStoneOutlineETC from 'assets/svgs/stones_xlarge_outline/ETC.svg';
 
 import XXLargeStoneBTC from 'assets/svgs/stones_xxlarge/BTC.svg';
@@ -52,6 +58,7 @@ import XXLargeStoneSOL from 'assets/svgs/stones_xxlarge/SOL.svg';
 import XXLargeStoneUSDC from 'assets/svgs/stones_xxlarge/USDC.svg';
 import XXLargeStoneUSDT from 'assets/svgs/stones_xxlarge/USDT.svg';
 import XXLargeStoneLET from 'assets/svgs/stones_xxlarge/LET.svg';
+import XXLargeStoneRAY from 'assets/svgs/stones_xxlarge/RAY.svg';
 import XXLargeStoneETC from 'assets/svgs/stones_xxlarge/ETC.svg';
 
 import LargeFlagBTC from "assets/svgs/flags_large/BTC.svg";
@@ -96,6 +103,7 @@ export const SMALL_STONES: { [key: string]: string } = {
   USDC: SmallStoneUSDC,
   USDT: SmallStoneUSDT,
   LET: SmallStoneLET,
+  RAY: SmallStoneRAY,
   ETC: SmallStoneETC,
 }
 
@@ -106,6 +114,7 @@ export const LARGE_STONES: { [key: string]: string } = {
   USDC: StoneUSDC,
   USDT: StoneUSDT,
   LET: StoneLET,
+  RAY: StoneRAY,
   ETC: StoneETC,
 }
 
@@ -123,7 +132,7 @@ interface StoneAsset {
   mini2Flag: string;
 }
 
-export const STONES: { [key in TokenName]: StoneAsset } = {
+export const STONES: { [key in TokenName | string]: StoneAsset } = {
   BTC: {
     normal: StoneBTC,
     small: SmallStoneBTC,
@@ -201,6 +210,19 @@ export const STONES: { [key in TokenName]: StoneAsset } = {
     smallFlag: SmallFlagLET,
     mini1Flag: Mini1FlagLET,
     mini2Flag: Mini2FlagLET,
+  },
+  RAY: {
+    normal: StoneRAY,
+    small: SmallStoneRAY,
+    xlarge: XLargeStoneRAY,
+    xlargeBgEffect: XLargeStoneBgEffectRAY,
+    xlargeDeactivated: XLargeStoneDeactivatedRAY,
+    xlargeOutline: XLargeStoneOutlineRAY,
+    xxlarge: XXLargeStoneRAY,
+    largeFlag: LargeFlagETC,
+    smallFlag: SmallFlagETC,
+    mini1Flag: Mini1FlagETC,
+    mini2Flag: Mini2FlagETC,
   },
   ETC: {
     normal: StoneETC,

@@ -3,7 +3,19 @@ import { ReactNode } from "react";
 import { LPToken, Token } from "utils/tokens";
 
 
-export type TokenName = "BTC" | "ETH" | "SOL" | "USDT" | "USDC" | "LET" | "ETC";
+export type TokenName = 
+  "BTC" | 
+  "ETH" | 
+  "SOL" | 
+  "USDT" | 
+  "USDC" | 
+  "LET" | 
+  "RAY" | 
+  "RAY-ETH" |
+  "RAY-SOL" |
+  "RAY-USDC" |
+  "RAY-USDT" |
+  "ETC";
 
 // Temporary types
 export interface Fees {
@@ -30,7 +42,7 @@ export interface Vault {
 
 export interface Reward {
   tokenName: TokenName;
-  token: Token;
+  token: Token | LPToken;
   amount: number;
   rewardDebt: number;
   pendingReward?: number;

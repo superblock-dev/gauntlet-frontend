@@ -10,6 +10,7 @@ import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import { ReactComponent as LineDivider } from 'assets/svgs/LineDivider.svg';
 import { calculateReward, getVaultById, USER_STATES, } from "utils/vaults";
 import { UserState, Vault } from "types";
+import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
 const useStyles = makeStyles({
   contentContainer: {
     width: 960,
@@ -89,6 +90,15 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
     if (f && f.apr) {
       totalApr = BigNumber.sum(totalApr, Number(f.apr))
     }
+
+    totalApr = s.rewards.reduce((p, r) => {
+      const strategyFarm = STRATEGY_FARMS.find(sf => sf.token === r.tokenName);
+      if (strategyFarm) {
+        p = calculateApyInPercentage(p, strategyFarm.apy)
+      }
+      return p
+    }, totalApr);
+    
     if (f && f.fees) {
       totalApr = BigNumber.sum(totalApr, Number(f.fees))
     }

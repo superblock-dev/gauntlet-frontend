@@ -69,7 +69,7 @@ img {
 
 /* animation */
 .stone {
-  animation: slide 8s linear 0s infinite;
+  animation: slide 32s linear 0s infinite;
 }
 
 .stone:hover {

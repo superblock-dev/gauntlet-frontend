@@ -127,6 +127,7 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD,
   const classes = useStyles();
   const rewardTokenList = [
     'LET',
+    'RAY',
     'USDT',
     'USDC',
     'SOL',

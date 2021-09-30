@@ -4,7 +4,9 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles, withStyles } from "@material-ui/core";
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
-import { LARGE_STONES, SMALL_STONES } from 'utils/stones';
+import { LARGE_STONES, SMALL_STONES, STONES } from 'utils/stones';
+import { StrategyFarm } from 'utils/strategies';
+import { TokenName } from 'types';
 
 const Accordion = withStyles({
   root: {
@@ -90,18 +92,6 @@ const useStyles = makeStyles({
     backgroundColor: 'rgba(138, 100, 247, 0.1)',
     borderRadius: 4,
   },
-  largeIcon: {
-    position: 'absolute',
-    left: 64,
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-  },
-  smallIcon: {
-    position: 'absolute',
-    left: 48,
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-  },
   largeName: {
     position: 'absolute',
     left: 104,
@@ -136,19 +126,94 @@ const useStyles = makeStyles({
   },
 });
 
-export interface RewardAPR {
-  token: string;
-  value: number;
-}
+const useIconStyles = makeStyles({
+  largeIcon: {
+    position: 'absolute',
+    left: 64,
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+  largeIcon1: {
+    position: 'absolute',
+    left: 40,
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+  largeIcon2: {
+    position: 'absolute',
+    left: 64,
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+  smallIcon: {
+    position: 'absolute',
+    left: 48,
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+  smallIcon1: {
+    position: 'absolute',
+    left: 37,
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+  smallIcon2: {
+    position: 'absolute',
+    left: 49,
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+});
 
 export interface RewardListProps {
-  rewards: RewardAPR[];
+  rewards: StrategyFarm[];
   mainIndex: number;
+}
+
+// TODO: 스톤 이미지 관련 컴포넌트 통일
+interface StoneImageProps {
+  tokenName: string | TokenName,
+  detail?: boolean,
+}
+
+function StoneImage({ tokenName, detail }: StoneImageProps) {
+  const classes = useIconStyles();
+  const lpTokenNames = [
+    "RAY-ETH",
+    'RAY-SOL',
+    "RAY-USDC",
+    "RAY-USDT",
+  ];
+
+  if (lpTokenNames.includes(tokenName)) {
+    const firstToken = tokenName.split("-")[0];
+    const secondToken = tokenName.split("-")[1];
+    const stone1 = detail ? STONES[firstToken].small : STONES[firstToken].normal;
+    const stone2 = detail ? STONES[secondToken].small : STONES[secondToken].normal;
+    return (
+      <>
+        <img
+          src={stone1}
+          className={detail ? classes.smallIcon1 : classes.largeIcon1}
+        />
+        <img
+          src={stone2}
+          className={detail ? classes.smallIcon2 : classes.largeIcon2}
+        />
+      </>
+    )
+  }
+  const stone = detail ? STONES[tokenName].small : STONES[tokenName].normal;
+  return (
+    <img src={stone}
+      className={detail ? classes.smallIcon : classes.largeIcon}
+    />
+  )
 }
 
 function RewardList({ rewards, mainIndex }: RewardListProps) {
   const classes = useStyles();
-  const index = mainIndex % 6;
+  const index = mainIndex % rewards.length;
 
   return (
     <>
@@ -159,9 +224,9 @@ function RewardList({ rewards, mainIndex }: RewardListProps) {
           <div className={classes.divider} />
           <Accordion style={{ marginBottom: 72, marginTop: 0, }}>
             <AccordionSummary expandIcon={<CaretDown style={{ cursor: `url(${CursorPointer}), pointer !important` }} />} >
-              <img className={classes.largeIcon} src={LARGE_STONES[rewards[index].token]} />
+              <StoneImage tokenName={rewards[index].token} />
               <div className={classes.largeName}>{rewards[index].token}</div>
-              <div className={classes.largePercentage}>{`${((rewards[index].value - 1) * 100).toFixed(3)} %`}</div>
+              <div className={classes.largePercentage}>{`${((rewards[index].apy) * 100).toFixed(2)} %`}</div>
             </AccordionSummary>
             <AccordionDetails>
               {
@@ -169,9 +234,9 @@ function RewardList({ rewards, mainIndex }: RewardListProps) {
                   if (r.token === rewards[index].token) return null;
                   return (
                     <div className={classes.rewardItem}>
-                      <img className={classes.smallIcon} src={SMALL_STONES[r.token]} />
+                      <StoneImage tokenName={r.token} detail />
                       <div className={classes.smallName}>{r.token}</div>
-                      <div className={classes.smallPercentage}>{`${((r.value - 1) * 100).toFixed(3)} %`}</div>
+                      <div className={classes.smallPercentage}>{`${((r.apy) * 100).toFixed(2)} %`}</div>
                     </div>
                   )
                 })

@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { Vault } from 'types';
 import { farmInfos } from 'recoil/atoms';
 import BigNumber from 'bignumber.js';
+import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
 
 const useStyles = makeStyles({
   container: {
@@ -50,13 +51,23 @@ function VaultItem({ vault }: VaultItemProps) {
 
   const farm = Object.values(farms).find(f => f.lp.symbol === vault.depositToken.symbol);
 
-  let totalApr = new BigNumber(0);
+  const highestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy < v.apy ? v : p);
+  // const lowestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy > v.apy ? v : p);
+
+  let totalHApr = new BigNumber(0);
+  // let totalLApr = new BigNumber(0);
+  
   if (farm && farm.apr) {
-    totalApr = BigNumber.sum(totalApr, Number(farm.apr))
+    totalHApr = BigNumber.sum(totalHApr, Number(farm.apr))
+    // totalLApr = BigNumber.sum(totalLApr, Number(farm.apr))
   }
 
+  const highestApy = calculateApyInPercentage(totalHApr, highestStrategy.apy)
+  // const lowestApy = calculateApyInPercentage(totalLApr, lowestStrategy.apy)
+
   if (farm && farm.fees) {
-    totalApr = BigNumber.sum(totalApr, Number(farm.fees))
+    totalHApr = BigNumber.sum(highestApy, Number(farm.fees))
+    // totalLApr = BigNumber.sum(lowestApy, Number(farm.fees))
   }
 
   return (
@@ -67,9 +78,19 @@ function VaultItem({ vault }: VaultItemProps) {
         </Grid>
         <Grid item xs={3} className={classes.itemContainer}>540.1 M</Grid>
         <Grid item xs={3} className={classes.itemContainer}>
+          {/* <Countup
+            start={0}
+            end={totalLApr.toNumber()}
+            delay={0}
+            duration={0.75}
+            decimals={2}
+            decimal="."
+            suffix=""
+          />
+          {` ~ `} */}
           <Countup
             start={0}
-            end={totalApr.toNumber()}
+            end={totalHApr.toNumber()}
             delay={0}
             duration={0.75}
             decimals={2}

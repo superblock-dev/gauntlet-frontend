@@ -52,13 +52,14 @@ function App() {
   const classes = useStyles();
   const network = WalletAdapterNetwork.Mainnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
   const wallets = useMemo(() => [
     getPhantomWallet(),
   ], [network]);
 
   useEffect(() => {
     const connection = new Connection(
-      clusterApiUrl('mainnet-beta'),
+      clusterApiUrl(network),
       'confirmed',
     );
     setWeb3Connection(connection);
@@ -72,17 +73,23 @@ function App() {
 
   const updateInfos = async () => {
     const priceData = await getPrices();
+    priceData["LET"] = 30;
     setPrices(priceData);
     const pairsData = await getPairs();
     setPairsInfo(pairsData);
     if (connState) {
-      const liquidityPools = await requestLiquidityInfo(connState);
-      calculateLpValues(liquidityPools, priceData);
-      setLiquidityInfo(liquidityPools);
+      // API server could be downed...
+      try {
+        const liquidityPools = await requestLiquidityInfo(connState);
+        calculateLpValues(liquidityPools, priceData);
+        setLiquidityInfo(liquidityPools);
 
-      const farmInfos = await requestFarmInfo(connState);
-      calculateAprValues(farmInfos, pairsData, liquidityPools, priceData);
-      setFarmInfo(farmInfos);
+        const farmInfos = await requestFarmInfo(connState);
+        calculateAprValues(farmInfos, pairsData, liquidityPools, priceData);
+        setFarmInfo(farmInfos);
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 

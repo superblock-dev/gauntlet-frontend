@@ -37,6 +37,8 @@ const useStyles = makeStyles({
     padding: 4,
     backgroundRepeat: "no-repeat",
     position: "relative",
+    display: 'flex',
+    justifyContent: 'center',
   },
   xxlargeSoul: {
     marginTop: 32,
@@ -46,9 +48,9 @@ const useStyles = makeStyles({
   },
   xlargeSoul: {
     position: "absolute",
-    top: 92,
+    top: "20%",
     left: "50%",
-    transform: "translate(-50%, 0)"
+    transform: "translate(-50%, -10%)"
   },
   tokenName: {
     marginTop: 8,
@@ -194,20 +196,62 @@ type ActiveFlagProps = {
   onChange?: (mode: boolean) => void;
 } & FlagProps;
 
+function stoneImage(tokenName: TokenName, xlarge?: boolean) {
+  const lpTokenNames: TokenName[] = [
+    "RAY-ETH",
+    'RAY-SOL',
+    "RAY-USDC",
+    "RAY-USDT",
+  ];
+
+  if (lpTokenNames.includes(tokenName)) {
+    const firstToken = tokenName.split("-")[0];
+    const secondToken = tokenName.split("-")[1];
+    const stone1 = xlarge ? STONES[firstToken].xlarge : STONES[firstToken].xxlarge;
+    const stone2 = xlarge ? STONES[secondToken].xlarge : STONES[secondToken].xxlarge;
+    return (
+      <>
+        <img
+          src={stone1}
+          style={{
+            position: "absolute",
+            top: '50%',
+            left: '33.3%',
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+        <img
+          src={stone2}
+          style={{
+            position: "absolute",
+            top: '50%',
+            right: "33.3%",
+            transform: "translate(50%, -50%)",
+          }}
+        />
+      </>
+    )
+  }
+  const stone = xlarge ? STONES[tokenName].xlarge : STONES[tokenName].xxlarge;
+  return (
+    <img src={stone}
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+      }} />
+  )
+}
+
 function NotConnectedFlag({ tokenName, deposited, balance, onClick }: ActiveFlagProps) {
   const classes = useStyles();
-  const stone = STONES[tokenName].xxlarge;
-
   return (
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${SmallFlag})` }}>
       <div className={classes.xxlargeSoul}>
-        <img src={stone}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }} />
+        {
+          stoneImage(tokenName)
+        }
       </div>
       <div className={classes.tokenName}>{tokenName}</div>
       <div className={classes.inputContainer} style={{ marginTop: 32, }}>
@@ -231,19 +275,12 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
   const [amount, setAmount] = useRecoilState(amountState);
 
   const mode = isDeposit ? "Deposit" : "Withdraw";
-  const stone = STONES[tokenName].xxlarge;
   const price = reward ? reward * prices[tokenName] : 0;
 
   return (
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${LargeFlag})` }}>
       <div className={classes.xxlargeSoul}>
-        <img src={stone}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }} />
+        {stoneImage(tokenName)}
       </div>
       <div className={classes.tokenName}>{tokenName}</div>
       <div className={classes.reward}>{`${reward ? reward : 0}`}</div>
@@ -327,10 +364,11 @@ function ActiveFlag({ tokenName, deposited, balance, reward }: ActiveFlagProps) 
 
 function InActiveFlag({ tokenName }: FlagProps) {
   const classes = useStyles();
-  const stone = STONES[tokenName].xlarge;
   return (
     <div className={classes.inactiveFlag} style={{ backgroundImage: `url(${MiniFlag})` }}>
-      <img className={classes.xlargeSoul} src={stone} />
+      <div className={classes.xxlargeSoul}>
+        {stoneImage(tokenName, true)}
+      </div>
     </div>
   );
 }

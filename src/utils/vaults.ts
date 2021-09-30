@@ -38,18 +38,24 @@ export const USER_STATES: UserState[] = [
       {
         tokenName: 'BTC',
         token: TOKENS.BTC,
-        amount: 280,
+        amount: 50,
         rewardDebt: 0.000272,
       },
       {
         tokenName: 'SOL',
         token: TOKENS.SOL,
-        amount: 50,
+        amount: 230,
         rewardDebt: 0.25,
       },
       {
         tokenName: 'USDC',
         token: TOKENS.USDC,
+        amount: 50,
+        rewardDebt: 560000,
+      },
+      {
+        tokenName: 'LET',
+        token: TOKENS.LET,
         amount: 50,
         rewardDebt: 560000,
       }
@@ -114,6 +120,12 @@ export const VAULTS: Vault[] = [
       },
       {
         rewardToken: "USDC",
+        depositAmount: 50000000,
+        accRewardPerShare: 1560000,
+        lastRewardUpdatedTime: 1632359665,
+      },
+      {
+        rewardToken: "LET",
         depositAmount: 50000000,
         accRewardPerShare: 1560000,
         lastRewardUpdatedTime: 1632359665,

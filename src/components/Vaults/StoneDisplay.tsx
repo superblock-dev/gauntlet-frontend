@@ -2,13 +2,36 @@ import { makeStyles } from "@material-ui/styles";
 import { TokenName } from "types";
 import Stone from "./Stone";
 
-const tokens: TokenName[] = ["BTC", "ETH", "SOL", "USDC", "USDT", "LET"];
+const tokens: TokenName[] = [
+  "BTC", 
+  "ETH", 
+  "SOL", 
+  "USDC", 
+  "USDT", 
+  "RAY",
+  "LET", 
+  "RAY-ETH",
+  "RAY-SOL",
+  "RAY-USDC",
+  "RAY-USDT",
+  "BTC", 
+  "ETH", 
+  "SOL", 
+  "USDC", 
+  "USDT", 
+  "RAY",
+  "LET", 
+  "RAY-ETH",
+  "RAY-SOL",
+  "RAY-USDC",
+  "RAY-USDT",
+];
 
 const useStyles = makeStyles({
   container: {
-    width: 114 * tokens.length * 2,
+    width: 120 * tokens.length * 2,
     height: 160,
-    overflowY: 'hidden',
+    overflow: 'hidden',
     whiteSpace: 'nowrap',
   },
 })
@@ -23,7 +46,12 @@ export default function StoneDisplay({ items }: StoneDisplayProps) {
 
   return (
     <div className={`${classes.container} stone`}>
-      {[...tokens, ...tokens].map((item => <Stone tokenName={item} amount={item in items ? items[item] : 0} />))}
+      {[...tokens, ...tokens].map((item => {
+        return (
+          <Stone tokenName={item} amount={item in items ? items[item] : undefined} />
+        )
+      }
+      ))}
     </div>
   )
 

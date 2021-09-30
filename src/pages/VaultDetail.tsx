@@ -11,17 +11,18 @@ import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
 import VaultSummary from "components/VaultDetail/VaultSummary";
 import VaultDetails from "components/VaultDetail/VaultDetails";
 import MediumButton from "components/Buttons/MediumButton";
-import RewardList, { RewardAPR } from "components/VaultDetail/RewardList";
+import RewardList from "components/VaultDetail/RewardList";
 import Slider from "components/Slider";
 import CursorPointer from 'assets/CursorPointer.svg';
 import Flag from "components/Vaults/Flag";
 import { v4 as uuidv4 } from "uuid";
 import FlagNavigation from "components/Vaults/FlagNavigation";
 import StoneDisplay from "components/Vaults/StoneDisplay";
-import { Reward, Strategy, UserState, Vault } from "types";
+import { Reward, UserState, Vault } from "types";
 import { calculateReward, USER_STATES, VAULTS } from "utils/vaults";
-import { TOKENS } from "utils/tokens";
+import { LP_TOKENS, TOKENS } from "utils/tokens";
 import SmallButton from "components/Buttons/SmallButton";
+import { STRATEGY_FARMS } from "utils/strategies";
 
 function createItem(vault: Vault, reward: Reward, balance: number, active: boolean) {
   const pendingReward = calculateReward(reward, vault);
@@ -76,8 +77,38 @@ const REWARDS: Reward[] = [
     rewardDebt: 0,
   },
   {
+    tokenName: 'RAY',
+    token: TOKENS.RAY,
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
     tokenName: 'LET',
     token: TOKENS.LET,
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
+    tokenName: 'RAY-ETH',
+    token: LP_TOKENS['RAY-ETH-V4'],
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
+    tokenName: 'RAY-SOL',
+    token: LP_TOKENS['RAY-SOL-V4'],
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
+    tokenName: 'RAY-USDC',
+    token: LP_TOKENS['RAY-USDC-V4'],
+    amount: 0,
+    rewardDebt: 0,
+  },
+  {
+    tokenName: 'RAY-USDT',
+    token: LP_TOKENS['RAY-USDT-V4'],
     amount: 0,
     rewardDebt: 0,
   },
@@ -161,7 +192,7 @@ const useStyles = makeStyles({
   },
   stoneDisplayContainer: {
     overflowX: 'hidden',
-    width: 760,
+    width: '100vw',
     height: 160,
     position: 'relative',
   },
@@ -204,33 +235,6 @@ function VaultDetail() {
     setSlideIndex,
     userState,
   );
-
-  const rewardAPRs: RewardAPR[] = [
-    {
-      token: 'BTC',
-      value: 1.58432,
-    },
-    {
-      token: 'ETH',
-      value: 1.63592,
-    },
-    {
-      token: 'SOL',
-      value: 1.57201,
-    },
-    {
-      token: 'USDC',
-      value: 1.15039,
-    },
-    {
-      token: 'USDT',
-      value: 1.25131,
-    },
-    {
-      token: 'LET',
-      value: 1.8913,
-    },
-  ];
 
   const stones: { [key: string]: number } = {};
   userState.rewards.forEach((reward) => {
@@ -293,7 +297,7 @@ function VaultDetail() {
       </div>
 
       <RewardList
-        rewards={rewardAPRs}
+        rewards={STRATEGY_FARMS}
         mainIndex={slideIndex}
       />
 

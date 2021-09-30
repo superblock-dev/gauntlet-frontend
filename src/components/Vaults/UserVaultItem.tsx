@@ -246,10 +246,12 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
                   <div className={classes.rewardDetailContainer}>
                     <img className={classes.rewardIcon} src={SMALL_STONES[reward.tokenName]} />
                     <div className={classes.rewardSymbolText}>{reward.tokenName}</div>
-                    <div className={classes.rewardAmount}>{
-                      reward.pendingReward ?
-                        reward.pendingReward :
-                        ''}</div>
+                    <div className={classes.rewardAmount}>
+                      {
+                        reward.pendingReward ?
+                          reward.pendingReward :
+                          0
+                      }</div>
                   </div>
                 ))
               }

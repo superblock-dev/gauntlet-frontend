@@ -86,7 +86,7 @@ function VaultDetails({ vault }: VaultDetailProps) {
       <div className={classes.infoContainer}>
         <div className={classes.assetInfoContainer}>
           <div className={classes.textName}>Asset</div>
-          <div className={classes.textValue}>{`${vault.depositToken.name} lp`}</div>
+          <div className={classes.textValue}>{`${vault.depositToken.name.split(' LP')[0]} lp`}</div>
           <div className={classes.textName}>Farm Name</div>
           <div className={classes.textValue}>{vault.depositToken.urlHelper}</div>
         </div>
