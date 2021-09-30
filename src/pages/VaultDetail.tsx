@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
-import { liquidityPoolInfos } from "recoil/atoms";
+import { farmInfos, liquidityPoolInfos } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
 import { BigNumber } from 'bignumber.js';
 
@@ -22,7 +22,7 @@ import { Reward, UserState, Vault } from "types";
 import { calculateReward, USER_STATES, VAULTS } from "utils/vaults";
 import { LP_TOKENS, TOKENS } from "utils/tokens";
 import SmallButton from "components/Buttons/SmallButton";
-import { STRATEGY_FARMS } from "utils/strategies";
+import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
 
 function createItem(vault: Vault, reward: Reward, balance: number, active: boolean) {
   const pendingReward = calculateReward(reward, vault);
@@ -202,13 +202,17 @@ function VaultDetail() {
   const classes = useStyles();
   const { goBack } = useHistory();
   const liquidityPools = useRecoilValue(liquidityPoolInfos);
+  const farms = useRecoilValue(farmInfos);
   const [slideIndex, setSlideIndex] = useState(0);
   let { vaultId } = useParams<VaultDetailParams>();
   let vId = parseInt(vaultId);
   const vault = VAULTS.find(v => v.id === vId);
+  if (vId === undefined || vault === undefined) return <></> // TODO: Page not found
+
+  const farm = Object.values(farms).find(f => f.lp.symbol === vault?.depositToken.symbol);
   let userState = USER_STATES.find(s => s.vaultId === vId);
 
-  if (vId === undefined || vault === undefined) return <></> // TODO: Page not found
+  if (farm === undefined) return <></> // TODO: Page not found
 
   if (!userState) {
     userState = {
@@ -225,6 +229,27 @@ function VaultDetail() {
       userState.lpValueInUSD = new BigNumber(userState.balance).multipliedBy(lpValue)
     }
   }
+
+  /** APY 계산 */
+  const highestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy < v.apy ? v : p);
+  const lowestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy > v.apy ? v : p);
+
+  let totalHApr = new BigNumber(0);
+  let totalLApr = new BigNumber(0);
+  
+  if (farm.apr) {
+    totalHApr = BigNumber.sum(totalHApr, Number(farm.apr))
+    totalLApr = BigNumber.sum(totalLApr, Number(farm.apr))
+  }
+
+  const highestApy = calculateApyInPercentage(totalHApr, highestStrategy.apy)
+  const lowestApy = calculateApyInPercentage(totalLApr, lowestStrategy.apy)
+
+  if (farm.fees) {
+    totalHApr = BigNumber.sum(highestApy, Number(farm.fees))
+    totalLApr = BigNumber.sum(lowestApy, Number(farm.fees))
+  }
+
 
   const lpBalance: number = 939.212316 // User LP Token Balance
 
@@ -277,6 +302,8 @@ function VaultDetail() {
       <VaultSummary
         balance={userState.balance}
         lpValueInUSD={userState.lpValueInUSD ? userState.lpValueInUSD.toNumber() : 0}
+        apr={userState.totalApr ? userState.totalApr.toNumber() : totalHApr.toNumber()}
+        staked={userState.balance !== 0}
       />
 
       <div className={classes.divider} />
@@ -301,7 +328,12 @@ function VaultDetail() {
         mainIndex={slideIndex}
       />
 
-      <VaultDetails vault={vault} />
+      <VaultDetails 
+        vault={vault} 
+        farm={farm} 
+        highestApr={totalHApr.toNumber()} 
+        lowestApr={totalLApr.toNumber()}
+      />
 
       <div style={{
         display: 'flex',

@@ -39,6 +39,10 @@ const useStyles = makeStyles({
     position: "relative",
     display: 'flex',
     justifyContent: 'center',
+    '&:hover': {
+      backgroundImage: `url("/mini-flag-hover.svg") !important`,
+      transform: 'scale(1.05)',
+    }
   },
   xxlargeSoul: {
     marginTop: 32,
@@ -365,7 +369,11 @@ function ActiveFlag({ tokenName, deposited, balance, reward }: ActiveFlagProps) 
 function InActiveFlag({ tokenName }: FlagProps) {
   const classes = useStyles();
   return (
-    <div className={classes.inactiveFlag} style={{ backgroundImage: `url(${MiniFlag})` }}>
+    <div
+      className={classes.inactiveFlag}
+      style={{
+        backgroundImage: `url(${MiniFlag})`,
+      }}>
       <div className={classes.xxlargeSoul}>
         {stoneImage(tokenName, true)}
       </div>

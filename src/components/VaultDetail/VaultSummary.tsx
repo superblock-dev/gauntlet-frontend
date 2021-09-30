@@ -70,9 +70,11 @@ const useStyles = makeStyles({
 interface VaultSummaryProps {
   balance: number;
   lpValueInUSD: number;
+  apr: number;
+  staked: boolean;
 }
 
-function VaultSummary({ balance, lpValueInUSD }: VaultSummaryProps) {
+function VaultSummary({ balance, lpValueInUSD, apr, staked }: VaultSummaryProps) {
   const classes = useStyles();
   const { connected } = useWallet();
   const setPopupState = useSetRecoilState(popupState);
@@ -96,7 +98,11 @@ function VaultSummary({ balance, lpValueInUSD }: VaultSummaryProps) {
       }
       <div className={classes.summaryContent}>
         <div className={classes.summaryHeader}>Deposits</div>
-        <div className={classes.summaryHeader}>APY</div>
+        <div className={classes.summaryHeader}>{
+          staked ?
+            'APR' :
+            'Max. APR'
+        }</div>
       </div>
       <div className={classes.summaryContent}>
         <div className={classes.summaryBody}>
@@ -109,7 +115,18 @@ function VaultSummary({ balance, lpValueInUSD }: VaultSummaryProps) {
             decimals={3}
             decimal="."
           /></div>
-        <div className={classes.summaryBody}>95.39%</div>
+        <div className={classes.summaryBody}>
+          <Countup
+            start={0}
+            end={apr}
+            delay={0}
+            duration={0.75}
+            separator=","
+            decimals={2}
+            decimal="."
+            suffix=" %"
+          />
+        </div>
       </div>
       <div className={classes.summaryContent} style={{ marginBottom: 50, }}>
         <div className={classes.summarySubBody}>
@@ -124,7 +141,18 @@ function VaultSummary({ balance, lpValueInUSD }: VaultSummaryProps) {
             prefix="$ "
           />
         </div>
-        <div className={classes.summarySubBody}>0.05% daily</div>
+        <div className={classes.summarySubBody}>
+          <Countup
+            start={0}
+            end={apr / 365}
+            delay={0}
+            duration={0.75}
+            separator=","
+            decimals={3}
+            decimal="."
+            suffix=" % daily"
+          />
+        </div>
       </div>
       <div className={classes.summaryContent}>
         <div className={classes.summaryHeader}>Share of pool</div>

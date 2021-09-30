@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import { Vault } from "types";
+import { FarmInfo } from "utils/farms";
 
 const useStyles = makeStyles({
   root: {
@@ -73,11 +74,15 @@ const useStyles = makeStyles({
 
 interface VaultDetailProps {
   vault: Vault;
-
+  farm: FarmInfo;
+  highestApr: number;
+  lowestApr: number;
 }
 
-function VaultDetails({ vault }: VaultDetailProps) {
+function VaultDetails({ vault, farm, highestApr, lowestApr }: VaultDetailProps) {
   const classes = useStyles();
+  const farmApr = Number(farm.apr) + Number(farm.fees);
+  console.log(farm)
 
   return (
     <div className={classes.root}>
@@ -93,13 +98,17 @@ function VaultDetails({ vault }: VaultDetailProps) {
         <div className={classes.apyContainer}>
           <div className={classes.containerHeader}>APY Calculations</div>
           <div className={classes.textName}>Farm APR</div>
-          <div className={classes.textValue}>200%</div>
+          <div className={classes.textValue}>{`${farmApr.toFixed(2)} %`}</div>
           {/* <div className={classes.textName}>LET APR</div>
           <div className={classes.textValue}>20%</div> */}
-          <div className={classes.textName}>Total APY</div>
-          <div className={classes.textValue}>230%</div>
-          <div className={classes.textName}>Daily APR</div>
-          <div className={classes.textValue}>0.1%</div>
+          <div className={classes.textName}>Max. APR</div>
+          <div className={classes.textValue}>{`${highestApr.toFixed(2)} %`}</div>
+          <div className={classes.textName}>Min. APR</div>
+          <div className={classes.textValue}>{`${lowestApr.toFixed(2)} %`}</div>
+          {/* <div className={classes.textName}>Daily Max. APR</div>
+          <div className={classes.textValue}>{`${(highestApr/365).toFixed(2)} %`}</div>
+          <div className={classes.textName}>Daily Min. APR</div>
+          <div className={classes.textValue}>{`${(lowestApr/365).toFixed(2)} %`}</div> */}
         </div>
         <div className={classes.feeContainer}>
           <div className={classes.containerHeader}>Fees</div>
