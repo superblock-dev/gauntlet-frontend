@@ -27,6 +27,8 @@ import { calculateLpValues } from "utils/pools";
 import ScrollToTop from "./ScrollToTop";
 import { requestFarmInfo } from "api/farms";
 import { calculateAprValues } from "utils/farms";
+import Stake from "pages/Stake";
+import LetLpPool from "pages/Pool";
 
 const useStyles = makeStyles({
   containerRoot: {
@@ -41,7 +43,7 @@ const useStyles = makeStyles({
 })
 
 const routeList: RouteType[] = [
-  { label: "SWAP", path: "/swap" },
+  // { label: "SWAP", path: "/swap" },
   { label: "VAULT", path: "/vault" },
   { label: "STAKING", path: "/staking" },
 ]
@@ -73,7 +75,7 @@ function App() {
 
   const updateInfos = async () => {
     const priceData = await getPrices();
-    priceData["LET"] = 30;
+    priceData["LET"] = 0.939;
     setPrices(priceData);
     const pairsData = await getPairs();
     setPairsInfo(pairsData);
@@ -133,9 +135,11 @@ function App() {
             <Switch>
               <Route exact path={"/vault"} component={() => <Vault />} />
               <Route path={"/vault/:vaultId"} component={() => <VaultDetail />} />
-              <Route path={"/swap"} component={() => <Swap />} />
+              {/* <Route path={"/swap"} component={() => <Swap />} /> */}
+              <Route path={"/staking/stake"} component={() => <Stake />} />
+              <Route path={"/staking/pool"} component={() => <LetLpPool />} />
               <Route path={"/staking"} component={() => <Staking />} />
-              <Route path={"/"} component={() => <></>} />
+              <Route path={"/"} component={() => <Vault />} />
             </Switch>
             {popup ? <Popup>{popup}</Popup> : undefined}
           </Router>

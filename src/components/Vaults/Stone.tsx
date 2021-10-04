@@ -74,9 +74,10 @@ const useStyles = makeStyles({
 interface StoneProps {
   tokenName: TokenName;
   amount?: number;
+  onClick: () => void;
 }
 
-export default function Stone({ tokenName, amount }: StoneProps) {
+export default function Stone({ tokenName, amount, onClick }: StoneProps) {
   const classes = useStyles();
 
   const lpTokenNames: TokenName[] = [
@@ -93,7 +94,7 @@ export default function Stone({ tokenName, amount }: StoneProps) {
     return (
       <>
         {amount !== undefined ? (
-          <div className={classes.container}>
+          <div className={classes.container} onClick={onClick}>
             <div className={classes.tooltipBox} />
             <div className={classes.tooltipText}>{`${tokenName} / ${amount}`}</div>
             <img className={classes.stoneBg} src={STONES[firstToken].xlargeBgEffect} />
@@ -101,7 +102,7 @@ export default function Stone({ tokenName, amount }: StoneProps) {
             <img className={classes.stone2} src={STONES[secondToken].xlarge} />
           </div>
         ) : (
-          <div className={classes.container}>
+          <div className={classes.container} onClick={onClick}>
             <div className={classes.tooltipBox} />
             <div className={classes.tooltipText}>{`${tokenName} / 0`}</div>
             <img className={classes.stone1} src={STONES[firstToken].xlargeOutline} />
@@ -117,14 +118,14 @@ export default function Stone({ tokenName, amount }: StoneProps) {
   return (
     <>
       {amount !== undefined ? (
-        <div className={classes.container}>
+        <div className={classes.container} onClick={onClick}>
           <div className={classes.tooltipBox} />
           <div className={classes.tooltipText}>{`${tokenName} / ${amount}`}</div>
           <img className={classes.stoneBg} src={STONES[tokenName].xlargeBgEffect} />
           <img className={classes.stone} src={STONES[tokenName].xlarge} />
         </div>
       ) : (
-        <div className={classes.container}>
+        <div className={classes.container} onClick={onClick}>
           <div className={classes.tooltipBox} />
           <div className={classes.tooltipText}>{`${tokenName} / 0`}</div>
           <img className={classes.stone} src={STONES[tokenName].xlargeOutline} />

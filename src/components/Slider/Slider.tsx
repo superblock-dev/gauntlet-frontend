@@ -7,7 +7,7 @@ import { Slide } from "./Slide";
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
+  height: inherit;
   min-height: 760px;
 `;
 
@@ -24,6 +24,7 @@ class CustomCarousel extends Carousel {
                 key={slide.key}
                 content={slide.content}
                 onClick={slide.onClick}
+                isParellel={slide.isParellel}
                 offsetRadius={this.clampOffsetRadius(offsetRadius)}
                 index={presentableIndex}
                 animationConfig={animationConfig}
@@ -48,7 +49,7 @@ export default function Slider({ slides, index }: SliderProps) {
       goToSlide={index}
       offsetRadius={3}
       showNavigation={true}
-      animationConfig={config.gentle}>
-    </CustomCarousel>
+      animationConfig={config.gentle}
+    />
   );
 }

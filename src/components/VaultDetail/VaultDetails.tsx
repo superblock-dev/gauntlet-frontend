@@ -82,7 +82,6 @@ interface VaultDetailProps {
 function VaultDetails({ vault, farm, highestApr, lowestApr }: VaultDetailProps) {
   const classes = useStyles();
   const farmApr = Number(farm.apr) + Number(farm.fees);
-  console.log(farm)
 
   return (
     <div className={classes.root}>

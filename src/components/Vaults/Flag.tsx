@@ -160,6 +160,7 @@ const useStyles = makeStyles({
     fontSize: 14,
     lineHeight: "21px",
     margin: "0 8px 0 0",
+    cursor: `url(${CursorPointer}), pointer`,
     fontWeight: 700,
   },
   labelContainer: {

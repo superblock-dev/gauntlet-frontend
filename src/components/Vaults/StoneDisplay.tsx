@@ -38,17 +38,18 @@ const useStyles = makeStyles({
 
 interface StoneDisplayProps {
   items: { [key: string]: number },
+  onClick: any,
 }
 
 
-export default function StoneDisplay({ items }: StoneDisplayProps) {
+export default function StoneDisplay({ items, onClick }: StoneDisplayProps) {
   const classes = useStyles();
 
   return (
     <div className={`${classes.container} stone`}>
-      {[...tokens, ...tokens].map((item => {
+      {[...tokens, ...tokens].map(((item, idx) => {
         return (
-          <Stone tokenName={item} amount={item in items ? items[item] : undefined} />
+          <Stone tokenName={item} amount={item in items ? items[item] : undefined} onClick={() => onClick(idx)} />
         )
       }
       ))}

@@ -22,6 +22,7 @@ const INITIAL_PRICES: {[key: string]: number} = {
   USDC: 1,
   USDT: 1,
   SOL: 0,
+  LET: 0,
 };
 
 export const rewardPrices = atom<{[key: string]: number}>({
@@ -41,6 +42,11 @@ export const isDeposit = atom<boolean>({
 
 export const amountState = atom<number>({
   key: "amountState",
+  default: 0,
+});
+
+export const amountState2 = atom<number>({
+  key: "amountState2",
   default: 0,
 });
 

@@ -123,15 +123,15 @@ function createRewardsListFromUserState(
 ) {
   if (!userState) {
     return ([...REWARDS]).map((reward, idx) => {
-      return createSlide(vault, reward, balance, slideIndex === idx, () => onClick(idx));
+      return createSlide(vault, reward, balance, slideIndex % REWARDS.length === idx, () => onClick(idx));
     });
   }
   return ([...REWARDS]).map((reward, idx) => {
     const userReward = userState.rewards.find(state => state.tokenName === reward.tokenName);
     if (userReward) {
-      return createSlide(vault, userReward, balance, slideIndex === idx, () => onClick(idx));
+      return createSlide(vault, userReward, balance, slideIndex % REWARDS.length === idx, () => onClick(idx));
     }
-    return createSlide(vault, reward, balance, slideIndex === idx, () => onClick(idx));
+    return createSlide(vault, reward, balance, slideIndex % REWARDS.length === idx, () => onClick(idx));
   });
 }
 
@@ -250,7 +250,6 @@ function VaultDetail() {
     totalLApr = BigNumber.sum(lowestApy, Number(farm.fees))
   }
 
-
   const lpBalance: number = 939.212316 // User LP Token Balance
 
   const flags = createRewardsListFromUserState(
@@ -309,7 +308,7 @@ function VaultDetail() {
       <div className={classes.divider} />
 
       <div className={classes.stoneDisplayContainer}>
-        <StoneDisplay items={stones} />
+        <StoneDisplay items={stones} onClick={setSlideIndex} />
       </div>
       <SmallButton text={'claim all'} />
       <div className={classes.divider} style={{ marginTop: 48 }} />
@@ -317,8 +316,8 @@ function VaultDetail() {
       <div className={classes.sliderContainer}>
         <FlagNavigation onClick={(direction: number) => {
           const index = slideIndex + direction;
-          const nextIndex = index >= flags.length ? 0 : index < 0 ? flags.length - 1 : index;
-          setSlideIndex(nextIndex);
+          // const nextIndex = index  flags.length ? 0 : index < 0 ? flags.length - 1 : index;
+          setSlideIndex(index);
         }} />
         <Slider index={slideIndex} slides={flags} />
       </div>
