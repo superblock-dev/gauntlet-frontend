@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { TokenName } from "types";
-import Stone from "./Stone";
+import Stone from "./StoneDisplayItem";
 
 const tokens: TokenName[] = [
   "BTC", 
@@ -14,6 +14,7 @@ const tokens: TokenName[] = [
   "RAY-SOL",
   "RAY-USDC",
   "RAY-USDT",
+  "LET-USDC",
   "BTC", 
   "ETH", 
   "SOL", 
@@ -25,6 +26,7 @@ const tokens: TokenName[] = [
   "RAY-SOL",
   "RAY-USDC",
   "RAY-USDT",
+  "LET-USDC",
 ];
 
 const useStyles = makeStyles({

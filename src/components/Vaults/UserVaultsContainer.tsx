@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { useRecoilValue } from 'recoil';
 import { farmInfos, liquidityPoolInfos, pairsInfo, rewardPrices } from 'recoil/atoms';
-import { useWallet } from "@solana/wallet-adapter-react";
 import { Grid, makeStyles } from "@material-ui/core";
 import UserVaultsSummary from "components/Vaults/UserVaultsSummary";
 import UserVaultItem from "components/Vaults/UserVaultItem";
@@ -12,6 +11,7 @@ import { ReactComponent as LineDivider } from 'assets/svgs/LineDivider.svg';
 import { calculateReward, getVaultById, USER_STATES, } from "utils/vaults";
 import { UserState, Vault } from "types";
 import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
+
 const useStyles = makeStyles({
   contentContainer: {
     width: 960,
@@ -65,7 +65,6 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
   const prices = useRecoilValue(rewardPrices);
   const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const farms = useRecoilValue(farmInfos);
-  const { connected } = useWallet();
 
   // 각 state들마다 pending reward 계산
   states.forEach(s => {
@@ -77,7 +76,11 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
     });
     s.totalRewardInUSD = s.rewards.reduce((t, r) => {
       if (r.pendingReward) {
-        t += r.pendingReward * prices[r.tokenName];
+        t += r.pendingReward * (
+          r.tokenName in prices ?
+            prices[r.tokenName] :
+            0
+        );
       }
       return t;
     }, 0);
@@ -96,17 +99,16 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
     totalApr = s.rewards.reduce((p, r) => {
       const strategyFarm = STRATEGY_FARMS.find(sf => sf.token === r.tokenName);
       if (strategyFarm) {
-        p = calculateApyInPercentage(p, strategyFarm.apy)
+        p = BigNumber.sum(p, calculateApyInPercentage(totalApr, strategyFarm.apy).multipliedBy(r.amount))
       }
       return p
-    }, totalApr);
-    
+    }, totalApr).dividedBy(s.balance);
+
     if (f && f.fees) {
       totalApr = BigNumber.sum(totalApr, Number(f.fees))
     }
     s.totalApr = totalApr;
   })
-
   // 모든 vault의 total reward 계산
   const [totalDeposit, totalLpValueInUSD, totalRewardsInUSD] = states.reduce((total, s) => {
     total[0] += s.balance

@@ -2,6 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import { TokenName } from "types";
 import { STONES } from "utils/stones";
 import TooltipVaultDetail from 'assets/svgs/TooltipVaultDetail.svg';
+import { REWARD_LP_TOKENS } from "utils/tokens";
 
 const useStyles = makeStyles({
   container: {
@@ -77,17 +78,9 @@ interface StoneProps {
   onClick: () => void;
 }
 
-export default function Stone({ tokenName, amount, onClick }: StoneProps) {
+export default function StoneDisplayItem({ tokenName, amount, onClick }: StoneProps) {
   const classes = useStyles();
-
-  const lpTokenNames: TokenName[] = [
-    "RAY-ETH",
-    'RAY-SOL',
-    "RAY-USDC",
-    "RAY-USDT",
-  ]
-
-  if (lpTokenNames.includes(tokenName)) {
+  if (REWARD_LP_TOKENS.includes(tokenName)) {
     const firstToken = tokenName.split("-")[0];
     const secondToken = tokenName.split("-")[1];
 
@@ -98,17 +91,17 @@ export default function Stone({ tokenName, amount, onClick }: StoneProps) {
             <div className={classes.tooltipBox} />
             <div className={classes.tooltipText}>{`${tokenName} / ${amount}`}</div>
             <img className={classes.stoneBg} src={STONES[firstToken].xlargeBgEffect} />
-            <img className={classes.stone1} src={STONES[firstToken].xlarge} />
             <img className={classes.stone2} src={STONES[secondToken].xlarge} />
+            <img className={classes.stone1} src={STONES[firstToken].xlarge} />
           </div>
         ) : (
           <div className={classes.container} onClick={onClick}>
             <div className={classes.tooltipBox} />
             <div className={classes.tooltipText}>{`${tokenName} / 0`}</div>
-            <img className={classes.stone1} src={STONES[firstToken].xlargeOutline} />
             <img className={classes.stone2} src={STONES[secondToken].xlargeOutline} />
-            <img className={classes.stone1} src={STONES[firstToken].xlargeDeactivated} />
+            <img className={classes.stone1} src={STONES[firstToken].xlargeOutline} />
             <img className={classes.stone2} src={STONES[secondToken].xlargeDeactivated} />
+            <img className={classes.stone1} src={STONES[firstToken].xlargeDeactivated} />
           </div>
         )}
       </>

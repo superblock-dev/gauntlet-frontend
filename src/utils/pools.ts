@@ -77,6 +77,7 @@ export function calculateLpValues(lpInfos: { [key: string]: LiquidityPoolInfo },
     const liquidityItemValue = liquidityTotalValue / liquidityTotalSupply
 
     info.currentLpValue = liquidityItemValue;
+    prices[info.name] = liquidityItemValue;
   })
 }
 

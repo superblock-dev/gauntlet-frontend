@@ -9,12 +9,14 @@ import {
   rewardPrices,
   popupState,
   isDeposit as depositState,
+  liquidityPoolInfos,
 } from "recoil/atoms";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { makeStyles } from "@material-ui/core"
 import WalletConnectPopup from "components/WalletConnectPopup";
 import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
+import Stone from 'components/Stone/Stone';
 import { TokenName } from "types";
 import { STONES } from "utils/stones";
 import CursorPointer from 'assets/CursorPointer.svg';
@@ -22,6 +24,7 @@ import LargeFlag from "assets/svgs/flags/large.svg";
 import SmallFlag from "assets/svgs/flags/small.svg";
 import MiniFlag from "assets/svgs/flags/mini-1.svg";
 import dot from "assets/svgs/Dot.svg";
+import { REWARD_LP_TOKENS } from "utils/tokens";
 
 const useStyles = makeStyles({
   activeFlag: {
@@ -43,12 +46,6 @@ const useStyles = makeStyles({
       backgroundImage: `url("/mini-flag-hover.svg") !important`,
       transform: 'scale(1.05)',
     }
-  },
-  xxlargeSoul: {
-    marginTop: 32,
-    width: 120,
-    height: 120,
-    position: 'relative',
   },
   xlargeSoul: {
     position: "absolute",
@@ -216,63 +213,11 @@ type ActiveFlagProps = {
   onChange?: (mode: boolean) => void;
 } & FlagProps;
 
-function stoneImage(tokenName: TokenName, xlarge?: boolean) {
-  const lpTokenNames: TokenName[] = [
-    "RAY-ETH",
-    'RAY-SOL',
-    "RAY-USDC",
-    "RAY-USDT",
-  ];
-
-  if (lpTokenNames.includes(tokenName)) {
-    const firstToken = tokenName.split("-")[0];
-    const secondToken = tokenName.split("-")[1];
-    const stone1 = xlarge ? STONES[firstToken].xlarge : STONES[firstToken].xxlarge;
-    const stone2 = xlarge ? STONES[secondToken].xlarge : STONES[secondToken].xxlarge;
-    return (
-      <>
-        <img
-          src={stone1}
-          style={{
-            position: "absolute",
-            top: '50%',
-            left: '33.3%',
-            transform: "translate(-50%, -50%)",
-          }}
-        />
-        <img
-          src={stone2}
-          style={{
-            position: "absolute",
-            top: '50%',
-            right: "33.3%",
-            transform: "translate(50%, -50%)",
-          }}
-        />
-      </>
-    )
-  }
-  const stone = xlarge ? STONES[tokenName].xlarge : STONES[tokenName].xxlarge;
-  return (
-    <img src={stone}
-      style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-      }} />
-  )
-}
-
 function NotConnectedFlag({ tokenName, deposited, balance, onClick }: ActiveFlagProps) {
   const classes = useStyles();
   return (
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${SmallFlag})` }}>
-      <div className={classes.xxlargeSoul}>
-        {
-          stoneImage(tokenName)
-        }
-      </div>
+      <Stone tokenName={tokenName} size="xxlarge" style={{ marginTop: 32, }} />
       <div className={classes.tokenName}>{tokenName}</div>
       <div className={classes.inputContainer} style={{ marginTop: 32, }}>
         <input className={classes.input} placeholder="0.000" />
@@ -295,13 +240,15 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
   const [amount, setAmount] = useRecoilState(amountState);
 
   const mode = isDeposit ? "Deposit" : "Withdraw";
-  const price = reward ? reward * prices[tokenName] : 0;
+  const price = reward ?
+    reward * (tokenName in prices ?
+      prices[tokenName] :
+      0) :
+    0;
 
   return (
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${LargeFlag})` }}>
-      <div className={classes.xxlargeSoul}>
-        {stoneImage(tokenName)}
-      </div>
+      <Stone tokenName={tokenName} size="xxlarge" style={{ marginTop: 32, }} />
       <div className={classes.tokenName}>{tokenName}</div>
       <div className={classes.reward}>{`${reward ? reward : 0}`}</div>
       <div className={classes.rewardInUSD}>{`$ ${price.toFixed(3)}`}</div>
@@ -390,9 +337,7 @@ function InActiveFlag({ tokenName }: FlagProps) {
       style={{
         backgroundImage: `url(${MiniFlag})`,
       }}>
-      <div className={classes.xxlargeSoul}>
-        {stoneImage(tokenName, true)}
-      </div>
+      <Stone tokenName={tokenName} size="xlarge" style={{ marginTop: 32, width: 120, }} />
     </div>
   );
 }

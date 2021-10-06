@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { cloneDeep } from 'lodash';
+import { TokenName } from 'types';
 import { TokenAmount } from "./safe-math";
 
 export interface Token {
@@ -402,6 +403,16 @@ export const TOKENS: { [key: string]: Token } = {
 };
 
 export const LP_TOKENS = {
+  'LET-USDC': {
+    symbol: 'LET-USDC',
+    name: 'LET-USDC LP',
+    coin: { ...TOKENS.LET },
+    pc: { ...TOKENS.USDC },
+
+    mintAddress: '',
+    decimals: TOKENS.LET.decimals,
+    urlHelper: 'Raydium',
+  },
   'RAY-WUSDT': {
     symbol: 'RAY-WUSDT',
     name: 'RAY-WUSDT V2 LP',
@@ -1225,3 +1236,11 @@ function addTokensSolanaFunc(tokens: any[]) {
 
   return newTokens;
 }
+
+export const REWARD_LP_TOKENS: TokenName[] = [
+  "RAY-ETH",
+  'RAY-SOL',
+  "RAY-USDC",
+  "RAY-USDT",
+  "LET-USDC"
+];

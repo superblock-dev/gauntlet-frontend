@@ -17,7 +17,7 @@ import CursorPointer from 'assets/CursorPointer.svg';
 import Flag from "components/Vaults/Flag";
 import { v4 as uuidv4 } from "uuid";
 import FlagNavigation from "components/Vaults/FlagNavigation";
-import StoneDisplay from "components/Vaults/StoneDisplay";
+import StoneDisplay from "components/Stone/StoneDisplay";
 import { Reward, UserState, Vault } from "types";
 import { calculateReward, USER_STATES, VAULTS } from "utils/vaults";
 import { LP_TOKENS, TOKENS } from "utils/tokens";
@@ -112,6 +112,12 @@ const REWARDS: Reward[] = [
     amount: 0,
     rewardDebt: 0,
   },
+  {
+    tokenName: 'LET-USDC',
+    token: LP_TOKENS['LET-USDC'],
+    amount: 0,
+    rewardDebt: 0,
+  }
 ]
 
 function createRewardsListFromUserState(

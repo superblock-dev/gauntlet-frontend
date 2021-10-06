@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import { ReactNode } from "react";
 import { LPToken, Token } from "utils/tokens";
 
-
 export type TokenName = 
   "BTC" | 
   "ETH" | 
@@ -15,6 +14,7 @@ export type TokenName =
   "RAY-SOL" |
   "RAY-USDC" |
   "RAY-USDT" |
+  "LET-USDC" |
   "ETC";
 
 // Temporary types

@@ -33,37 +33,37 @@ export function getStrategyByTokenName(vault: Vault, tname: TokenName) {
 export const USER_STATES: UserState[] = [
   {
     vaultId: 1,
-    balance: 500,
+    balance: 380,
     rewards: [
+      // {
+      //   tokenName: 'BTC',
+      //   token: TOKENS.BTC,
+      //   amount: 50,
+      //   rewardDebt: 0.000272,
+      // },
+      // {
+      //   tokenName: 'SOL',
+      //   token: TOKENS.SOL,
+      //   amount: 230,
+      //   rewardDebt: 0.25,
+      // },
+      // {
+      //   tokenName: 'USDC',
+      //   token: TOKENS.USDC,
+      //   amount: 50,
+      //   rewardDebt: 560000,
+      // },
       {
-        tokenName: 'BTC',
-        token: TOKENS.BTC,
-        amount: 50,
-        rewardDebt: 0.000272,
-      },
-      {
-        tokenName: 'SOL',
-        token: TOKENS.SOL,
-        amount: 230,
-        rewardDebt: 0.25,
-      },
-      {
-        tokenName: 'USDC',
-        token: TOKENS.USDC,
-        amount: 50,
-        rewardDebt: 560000,
-      },
-      {
-        tokenName: 'LET',
-        token: TOKENS.LET,
-        amount: 50,
-        rewardDebt: 560000,
+        tokenName: 'LET-USDC',
+        token: LP_TOKENS['LET-USDC'],
+        amount: 380,
+        rewardDebt: 20000,
       }
     ]
   },
   {
     vaultId: 3,
-    balance: 400,
+    balance: 380,
     rewards: [
       {
         tokenName: 'BTC',
@@ -78,8 +78,8 @@ export const USER_STATES: UserState[] = [
         rewardDebt: 0.00048,
       },
       {
-        tokenName: 'USDT',
-        token: TOKENS.USDT,
+        tokenName: 'RAY-USDC',
+        token: LP_TOKENS['RAY-USDC-V4'],
         amount: 50,
         rewardDebt: 0,
       }
@@ -130,6 +130,13 @@ export const VAULTS: Vault[] = [
         accRewardPerShare: 1560000,
         lastRewardUpdatedTime: 1632359665,
       },
+      {
+        rewardToken: "LET-USDC",
+        depositAmount: 50000000,
+        accRewardPerShare: 1560000,
+        lastRewardUpdatedTime: 1632359665,
+      },
+      
     ]
   },
   {
@@ -202,6 +209,12 @@ export const VAULTS: Vault[] = [
       },
       {
         rewardToken: "USDC",
+        depositAmount: 50000000,
+        accRewardPerShare: 1560000,
+        lastRewardUpdatedTime: 1632359665,
+      },
+      {
+        rewardToken: "RAY-USDC",
         depositAmount: 50000000,
         accRewardPerShare: 1560000,
         lastRewardUpdatedTime: 1632359665,

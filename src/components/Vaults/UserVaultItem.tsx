@@ -8,11 +8,11 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from "@material-ui/core";
 import Countup from 'react-countup';
 import SmallButton from "components/Buttons/SmallButton";
-import { SMALL_STONES } from 'utils/stones';
 import LinePurpleShort from 'assets/svgs/LinePurpleShort.svg';
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import LPTokenView from './LPTokenView';
 import CursorPointer from 'assets/CursorPointer.svg';
+import Stone from 'components/Stone/Stone';
 
 const AccordionSummary = withStyles({
   root: {
@@ -30,6 +30,9 @@ const AccordionSummary = withStyles({
   },
   expandIcon: {
     cursor: `url(${CursorPointer}), pointer !important`,
+  },
+  expanded: {
+    minHeight: 40,
   },
 })(MuiAccordionSummary);
 
@@ -55,20 +58,6 @@ const useStyles = makeStyles({
   itemContainer: {
     paddingLeft: 12,
     paddingRight: 12,
-  },
-  stoneContainer: {
-    position: 'relative',
-    display: 'inline-block',
-    width: 24,
-    height: 24,
-    marginRight: 8,
-  },
-  stoneIcon: {
-    position: 'absolute',
-    objectFit: 'none',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
   },
   btnContainer: {
     display: 'flex',
@@ -104,13 +93,6 @@ const useStyles = makeStyles({
     backgroundColor: 'rgba(138, 100, 247, 0.1)',
     borderRadius: 4,
     position: 'relative',
-  },
-  rewardIcon: {
-    position: 'absolute',
-    objectFit: 'none',
-    top: '50%',
-    left: 28,
-    transform: 'translate(-50%, -50%)',
   },
   rewardSymbolText: {
     position: 'absolute',
@@ -160,9 +142,16 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
         </Grid>
         <Grid item xs={3} className={classes.itemContainer} >{
           userState?.rewards.map(reward => (
-            <div key={reward.tokenName} className={classes.stoneContainer}>
-              <img className={classes.stoneIcon} src={SMALL_STONES[reward.tokenName]} />
-            </div>
+            <Stone
+              key={reward.tokenName}
+              tokenName={reward.tokenName}
+              size="small"
+              style={{
+                marginRight: 8,
+                display: 'inline-block',
+                width: 24,
+              }}
+            />
           ))
         }</Grid>
         <Grid item xs={2} className={classes.btnContainer}>
@@ -240,7 +229,15 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
               {
                 userState?.rewards.map((reward, idx) => (
                   <div key={`detail-${reward.token.symbol}-${idx}`} className={classes.rewardDetailContainer}>
-                    <img className={classes.rewardIcon} src={SMALL_STONES[reward.tokenName]} />
+                    <Stone
+                      key={reward.tokenName}
+                      tokenName={reward.tokenName}
+                      size="small"
+                      style={{
+                        top: 8,
+                        width: 24,
+                      }}
+                    />
                     <div className={classes.rewardSymbolText}>{reward.tokenName}</div>
                     <div className={classes.rewardAmount}>
                       {
