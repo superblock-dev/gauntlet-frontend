@@ -2,10 +2,10 @@ import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
 import VaultItem from "components/Vaults/VaultItem";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
-import IconHelp from 'assets/svgs/IconHelp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import { USER_STATES, VAULTS } from "utils/vaults";
 import UserVaultsContainer from "components/Vaults/UserVaultsContainer";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -55,6 +55,7 @@ function Vault() {
   const userVaultIds = USER_STATES.map(userStat => userStat.vaultId);
   const userVaults = VAULTS.filter(vault => userVaultIds.includes(vault.id));
   const otherVaults = VAULTS.filter(vault => !userVaultIds.includes(vault.id));
+  const { connected } = useWallet();
 
   return (
     <PageTemplate
@@ -63,9 +64,9 @@ function Vault() {
     >
       <div className={classes.contentContainer}>
         {
-          userVaults.length !== 0 ?
-            <UserVaultsContainer vaults={userVaults} states={USER_STATES} /> :
-            null
+          connected ?
+          <UserVaultsContainer vaults={userVaults} states={USER_STATES} /> :
+          <></>
         }
         <div className={classes.listTitle}>
           All Vaults

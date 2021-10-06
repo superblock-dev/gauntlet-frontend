@@ -1,6 +1,7 @@
+import { BigNumber } from 'bignumber.js';
 import { useRecoilValue } from 'recoil';
 import { farmInfos, liquidityPoolInfos, pairsInfo, rewardPrices } from 'recoil/atoms';
-import { BigNumber } from 'bignumber.js';
+import { useWallet } from "@solana/wallet-adapter-react";
 import { Grid, makeStyles } from "@material-ui/core";
 import UserVaultsSummary from "components/Vaults/UserVaultsSummary";
 import UserVaultItem from "components/Vaults/UserVaultItem";
@@ -64,6 +65,7 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
   const prices = useRecoilValue(rewardPrices);
   const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const farms = useRecoilValue(farmInfos);
+  const { connected } = useWallet();
 
   // 각 state들마다 pending reward 계산
   states.forEach(s => {
