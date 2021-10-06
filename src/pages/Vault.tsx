@@ -87,7 +87,7 @@ function Vault() {
         </Grid>
         {
           otherVaults.map((vault, idx) => (
-            <>
+            <div key={`vault-${idx}`}>
               <VaultItem
                 vault={vault}
               />
@@ -98,7 +98,7 @@ function Vault() {
                   </div> :
                   null
               }
-            </>
+            </div>
           ))
         }
       </div>

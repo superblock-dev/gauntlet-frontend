@@ -31,8 +31,6 @@ const AccordionSummary = withStyles({
   expandIcon: {
     cursor: `url(${CursorPointer}), pointer !important`,
   },
-  content: {},
-  expanded: {},
 })(MuiAccordionSummary);
 
 const AccordionDetails = withStyles({
@@ -43,8 +41,6 @@ const AccordionDetails = withStyles({
     alignItems: 'flex-end',
     padding: 0,
   },
-  content: {},
-  expanded: {},
 })(MuiAccordionDetails);
 
 const useStyles = makeStyles({
@@ -242,8 +238,8 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
             </AccordionSummary>
             <AccordionDetails >
               {
-                userState?.rewards.map(reward => (
-                  <div className={classes.rewardDetailContainer}>
+                userState?.rewards.map((reward, idx) => (
+                  <div key={`detail-${reward.token.symbol}-${idx}`} className={classes.rewardDetailContainer}>
                     <img className={classes.rewardIcon} src={SMALL_STONES[reward.tokenName]} />
                     <div className={classes.rewardSymbolText}>{reward.tokenName}</div>
                     <div className={classes.rewardAmount}>

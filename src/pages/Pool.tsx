@@ -10,7 +10,7 @@ import { v4 as uuidV4 } from "uuid";
 
 import Countup from 'react-countup';
 import { makeStyles } from "@material-ui/core";
-import PoolFlag from "components/Staking/PoolFlag";
+import PoolFlag, { PoolFlagType } from "components/Staking/PoolFlag";
 import FlagNavigation from "components/Vaults/FlagNavigation";
 import Slider from "components/Slider";
 import CursorPointer from 'assets/CursorPointer.svg';
@@ -175,7 +175,7 @@ const useStyles = makeStyles({
 });
 
 function createSlide(
-  isPool: boolean,
+  type: PoolFlagType,
   isActive: boolean,
   coinBalance: number,
   pcBalance: number,
@@ -183,12 +183,13 @@ function createSlide(
   coinStaked: number,
   pcStaked: number,
   lpStaked: number,
+  letPrice: number,
   onClick: () => void,
 ) {
   return {
     key: uuidV4(),
     content: <PoolFlag
-      isPool={isPool}
+      type={type}
       isActive={isActive}
       coinBalance={coinBalance}
       pcBalance={pcBalance}
@@ -196,6 +197,7 @@ function createSlide(
       coinStaked={coinStaked}
       pcStaked={pcStaked}
       lpStaked={lpStaked}
+      letPrice={letPrice}
     />,
     isParellel: true,
     onClick: onClick
@@ -218,8 +220,9 @@ function LetLpPool() {
   const lpBalance = 10.313;
   const lpStaked = 180.21;
   const apr = 95.39;
+  const letPrice = 0.891;
 
-  const flags = [true, false, true, false].map((s, i) => createSlide(
+  const flags = [PoolFlagType.POOL, PoolFlagType.STAKE, PoolFlagType.TRADE].map((s, i) => createSlide(
     s,
     slideIndex === i,
     letBalance,
@@ -228,6 +231,7 @@ function LetLpPool() {
     letStaked,
     usdcStaked,
     lpStaked,
+    letPrice,
     () => setSlideIndex(i))
   );
 

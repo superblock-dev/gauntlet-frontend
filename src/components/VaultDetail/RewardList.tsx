@@ -230,10 +230,10 @@ function RewardList({ rewards, mainIndex }: RewardListProps) {
             </AccordionSummary>
             <AccordionDetails>
               {
-                rewards.map(r => {
+                rewards.map((r, idx) => {
                   if (r.token === rewards[index].token) return null;
                   return (
-                    <div className={classes.rewardItem}>
+                    <div key={`reward-${idx}`} className={classes.rewardItem}>
                       <StoneImage tokenName={r.token} detail />
                       <div className={classes.smallName}>{r.token}</div>
                       <div className={classes.smallPercentage}>{`${((r.apy) * 100).toFixed(2)} %`}</div>

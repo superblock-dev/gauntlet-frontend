@@ -83,7 +83,8 @@ function Header({ routeList }: HeaderProps) {
             key={menu.path}
             to={menu.path}>
             <NavButton
-              active={location.pathname.includes(menu.path)}
+              active={
+                (location.pathname === "/" && menu.label === "VAULT") || location.pathname.includes(menu.path)}
               title={menu.label} />
           </Link>
         ))}

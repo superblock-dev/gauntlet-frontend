@@ -130,12 +130,27 @@ const useStyles = makeStyles({
     fontWeight: 700,
   },
   inputContainer: {
-    marginTop: 24,
+    marginTop: 23,
+    marginBottom: 1,
     width: 266,
     height: 54,
     background: "radial-gradient(78.76% 933.51% at 50% 100%, rgba(136, 98, 241, 0.11) 0%, rgba(138, 100, 247, 0) 79.55%)",
     display: "flex",
     alignItems: "center",
+    '&:hover': {
+      borderBottom: '1px solid',
+      borderImage: 'linear-gradient(to right, rgba(143, 103, 255, 0) 0%, #8F67FF 50%, rgba(143, 103, 255, 0) 100%)',
+      borderImageSlice: 1,
+      borderImageWidth: '0 0 1px 0',
+      marginBottom: 0,
+    },
+    '&:focus-within': {
+      borderBottom: '1px solid',
+      borderImage: 'linear-gradient(to right, rgba(143, 103, 255, 0) 0%, #8F67FF 50%, rgba(143, 103, 255, 0) 100%)',
+      borderImageSlice: 1,
+      borderImageWidth: '0 0 1px 0',
+      marginBottom: 0,
+    },
   },
   input: {
     margin: "0 8px",

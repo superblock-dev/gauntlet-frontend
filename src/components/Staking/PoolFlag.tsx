@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import {
   useRecoilState, useResetRecoilState,
@@ -13,6 +14,7 @@ import DotGreen from 'assets/svgs/Dot.svg';
 import DotPurple from 'assets/svgs/DotPurple.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
 import { ReactComponent as Plus } from 'assets/svgs/IconPlus.svg';
+import { ReactComponent as ArrowDown } from 'assets/svgs/IconArrowDownPurple.svg';
 import { STONES } from 'utils/stones';
 
 const useStyles = makeStyles({
@@ -102,16 +104,31 @@ const useStyles = makeStyles({
   inputContainer: {
     width: 266,
     height: 54,
+    marginBottom: 1,
     background: "radial-gradient(78.76% 933.51% at 50% 100%, rgba(136, 98, 241, 0.11) 0%, rgba(138, 100, 247, 0) 79.55%)",
     display: "flex",
     alignItems: "center",
+    '&:hover': {
+      borderBottom: '1px solid',
+      borderImage: 'linear-gradient(to right, rgba(143, 103, 255, 0) 0%, #8F67FF 50%, rgba(143, 103, 255, 0) 100%)',
+      borderImageSlice: 1,
+      borderImageWidth: '0 0 1px 0',
+      marginBottom: 0,
+    },
+    '&:focus-within': {
+      borderBottom: '1px solid',
+      borderImage: 'linear-gradient(to right, rgba(143, 103, 255, 0) 0%, #8F67FF 50%, rgba(143, 103, 255, 0) 100%)',
+      borderImageSlice: 1,
+      borderImageWidth: '0 0 1px 0',
+      marginBottom: 0,
+    },
   },
   input: {
     margin: "0 8px",
     background: "none",
     border: "none",
     "&:focus": {
-      outline: "none"
+      outline: "none",
     },
     color: "#997614",
     fontFamily: "Spectral SC",
@@ -120,7 +137,7 @@ const useStyles = makeStyles({
     "&::placeholder": {
       color: "inherit",
       fontSize: "inherit"
-    }
+    },
   },
   maxBtn: {
     width: 52,
@@ -146,8 +163,20 @@ const useStyles = makeStyles({
   },
 })
 
+function calculatePrice(amount: number, price: number, mode: boolean) {
+  return mode ?
+    new BigNumber(amount).multipliedBy(price).toNumber() :
+    new BigNumber(amount).dividedBy(price).toNumber();
+}
+
+export enum PoolFlagType {
+  TRADE,
+  POOL,
+  STAKE,
+}
+
 interface PoolFlagProps {
-  isPool?: boolean
+  type: PoolFlagType
   isActive?: boolean
   coinBalance: number
   pcBalance: number
@@ -155,10 +184,11 @@ interface PoolFlagProps {
   coinStaked: number
   pcStaked: number
   lpStaked: number
+  letPrice: number
 }
 
 function PoolFlag({
-  isPool,
+  type,
   isActive,
   coinBalance,
   pcBalance,
@@ -166,11 +196,30 @@ function PoolFlag({
   coinStaked,
   pcStaked,
   lpStaked,
+  letPrice,
 }: PoolFlagProps) {
   const classes = useStyles();
-  const flagTitle = isPool ? "add liquidity" : "deposit";
-  const mode1 = isPool ? 'ADD' : 'DEPOSIT';
-  const mode2 = isPool ? 'REMOVE' : 'WITHDRAW';
+  let flagTitle, mode1, mode2;
+  switch (type) {
+    case PoolFlagType.TRADE:
+      flagTitle = 'trade $let'
+      mode1 = 'BUY'
+      mode2 = 'SELL'
+      break;
+    case PoolFlagType.POOL:
+      flagTitle = 'add liquidity'
+      mode1 = 'ADD'
+      mode2 = 'REMOVE'
+      break;
+    default:
+      flagTitle = 'deposit'
+      mode1 = 'DEPOSIT'
+      mode2 = 'WITHDRAW'
+      break;
+  }
+  const isPool = type === PoolFlagType.POOL;
+  const isStake = type === PoolFlagType.STAKE;
+  const isTrade = type === PoolFlagType.TRADE;
   const [mode, setMode] = useState(true);
 
   const [amount, setAmount] = useRecoilState(amountState);
@@ -181,6 +230,7 @@ function PoolFlag({
   useEffect(() => {
     resetAmount()
     resetAmount2()
+    console.log(amount)
   }, [mode]);
 
   return (
@@ -196,28 +246,45 @@ function PoolFlag({
           </div>
       }
       <FlagBaseNormal>
-        <div className={classes.stone}>
-          <img
-            src={STONES.USDC.xlarge}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              right: '27.5%',
-              transform: 'translate(50%, -50%)',
-            }}
-          />
-          <img
-            src={STONES.LET.xlarge}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '27.5%',
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-        </div>
+        {isTrade ?
+          <div className={classes.stone}>
+            <img
+              src={mode ? STONES.LET.xlarge : STONES.USDC.xlarge}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
+          </div> :
+          <div className={classes.stone}>
+            <img
+              src={STONES.USDC.xlarge}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                right: '27.5%',
+                transform: 'translate(50%, -50%)',
+              }}
+            />
+            <img
+              src={STONES.LET.xlarge}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '27.5%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
+          </div>
+        }
         <div className={classes.textMain} style={{ marginTop: 25, }}>
-          LET-USDC lp
+          {isTrade ?
+            mode ?
+              'LET' :
+              'USDC' :
+            'LET-USDC lp'}
         </div>
         <div className={classes.topDivider0} />
         <div className={classes.topDivider1} />
@@ -243,14 +310,14 @@ function PoolFlag({
         }}>
           <div className={classes.inputLabelContainer}>
             <div className={classes.inputContainer} style={{
-              marginTop: isPool ? 24 : 80,
+              marginTop: !isStake ? 22 : 79,
             }}>
               <input
                 className={classes.input}
                 type='number'
                 step='0.1'
                 placeholder="0.000"
-                value={isActive ? amount : 0.000}
+                value={isActive && amount !== 0 ? amount : undefined}
                 onChange={(e) => setAmount(parseFloat(e.target.value))}
               />
               <div
@@ -260,9 +327,13 @@ function PoolFlag({
                     mode ?
                       setAmount(coinBalance) :
                       setAmount(coinStaked) :
-                    mode ?
-                      setAmount(lpBalance) :
-                      setAmount(lpStaked)
+                    isTrade ?
+                      mode ?
+                        setAmount(pcBalance) :
+                        setAmount(coinBalance) :
+                      mode ?
+                        setAmount(lpBalance) :
+                        setAmount(lpStaked)
                 }}
               >MAX</div>
             </div>
@@ -270,50 +341,83 @@ function PoolFlag({
               <span className={classes.textLabel}>{
                 isPool ?
                   'LET' :
-                  'LP'
+                  isStake ?
+                    'LP' :
+                    mode ?
+                      'USDC' :
+                      'LET'
               }</span>
               <span className={classes.textLabel}>{`Balance: ${isPool ?
                 mode ?
                   coinBalance :
                   coinStaked :
-                mode ?
-                  lpBalance :
-                  lpStaked}`}</span>
+                isTrade ?
+                  mode ?
+                    pcBalance :
+                    coinBalance :
+                  mode ?
+                    lpBalance :
+                    lpStaked}`}</span>
             </div>
           </div>
-          {isPool ?
+          {!isStake ?
             <>
-              <Plus style={{
-                marginTop: 11,
-                marginBottom: 8,
-              }} />
-              <div className={classes.inputLabelContainer}>
-                <div className={classes.inputContainer} >
-                  <input
-                    className={classes.input}
-                    type='number'
-                    step='0.1'
-                    placeholder="0.000"
-                    value={isActive ? amount2 : 0.000}
-                    onChange={(e) => setAmount2(parseFloat(e.target.value))}
-                  />
-                  <div
-                    className={classes.maxBtn}
-                    onClick={() => {
-                      mode ?
-                        setAmount2(pcBalance) :
-                        setAmount2(pcStaked)
-                    }}
-                  >MAX</div>
-                </div>
-                <div className={classes.labelContainer}>
-                  <span className={classes.textLabel}>USDC</span>
-                  <span className={classes.textLabel}>{`Balance: ${mode ?
-                    pcBalance :
-                    pcStaked
-                    }`}</span>
-                </div>
-              </div>
+              {isTrade ?
+                <ArrowDown style={{
+                  marginTop: 11,
+                  marginBottom: 8,
+                }} /> :
+                <Plus style={{
+                  marginTop: 11,
+                  marginBottom: 8,
+                }} />
+              }
+              {
+                isPool ?
+                  <div className={classes.inputLabelContainer}>
+                    <div className={classes.inputContainer} >
+                      <input
+                        className={classes.input}
+                        type='number'
+                        step='0.1'
+                        placeholder="0.000"
+                        value={isActive && amount2 !== 0 ? amount2 : undefined}
+                        onChange={(e) => setAmount2(parseFloat(e.target.value))}
+                      />
+                      <div
+                        className={classes.maxBtn}
+                        onClick={() => {
+                          mode ?
+                            setAmount2(pcBalance) :
+                            setAmount2(pcStaked)
+                        }}
+                      >MAX</div>
+                    </div>
+                    <div className={classes.labelContainer}>
+                      <span className={classes.textLabel}>{'USDC'}</span>
+                      <span className={classes.textLabel}>{`Balance: ${mode ?
+                        pcBalance :
+                        pcStaked
+                        }`}</span>
+                    </div>
+                  </div> :
+                  <div className={classes.inputLabelContainer}>
+                    <div className={classes.inputContainer} >
+                      <input
+                        className={classes.input}
+                        type='number'
+                        step='0.1'
+                        placeholder="0.000"
+                        value={
+                          isActive && amount !== 0 ? calculatePrice(amount, letPrice, mode) : undefined}
+                        disabled
+                      />
+                    </div>
+                    <div className={classes.labelContainer}>
+                      <span className={classes.textLabel}>{mode ? 'LET' : 'USDC'}</span>
+                    </div>
+                  </div>
+              }
             </> : null
           }
         </div>
@@ -323,13 +427,17 @@ function PoolFlag({
               mode ?
                 'add liquidity' :
                 'remove liquidity' :
-              mode ?
-                'deposit let-usdc' :
-                'withdraw let-usdc'
+              isTrade ?
+                mode ?
+                  'buy $let' :
+                  'sell $let' :
+                mode ?
+                  'deposit let-usdc' :
+                  'withdraw let-usdc'
           }</SmallPrimaryButton>
         </div>
       </FlagBaseNormal>
-    </div>
+    </div >
   )
 }
 

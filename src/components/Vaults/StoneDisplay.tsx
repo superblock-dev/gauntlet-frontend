@@ -49,7 +49,7 @@ export default function StoneDisplay({ items, onClick }: StoneDisplayProps) {
     <div className={`${classes.container} stone`}>
       {[...tokens, ...tokens].map(((item, idx) => {
         return (
-          <Stone tokenName={item} amount={item in items ? items[item] : undefined} onClick={() => onClick(idx)} />
+          <Stone key={`stone-${idx}`} tokenName={item} amount={item in items ? items[item] : undefined} onClick={() => onClick(idx)} />
         )
       }
       ))}

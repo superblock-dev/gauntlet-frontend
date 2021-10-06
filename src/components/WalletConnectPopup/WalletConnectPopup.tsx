@@ -81,12 +81,19 @@ const useStyles = makeStyles({
   item: {
     width: 384,
     height: 66,
+    marginTop: 1,
+    marginBottom: 1,
     cursor: `url(${CursorPointer}), pointer`,
     display: 'flex',
     alignItems: 'center',
     // backgroundImage: `url(${ItemWalletType})`,
     '&:hover': {
-      backgroundImage: 'radial-gradient(78.76% 933.51% at 50% 100%, rgba(0, 201, 177, 0.11) 0%, rgba(0, 201, 177, 0) 79.55%)',
+      background: 'linear-gradient(86.23deg, rgba(0, 201, 177, 0) 26.6%, rgba(0, 201, 177, 0.1) 48.57%, rgba(0, 201, 177, 0) 70.12%)',
+      borderBottom: '1px solid',
+      borderImage: 'linear-gradient(to right, rgba(0, 201, 177, 0) 0%, rgba(0, 201, 177, 1) 50%, rgba(0, 201, 177, 0) 100%)',
+      borderImageSlice: 1,
+      borderImageWidth: '0 0 1px 0',
+      marginBottom: 0,
     },
     '&:active': {
     },

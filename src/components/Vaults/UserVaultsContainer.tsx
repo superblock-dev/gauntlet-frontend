@@ -150,7 +150,7 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
       </Grid>
       {
         vaults.map((vault, idx) => (
-          <>
+          <div key={`user-vault-${idx}`}>
             <UserVaultItem
               vault={vault}
               userState={USER_STATES.find(state => state.vaultId === vault.id)} />
@@ -161,7 +161,7 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
                 </div> :
                 null
             }
-          </>
+          </div>
         ))
       }
       <div style={{
