@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import { WalletAdapter } from '@solana/wallet-adapter-base';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useSetRecoilState } from "recoil";
 import { popupState } from 'recoil/atoms';
@@ -7,7 +6,7 @@ import { HeaderProps } from './Header.types';
 import { makeStyles } from '@material-ui/core';
 import NavButton from 'components/Buttons/NavButton';
 import WalletButton from 'components/Buttons/WalletButton';
-import Logo from 'assets/svgs/logo.svg';
+import Logo from 'assets/svgs/Logo.png';
 import WalletConnectPopup from 'components/WalletConnectPopup';
 import CursorPointer from 'assets/CursorPointer.svg';
 
