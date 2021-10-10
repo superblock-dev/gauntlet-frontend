@@ -57,7 +57,7 @@ function Swap() {
   return (
     <PageTemplate title={"SWAP"}>
       <div className={classes.container}>
-        <Link to="https://raydium.io/swap/" className={classes.activeItem}>
+        <Link to={{ pathname: "https://raydium.io/swap/" }} target="_blank" className={classes.activeItem}>
           <img src={RaydiumLogo} />
         </Link>
         <div className={classes.inactiveItem}>

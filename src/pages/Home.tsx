@@ -48,6 +48,14 @@ const useStyles = makeStyles({
     userSelect: 'none',
     pointerEvents: 'none',
   },
+  mainBackground: {
+    width: '100%',
+    height: 826,
+    backgroundImage: `url(${BgHome})`,
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+  },
   mainSection: {
     width: '100%',
     height: 826,
@@ -55,10 +63,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     alignItems: 'center',
     // backgroundColor: 'rgb(0, 0, 0)',
-    backgroundImage: `url(${BgHome})`,
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
+    transform: 'scale(0)',
     animation: '1s ease-in-out 0.2s 1 normal forwards running $textPop'
   },
   textLets: {
@@ -302,13 +307,15 @@ export default function Home() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.mainSection}>
-        <img src={TextLets} className={classes.textLets} />
-        <img src={TextGauntlet} className={classes.textGauntlet} />
-        <div className={classes.textCopy}>Wherever you farm, whatever you yield!</div>
-        <LineDivider className={classes.divider} />
-        <div className={classes.appBtnContainer}>
-          <div className={classes.appBtn} onClick={() => push('/vault')} />
+      <div className={classes.mainBackground}>
+        <div className={classes.mainSection}>
+          <img src={TextLets} className={classes.textLets} />
+          <img src={TextGauntlet} className={classes.textGauntlet} />
+          <div className={classes.textCopy}>Wherever you farm, whatever you yield!</div>
+          <LineDivider className={classes.divider} />
+          <div className={classes.appBtnContainer}>
+            <div className={classes.appBtn} onClick={() => push('/vault')} />
+          </div>
         </div>
       </div>
       <img className={`${classes.stone} stone1`} src={STONES.BTC.xxlarge} />

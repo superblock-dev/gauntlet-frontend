@@ -7,6 +7,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    minHeight: 1080,
   },
   title: {
     marginTop: 72,
