@@ -86,29 +86,35 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     alignItems: 'center',
     // backgroundColor: 'rgb(0, 0, 0)',
-    transform: 'scale(0)',
-    animation: '1s ease-in-out 0.2s 1 normal forwards running $textPop'
   },
   textLets: {
     marginTop: 201,
     width: 216,
     zIndex: 10,
+    transform: 'scale(0)',
+    animation: '1s ease-in-out 0s 1 normal forwards running $textPop',
   },
   textGauntlet: {
     marginTop: 24,
     width: 431,
     zIndex: 10,
+    transform: 'scale(0)',
+    animation: '1s ease-in-out 0.2s 1 normal forwards running $textPop'
   },
   textCopy: {
     marginTop: 32,
     fontFamily: 'Sen',
     fontSize: 16,
     color: 'white',
+    transform: 'scale(0)',
+    animation: '1s ease-in-out 0.4s 1 normal forwards running $textPop'
   },
   divider: {
     marginTop: 48,
     width: '100%',
     height: 20,
+    transform: 'scale(0)',
+    animation: '1s ease-in-out 0.6s 1 normal forwards running $textPop'
   },
   appBtnContainer: {
     marginTop: 64,
@@ -117,6 +123,8 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    transform: 'scale(0)',
+    animation: '1s ease-in-out 0.6s 1 normal forwards running $textPop'
   },
   appBtn: {
     position: 'relative',
@@ -158,10 +166,10 @@ const useStyles = makeStyles({
   },
   ['@keyframes textPop']: {
     '0%': {
-      transform: 'scale(0)',
+      transform: 'scale(0) translateY(220px)',
     },
     '100%': {
-      transform: 'scale(1)',
+      transform: 'scale(1) translateY(0)',
     }
   },
   section: {
