@@ -43,6 +43,7 @@ const useStyles = makeStyles({
     fontSize: 14,
     fontWeight: 700,
     display: 'none',
+    whiteSpace: 'nowrap',
   },
   stoneBg: {
     position: "absolute",
