@@ -1,13 +1,7 @@
-import { Link, useLocation } from 'react-router-dom';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useSetRecoilState } from "recoil";
-import { popupState } from 'recoil/atoms';
-import { HeaderProps } from './Header.types';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import NavButton from 'components/Buttons/NavButton';
-import WalletButton from 'components/Buttons/WalletButton';
 import Logo from 'assets/svgs/Logo.png';
-import WalletConnectPopup from 'components/WalletConnectPopup';
 import CursorPointer from 'assets/CursorPointer.svg';
 
 const useStyles = makeStyles({
@@ -18,6 +12,7 @@ const useStyles = makeStyles({
     position: 'relative',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: 'rgb(18, 16, 18)',
   },
   logo: {
     position: 'absolute',
@@ -58,21 +53,15 @@ const useStyles = makeStyles({
   },
 })
 
-function Header({ routeList }: HeaderProps) {
-  const location = useLocation();
+const routeList = [
+  { label: "DOCS", path: "https://superblock.gitbook.io/gauntlet/" },
+  { label: "MEDIUM", path: "https://superblock.gitbook.io/gauntlet/" },
+  { label: "DISCORD", path: "https://superblock.gitbook.io/gauntlet/" },
+  { label: "TELEGRAM", path: "https://superblock.gitbook.io/gauntlet/" },
+]
+
+export default function HomeHeader() {
   const classes = useStyles();
-  const setPopupState = useSetRecoilState(popupState);
-  const { publicKey, connected } = useWallet();
-
-  const handleConnect = () => {
-    // address check
-    setPopupState(<WalletConnectPopup />);
-  }
-  const address = publicKey?.toBase58();
-
-  if (location.pathname === "/") {
-    return null;
-  }
 
   return (
     <div className={classes.container}>
@@ -83,21 +72,15 @@ function Header({ routeList }: HeaderProps) {
         {routeList.map((menu) => (
           <Link
             key={menu.path}
-            to={menu.path}>
+            target="_blank"
+            to={{
+              pathname: menu.path
+            }}>
             <NavButton
-              active={location.pathname.includes(menu.path)}
               title={menu.label} />
           </Link>
         ))}
       </div>
-      <div className={classes.tvlText}>
-        tvl: $785.06M
-      </div>
-      <div className={classes.connectBtn} onClick={handleConnect}>
-        <WalletButton connected={connected} address={address} />
-      </div>
     </div>
   )
 }
-
-export default Header;

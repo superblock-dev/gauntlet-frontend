@@ -1,4 +1,3 @@
-import React from "react";
 import Carousel from "react-spring-3d-carousel";
 import { config } from "react-spring";
 import styled from "@emotion/styled";
@@ -16,23 +15,21 @@ class CustomCarousel extends Carousel {
     const { animationConfig, offsetRadius } = this.props;
 
     return (
-      <React.Fragment>
-        <Wrapper>
-          {this.getPresentableSlides().map(
-            (slide: any, presentableIndex: number) => (
-              <Slide
-                key={slide.key}
-                content={slide.content}
-                onClick={slide.onClick}
-                isParellel={slide.isParellel}
-                offsetRadius={this.clampOffsetRadius(offsetRadius)}
-                index={presentableIndex}
-                animationConfig={animationConfig}
-              />
-            )
-          )}
-        </Wrapper>
-      </React.Fragment>
+      <Wrapper>
+        {this.getPresentableSlides().map(
+          (slide: any, presentableIndex: number) => (
+            <Slide
+              key={slide.key}
+              content={slide.content}
+              onClick={slide.onClick}
+              isParellel={slide.isParellel}
+              offsetRadius={this.clampOffsetRadius(offsetRadius)}
+              index={presentableIndex}
+              animationConfig={animationConfig}
+            />
+          )
+        )}
+      </Wrapper>
     );
   }
 }
@@ -40,16 +37,21 @@ class CustomCarousel extends Carousel {
 interface SliderProps {
   slides: any[]
   index: number
+  style?: { [key: string]: any }
 }
 
-export default function Slider({ slides, index }: SliderProps) {
+export default function Slider({ slides, index, style }: SliderProps) {
   return (
-    <CustomCarousel
-      slides={slides}
-      goToSlide={index}
-      offsetRadius={3}
-      showNavigation={true}
-      animationConfig={config.gentle}
-    />
+    <div style={{
+      ...style,
+    }}>
+      <CustomCarousel
+        slides={slides}
+        goToSlide={index}
+        offsetRadius={3}
+        showNavigation={true}
+        animationConfig={config.gentle}
+      />
+    </div>
   );
 }

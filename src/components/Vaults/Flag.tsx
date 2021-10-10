@@ -9,7 +9,6 @@ import {
   rewardPrices,
   popupState,
   isDeposit as depositState,
-  liquidityPoolInfos,
 } from "recoil/atoms";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { makeStyles } from "@material-ui/core"
@@ -18,13 +17,11 @@ import SmallButton from "components/Buttons/SmallButton";
 import SmallPrimaryButton from "components/Buttons/SmallPrimaryButton";
 import Stone from 'components/Stone/Stone';
 import { TokenName } from "types";
-import { STONES } from "utils/stones";
 import CursorPointer from 'assets/CursorPointer.svg';
 import LargeFlag from "assets/svgs/flags/large.svg";
 import SmallFlag from "assets/svgs/flags/small.svg";
 import MiniFlag from "assets/svgs/flags/mini-1.svg";
 import dot from "assets/svgs/Dot.svg";
-import { REWARD_LP_TOKENS } from "utils/tokens";
 
 const useStyles = makeStyles({
   activeFlag: {
@@ -205,6 +202,7 @@ interface FlagProps {
   balance: number;
   reward?: number;
   active?: boolean;
+  isHome?: boolean;
 }
 
 type ActiveFlagProps = {
@@ -296,7 +294,7 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
   );
 }
 
-function ActiveFlag({ tokenName, deposited, balance, reward }: ActiveFlagProps) {
+function ActiveFlag({ tokenName, deposited, balance, reward, isHome }: ActiveFlagProps) {
   const [isDeposit, setIsDeposit] = useRecoilState(depositState);
   const setPopupState = useSetRecoilState(popupState);
   const resetAmount = useResetRecoilState(amountState);
@@ -307,7 +305,7 @@ function ActiveFlag({ tokenName, deposited, balance, reward }: ActiveFlagProps) 
     setPopupState(<WalletConnectPopup />);
   }
 
-  return connected ?
+  return isHome || connected ?
     <NormalFlag
       tokenName={tokenName}
       deposited={deposited}
@@ -342,7 +340,7 @@ function InActiveFlag({ tokenName }: FlagProps) {
   );
 }
 
-export default function Flag({ tokenName, deposited, balance, reward, active }: FlagProps) {
+export default function Flag({ tokenName, deposited, balance, reward, active, isHome }: FlagProps) {
   return (
     active
       ? <ActiveFlag
@@ -350,6 +348,7 @@ export default function Flag({ tokenName, deposited, balance, reward, active }: 
         deposited={deposited}
         balance={balance}
         reward={reward}
+        isHome={isHome}
       />
       : <InActiveFlag tokenName={tokenName} deposited={deposited} balance={balance} />
   )

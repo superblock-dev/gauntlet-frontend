@@ -12,21 +12,22 @@ import { SnackbarProvider } from 'notistack';
 import { Route as RouteType } from 'types';
 import { getPrices } from "api/prices";
 import { TIMEOUT_DEFAULT } from "utils/constants";
-
-import { makeStyles } from "@material-ui/core";
-import Header from 'components/Header';
-import Popup from 'components/Popup';
-import Snackbar from "components/Snackbar";
-import Swap from "pages/Swap";
-import Staking from 'pages/Staking';
-import Vault from "pages/Vault";
-import VaultDetail from "pages/VaultDetail";
 import { getPairs, requestLiquidityInfo } from "api/pools";
 import { loadTokenInfo } from "utils/tokens";
 import { calculateLpValues } from "utils/pools";
 import ScrollToTop from "./ScrollToTop";
 import { requestFarmInfo } from "api/farms";
 import { calculateAprValues } from "utils/farms";
+
+import { makeStyles } from "@material-ui/core";
+import Header from 'components/Header';
+import Popup from 'components/Popup';
+import Snackbar from "components/Snackbar";
+import Home from "pages/Home";
+import Swap from "pages/Swap";
+import Vault from "pages/Vault";
+import VaultDetail from "pages/VaultDetail";
+import Staking from 'pages/Staking';
 import Stake from "pages/Stake";
 import LetLpPool from "pages/Pool";
 
@@ -83,6 +84,7 @@ function App() {
       // API server could be downed...
       try {
         const liquidityPools = await requestLiquidityInfo(connState);
+        console.log(liquidityPools['FbC6K13MzHvN42bXrtGaWsvZY9fxrackRSZcBGfjPc7m'])
         calculateLpValues(liquidityPools, priceData);
         setLiquidityInfo(liquidityPools);
 
@@ -140,7 +142,7 @@ function App() {
               <Route path={"/staking/stake"} component={() => <Stake />} />
               <Route path={"/staking/pool"} component={() => <LetLpPool />} />
               <Route path={"/staking"} component={() => <Staking />} />
-              <Route path={"/"} component={() => <Vault />} />
+              <Route path={"/"} component={() => <Home />} />
             </Switch>
             {popup ? <Popup>{popup}</Popup> : undefined}
           </Router>

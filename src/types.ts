@@ -74,7 +74,7 @@ export interface PrimaryBtnProp {
 }
 
 export interface NavBtnProp {
-  active: boolean,
+  active?: boolean,
   title: string,
 }
 

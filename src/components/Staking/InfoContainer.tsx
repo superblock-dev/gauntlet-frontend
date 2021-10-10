@@ -298,7 +298,7 @@ function InfoContainer(props: StakingInfoProps) {
           }
         </div>
         {isStaking ?
-          <MediumButton text="LETS staking" link="/staking/stake" /> :
+          <MediumButton text="LETS stake" link="/staking/stake" /> :
           <MediumButton text="LETS provide lp" link="/staking/pool" />
         }
       </div>
