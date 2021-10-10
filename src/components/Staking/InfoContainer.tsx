@@ -84,7 +84,7 @@ const useStyles = makeStyles({
       position: 'absolute',
       left: '50%',
       top: '50%',
-      transform: 'translate(-50%, -50%)',
+      transform: 'translate(-50%, -50%) scale(0.08)',
     },
   },
 });
@@ -273,26 +273,26 @@ function InfoContainer(props: StakingInfoProps) {
           <div className={classes.subText} style={{ marginBottom: 8 }}>Rewards</div>
           {!isStaking ?
             <div className={classes.iconContainer}>
-              <img src={STONES.LET.small} />
+              <img src={STONES.LET} />
             </div> :
             <div style={{ display: 'flex', }}>
               <div className={classes.iconContainer}>
-                <img src={STONES.LET.small} />
+                <img src={STONES.LET} />
               </div>
               <div className={classes.iconContainer}>
-                <img src={STONES.BTC.small} />
+                <img src={STONES.BTC} />
               </div>
               <div className={classes.iconContainer}>
-                <img src={STONES.ETH.small} />
+                <img src={STONES.ETH} />
               </div>
               <div className={classes.iconContainer}>
-                <img src={STONES.SOL.small} />
+                <img src={STONES.SOL} />
               </div>
               <div className={classes.iconContainer}>
-                <img src={STONES.USDC.small} />
+                <img src={STONES.USDC} />
               </div>
               <div className={classes.iconContainer}>
-                <img src={STONES.USDT.small} />
+                <img src={STONES.USDT} />
               </div>
             </div>
           }

@@ -8,7 +8,7 @@ import { TokenName } from "types";
 import HomeHeader from "components/Home/HomeHeader";
 import Slider from "components/Slider";
 import Flag from "components/Vaults/Flag";
-import BgHome from 'assets/svgs/BGHome.png';
+import BgHome from 'assets/backgrounds/bg_home_main.png';
 import TextLets from 'assets/logos/title 1.png';
 import TextGauntlet from 'assets/logos/title 2.png';
 // import TextLets from 'assets/logos/lets.png';
@@ -19,7 +19,7 @@ import BtnGoToAppHovered from 'assets/svgs/BtnGoToAppHovered.svg';
 import BtnGoToAppPressed from 'assets/svgs/BtnGoToAppPressed.svg';
 import IconPageUp from 'assets/svgs/IconPageUp.svg';
 import { ReactComponent as LineDivider } from 'assets/svgs/LineHomeDivider.svg';
-import { ReactComponent as Stones } from 'assets/test/HomeStones.svg';
+import Stones from 'assets/test/HomeStones.svg';
 import BtnMore from 'assets/svgs/BtnMore.svg';
 
 const useStyles = makeStyles({
@@ -35,6 +35,7 @@ const useStyles = makeStyles({
     position: 'fixed',
     top: 0,
     left: 0,
+    backgroundColor: 'rgb(18, 16, 18)',
     width: '100%',
     transform: 'translateY(-110%)',
     transition: 'transform 0.3s ease',
@@ -43,10 +44,32 @@ const useStyles = makeStyles({
       transition: 'transform 0.3s ease',
     },
   },
-  stone: {
+  stoneAbsolute: {
     position: 'absolute',
+    width: 976,
+    height: 826,
+    top: 0,
+    left: '50%',
+    transform: 'translate(-50%, 0)',
     userSelect: 'none',
     pointerEvents: 'none',
+  },
+  stoneBox: {
+    position: 'relative',
+    width: 976,
+    height: 826,
+  },
+  stoneContainer: {
+    position: 'absolute',
+    width: 240,
+    height: 240,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stone: {
+    width: '100%',
+    height: '100%',
   },
   mainBackground: {
     width: '100%',
@@ -185,26 +208,51 @@ const useStyles = makeStyles({
     },
   },
   stones: {
+    width: 576,
+    height: 80,
+    backgroundImage: `url(${Stones})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
     opacity: 0,
     transform: 'translate3d(0px, 50px, 0px)',
     '&.active': {
       animation: '1s ease-in-out 0.4s 1 normal forwards running $showText'
     },
   },
-  btnMore: {
+  btnMoreContainer: {
     marginTop: 104,
-    width: 122,
+    width: 132,
     height: 32,
-    backgroundImage: `url(${BtnMore})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
+    position: 'relative',
     cursor: `pointer`,
     opacity: 0,
     transform: 'translate3d(0px, 50px, 0px)',
     '&.active': {
       animation: '1s ease-in-out 0.4s 1 normal forwards running $showText'
     },
+    '& span': {
+      position: 'absolute',
+      top: 5.5,
+      left: 0,
+      color: '#9067FF',
+      fontSize: 14,
+      fontWeight: 700,
+    },
+    '&:hover $btnMore': {
+      right: -4,
+    }
+  },
+  btnMore: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 32,
+    height: 32,
+    backgroundImage: `url(${BtnMore})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
   },
   footer: {
     width: 976,
@@ -318,20 +366,42 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <img className={`${classes.stone} stone1`} src={STONES.BTC.xxlarge} />
-      <img className={`${classes.stone} stone2`} src={STONES.ETH.xxlarge} />
-      <img className={`${classes.stone} stone3`} src={STONES.SOL.xxlarge} />
-      <img className={`${classes.stone} stone4`} src={STONES.USDC.xxlarge} />
-      <img className={`${classes.stone} stone5`} src={STONES.USDT.xxlarge} />
-      <img className={`${classes.stone} stone6`} src={STONES.RAY.xxlarge} />
-      <img className={`${classes.stone} stone7`} src={STONES.LET.xxlarge} />
+      <div className={classes.stoneAbsolute}>
+        <div className={classes.stoneBox}>
+          <div className={`${classes.stoneContainer} stone1`}>
+            <img className={classes.stone} src={STONES.BTC} />
+          </div>
+          <div className={`${classes.stoneContainer} stone2`}>
+            <img className={classes.stone} src={STONES.ETH} />
+          </div>
+          <div className={`${classes.stoneContainer} stone3`}>
+            <img className={classes.stone} src={STONES.SOL} />
+          </div>
+          <div className={`${classes.stoneContainer} stone4`}>
+            <img className={classes.stone} src={STONES.USDC} />
+          </div>
+          <div className={`${classes.stoneContainer} stone5`}>
+            <img className={classes.stone} src={STONES.USDT} />
+          </div>
+          <div className={`${classes.stoneContainer} stone6`}>
+            <img className={classes.stone} src={STONES.RAY} />
+          </div>
+          <div className={`${classes.stoneContainer} stone7`}>
+            <img className={classes.stone} src={STONES.LET} />
+          </div>
+        </div>
+      </div>
+
       <div className={classes.section} style={{ marginTop: 153, }}>
         <div className={`${classes.textHeader} ${section1 ? "active" : ''}`}>The new yield Optimizer</div>
         <div className={`${classes.textBody} ${section1 ? "active" : ''}`} style={{ textAlign: 'center', marginBottom: 104, }}>{
           `Gauntlet is the first Defi service that harvests Yield automatically and turn them into a targeted asset. You can collect any asset you want whichever Defi service you farm!`
         }</div>
-        <Stones className={`${classes.stones} ${section1 ? "active" : ''}`} />
-        <div className={`${classes.btnMore} ${section1 ? "active" : ''}`} />
+        <div className={`${classes.stones} ${section1 ? "active" : ''}`} />
+        <div className={`${classes.btnMoreContainer} ${section1 ? "active" : ''}`}>
+          <span>LEARN MORE</span>
+          <div className={classes.btnMore} />
+        </div>
       </div>
       <div className={classes.section} style={{ alignItems: 'flex-start' }}>
         <div style={{
@@ -369,10 +439,13 @@ export default function Home() {
             `Automated Yield Converter converts any yields to targeted assets to avoid or speculate on volatility. Also, if there are people who have taken the same strategy, the performing cost will be lowered to maximize the profit.`
           }</div>
         <div
-          className={`${classes.btnMore} ${section2 ? "active" : ''}`}
+          className={`${classes.btnMoreContainer} ${section2 ? "active" : ''}`}
           style={{ marginTop: 80, }}
           onClick={() => console.log('click')}
-        />
+        >
+          <span>LEARN MORE</span>
+          <div className={classes.btnMore} />
+        </div>
       </div>
       <div className={classes.section}>
         <div className={`${classes.textHeader} ${section3 ? "active" : ''}`} style={{ marginTop: 251, }}>pipeline the Money legos</div>
@@ -380,10 +453,13 @@ export default function Home() {
           `Gauntlet supports pipelining Defi services by providing Vaults so that the auto-converted asset can be invested to any Defi service to maximize your profit!`
         }</div>
         <div
-          className={`${classes.btnMore} ${section3 ? "active" : ''}`}
+          className={`${classes.btnMoreContainer} ${section3 ? "active" : ''}`}
           style={{ marginTop: 80, }}
           onClick={() => console.log('click')}
-        />
+        >
+          <span>LEARN MORE</span>
+          <div className={classes.btnMore} />
+        </div>
       </div>
       <div className={classes.footer}>
         <div className={classes.iconPageUp} onClick={() => {

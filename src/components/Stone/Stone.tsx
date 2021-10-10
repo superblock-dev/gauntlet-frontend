@@ -10,6 +10,7 @@ interface StoneProps {
 
 export default function Stone({ tokenName, size, style }: StoneProps) {
   let length = 48;
+  const imgSize = 300;
   switch (size) {
     case 'small':
       length = 24;
@@ -28,8 +29,8 @@ export default function Stone({ tokenName, size, style }: StoneProps) {
   if (REWARD_LP_TOKENS.includes(tokenName)) {
     const firstToken = tokenName.split("-")[0];
     const secondToken = tokenName.split("-")[1];
-    const stone1 = STONES[firstToken][size];
-    const stone2 = STONES[secondToken][size];
+    const stone1 = STONES[firstToken];
+    const stone2 = STONES[secondToken];
 
     return (
       <div style={{
@@ -44,7 +45,7 @@ export default function Stone({ tokenName, size, style }: StoneProps) {
             position: "absolute",
             top: '50%',
             right: "33.3%",
-            transform: "translate(50%, -50%)",
+            transform: `translate(50%, -50%) scale(${length/imgSize})`,
           }}
         />
         <img
@@ -53,13 +54,13 @@ export default function Stone({ tokenName, size, style }: StoneProps) {
             position: "absolute",
             top: '50%',
             left: '33.3%',
-            transform: "translate(-50%, -50%)",
+            transform: `translate(-50%, -50%) scale(${length/imgSize}`,
           }}
         />
       </div>
     )
   }
-  const stone = STONES[tokenName][size]
+  const stone = STONES[tokenName]
   return (
     <div style={{
       position: 'relative',
@@ -72,7 +73,7 @@ export default function Stone({ tokenName, size, style }: StoneProps) {
           position: 'absolute',
           top: '50%',
           left: '50%',
-          transform: 'translate(-50%, -50%)',
+          transform: `translate(-50%, -50%) scale(${length/imgSize}`,
         }} />
     </div>
   )

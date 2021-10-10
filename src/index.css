@@ -63,6 +63,32 @@ img {
        url('assets/fonts/spectral-sc-v6-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
        url('assets/fonts/spectral-sc-v6-latin-regular.svg#SpectralSC') format('svg'); /* Legacy iOS */
 }
+/* spectral-sc-700 - latin */
+@font-face {
+  font-family: 'Spectral SC';
+  font-style: normal;
+  font-weight: 700;
+  src: url('assets/fonts/spectral-sc-v6-latin-700.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('assets/fonts/spectral-sc-v6-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('assets/fonts/spectral-sc-v6-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
+       url('assets/fonts/spectral-sc-v6-latin-700.woff') format('woff'), /* Modern Browsers */
+       url('assets/fonts/spectral-sc-v6-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('assets/fonts/spectral-sc-v6-latin-700.svg#SpectralSC') format('svg'); /* Legacy iOS */
+}
+/* spectral-sc-800 - latin */
+@font-face {
+  font-family: 'Spectral SC';
+  font-style: normal;
+  font-weight: 800;
+  src: url('assets/fonts/spectral-sc-v6-latin-800.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('assets/fonts/spectral-sc-v6-latin-800.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('assets/fonts/spectral-sc-v6-latin-800.woff2') format('woff2'), /* Super Modern Browsers */
+       url('assets/fonts/spectral-sc-v6-latin-800.woff') format('woff'), /* Modern Browsers */
+       url('assets/fonts/spectral-sc-v6-latin-800.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('assets/fonts/spectral-sc-v6-latin-800.svg#SpectralSC') format('svg'); /* Legacy iOS */
+}
 
 /* sen-regular - latin */
 @font-face {
@@ -192,10 +218,10 @@ img {
 
 @keyframes animX{
   0% {
-    left: 22%;
+    left: 0;
   }
   100% {
-    left: 70%;
+    left: 75%;
   }
 }
 @keyframes animY{
@@ -208,15 +234,18 @@ img {
 }
 @keyframes scale {
   0% {
-    transform: scale(0.5);
+    /* transform: scale(0.2) translateX(-200%) translateY(-200%); */
+    transform: scale(0.25);
     opacity: 0.5;
   }
   50% {
+    /* transform: scale(0.5) translateX(-50%)  translateY(-50%); */
     transform: scale(1);
     opacity: 1;
   }
   100% {
-    transform: scale(0.5);
+    /* transform: scale(0.2) translateX(-200%) translateY(-200%); */
+    transform: scale(0.25);
     opacity: 0.5;
  }
 }

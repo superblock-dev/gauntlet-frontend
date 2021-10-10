@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { TokenName } from "types";
-import { STONES } from "utils/stones";
+import { STONES, STONE_BG_EFFECTS } from "utils/stones";
 import TooltipVaultDetail from 'assets/svgs/TooltipVaultDetail.svg';
 import { REWARD_LP_TOKENS } from "utils/tokens";
 
@@ -56,15 +56,33 @@ const useStyles = makeStyles({
     position: "absolute",
     bottom: 40,
     left: "50%",
+    transform: "translate(-50%, 50%) scale(0.26)",
+  },
+  inactiveStone: {
+    position: "absolute",
+    bottom: 40,
+    left: "50%",
     transform: "translate(-50%, 50%)",
   },
   stone1: {
     position: "absolute",
     bottom: 40,
     left: '33.3%',
-    transform: "translate(-50%, 50%)",
+    transform: "translate(-50%, 50%) scale(0.26)",
   },
   stone2: {
+    position: "absolute",
+    bottom: 40,
+    right: "33.3%",
+    transform: "translate(50%, 50%) scale(0.26)",
+  },
+  inactiveStone1: {
+    position: "absolute",
+    bottom: 40,
+    left: '33.3%',
+    transform: "translate(-50%, 50%)",
+  },
+  inactiveStone2: {
     position: "absolute",
     bottom: 40,
     right: "33.3%",
@@ -90,18 +108,18 @@ export default function StoneDisplayItem({ tokenName, amount, onClick }: StonePr
           <div className={classes.container} onClick={onClick}>
             <div className={classes.tooltipBox} />
             <div className={classes.tooltipText}>{`${tokenName} / ${amount}`}</div>
-            <img className={classes.stoneBg} src={STONES[firstToken].xlargeBgEffect} />
-            <img className={classes.stone2} src={STONES[secondToken].xlarge} />
-            <img className={classes.stone1} src={STONES[firstToken].xlarge} />
+            <img className={classes.stoneBg} src={STONE_BG_EFFECTS[firstToken].bgEffect} />
+            <img className={classes.stone2} src={STONES[secondToken]} />
+            <img className={classes.stone1} src={STONES[firstToken]} />
           </div>
         ) : (
           <div className={classes.container} onClick={onClick}>
             <div className={classes.tooltipBox} />
             <div className={classes.tooltipText}>{`${tokenName} / 0`}</div>
-            <img className={classes.stone2} src={STONES[secondToken].xlargeOutline} />
-            <img className={classes.stone1} src={STONES[firstToken].xlargeOutline} />
-            <img className={classes.stone2} src={STONES[secondToken].xlargeDeactivated} />
-            <img className={classes.stone1} src={STONES[firstToken].xlargeDeactivated} />
+            <img className={classes.inactiveStone2} src={STONE_BG_EFFECTS[secondToken].outline} />
+            <img className={classes.inactiveStone1} src={STONE_BG_EFFECTS[firstToken].outline} />
+            <img className={classes.inactiveStone2} src={STONE_BG_EFFECTS[secondToken].deactivated} />
+            <img className={classes.inactiveStone1} src={STONE_BG_EFFECTS[firstToken].deactivated} />
           </div>
         )}
       </>
@@ -114,15 +132,15 @@ export default function StoneDisplayItem({ tokenName, amount, onClick }: StonePr
         <div className={classes.container} onClick={onClick}>
           <div className={classes.tooltipBox} />
           <div className={classes.tooltipText}>{`${tokenName} / ${amount}`}</div>
-          <img className={classes.stoneBg} src={STONES[tokenName].xlargeBgEffect} />
-          <img className={classes.stone} src={STONES[tokenName].xlarge} />
+          <img className={classes.stoneBg} src={STONE_BG_EFFECTS[tokenName].bgEffect} />
+          <img className={classes.stone} src={STONES[tokenName]} />
         </div>
       ) : (
         <div className={classes.container} onClick={onClick}>
           <div className={classes.tooltipBox} />
           <div className={classes.tooltipText}>{`${tokenName} / 0`}</div>
-          <img className={classes.stone} src={STONES[tokenName].xlargeOutline} />
-          <img className={classes.stone} src={STONES[tokenName].xlargeDeactivated} />
+          <img className={classes.inactiveStone} src={STONE_BG_EFFECTS[tokenName].outline} />
+          <img className={classes.inactiveStone} src={STONE_BG_EFFECTS[tokenName].deactivated} />
         </div>
       )}
     </>
