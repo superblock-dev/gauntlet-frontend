@@ -76,7 +76,7 @@ const useStyles = makeStyles({
     position: 'relative',
     '&:hover $stoneImg': {
       transition: 'all 0.67s', /* Animation */
-      transform: 'translate(-50%, 50%) scale(1.4)',
+      transform: 'translate(-50%, 50%) scale(0.26)',
     },
     '&:hover $tooltipBox': {
       display: 'block',
