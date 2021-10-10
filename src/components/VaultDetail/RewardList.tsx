@@ -4,7 +4,7 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles, withStyles } from "@material-ui/core";
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
-import { LARGE_STONES, SMALL_STONES, STONES } from 'utils/stones';
+import { STONES } from 'utils/stones';
 import { StrategyFarm } from 'utils/strategies';
 import { TokenName } from 'types';
 import { REWARD_LP_TOKENS } from 'utils/tokens';

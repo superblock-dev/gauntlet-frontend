@@ -44,7 +44,7 @@ const useStyles = makeStyles({
   },
   stone: {
     marginTop: 56,
-    width: 136,
+    width: 132,
     height: 80,
     position: 'relative',
   },
@@ -249,32 +249,32 @@ function PoolFlag({
         {isTrade ?
           <div className={classes.stone}>
             <img
-              src={mode ? STONES.LET.xlarge : STONES.USDC.xlarge}
+              src={mode ? STONES.LET : STONES.USDC}
               style={{
                 position: 'absolute',
                 top: '50%',
                 left: '50%',
-                transform: 'translate(-50%, -50%)',
+                transform: 'translate(-50%, -50%) scale(0.26)',
               }}
             />
           </div> :
           <div className={classes.stone}>
             <img
-              src={STONES.USDC.xlarge}
+              src={STONES.USDC}
               style={{
                 position: 'absolute',
                 top: '50%',
                 right: '27.5%',
-                transform: 'translate(50%, -50%)',
+                transform: 'translate(50%, -50%) scale(0.26)',
               }}
             />
             <img
-              src={STONES.LET.xlarge}
+              src={STONES.LET}
               style={{
                 position: 'absolute',
                 top: '50%',
                 left: '27.5%',
-                transform: 'translate(-50%, -50%)',
+                transform: 'translate(-50%, -50%) scale(0.26)',
               }}
             />
           </div>

@@ -118,7 +118,7 @@ const useStyles = makeStyles({
       position: 'absolute',
       left: '50%',
       top: '50%',
-      transform: 'translate(-50%, -50%)',
+      transform: 'translate(-50%, -50%) scale(0.4)',
     },
   },
   topDivider0: { // TODO: reuse
@@ -330,7 +330,7 @@ function Stake() {
       <div className={classes.divider} />
       <div className={classes.flagContainer}>
         <div className={classes.stoneIcon}>
-          <img src={STONES.LET.xxlarge} />
+          <img src={STONES.LET} />
         </div>
         <div
           className={classes.headerText}

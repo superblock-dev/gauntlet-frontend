@@ -89,7 +89,7 @@ const useStyles = makeStyles({
     position: 'absolute',
     bottom: 24,
     left: 32,
-    transform: 'translate(-50%, 50%)',
+    transform: 'translate(-50%, 50%) scale(0.16)',
   },
   tooltipBox: {
     position: 'absolute',
@@ -225,7 +225,7 @@ collect what you want`}
               <div className={classes.tooltipText}>{ticker}</div>
               <img
                 className={classes.stoneImg}
-                src={STONES[ticker as TokenName].normal} />
+                src={STONES[ticker as TokenName]} />
             </div>
           ))}
         </div>
