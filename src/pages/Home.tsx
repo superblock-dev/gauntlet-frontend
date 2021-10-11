@@ -126,7 +126,15 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: 'center',
     transform: 'scale(0)',
-    animation: '1s ease-in-out 0.6s 1 normal forwards running $textPop'
+    animation: '1s ease-in-out 0.6s 1 normal forwards running $textPop',
+    '&::before': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      content: '""',
+      display: 'none',
+      backgroundImage: `url(${BtnGoToAppPressed})`,
+    }
   },
   appBtn: {
     position: 'relative',
@@ -153,6 +161,14 @@ const useStyles = makeStyles({
       backgroundPosition: '0 50%',
       borderRadius: 4,
       animation: '$moveGradient 4s alternate infinite',
+    },
+    '&::before': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      content: '""',
+      display: 'none',
+      backgroundImage: `url(${BtnGoToAppHovered})`,
     },
     '&:hover': {
       backgroundImage: `url(${BtnGoToAppHovered})`,
@@ -333,16 +349,6 @@ export default function Home() {
       onClick: () => setSlideIndex(idx)
     }
   ))
-  // Preload images
-  useEffect(() => {
-    const images = [`url(${BtnGoToAppHovered})`, `url(${BtnGoToAppPressed})`];
-
-    let imgObj = new Image();
-
-    for (const img of images) {
-      imgObj.src = img
-    }
-  })
 
   useEffect(() => {
     const { scrollTop: currentScrollTop } = document.documentElement || document.body;
