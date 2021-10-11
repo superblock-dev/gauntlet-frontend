@@ -76,10 +76,12 @@ const useStyles = makeStyles({
   mainBackground: {
     width: '100%',
     height: 826,
-    backgroundImage: `url(${BgHome})`,
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
+    overflow: 'hidden',
+    position: 'relative',
+    // backgroundImage: `url(${BgHome})`,
+    // backgroundPosition: 'center',
+    // backgroundSize: 'cover',
+    // backgroundRepeat: 'no-repeat',
   },
   mainSection: {
     width: '100%',
@@ -382,6 +384,7 @@ export default function Home() {
   return (
     <div className={classes.root}>
       <div className={classes.mainBackground}>
+        <video src={'/space.mp4'} style={{ position: 'absolute', top: 0, left: 0, }} width={'100%'} height={'auto'} autoPlay loop muted/>
         <div className={classes.mainSection}>
           <img src={TextLets} className={classes.textLets} />
           <img src={TextGauntlet} className={classes.textGauntlet} />
