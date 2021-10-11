@@ -154,16 +154,6 @@ const useStyles = makeStyles({
       borderRadius: 4,
       animation: '$moveGradient 4s alternate infinite',
     },
-    '&::before': {
-      position: 'absolute',
-      content: '""',
-      top: 0,
-      left: 0,
-      display: 'none',
-      backgroundImage: `url(${BtnGoToAppHovered})`,
-      // @ts-ignore
-      backgroundImage: `url(${BtnGoToAppPressed})`,
-    },
     '&:hover': {
       backgroundImage: `url(${BtnGoToAppHovered})`,
     },
@@ -343,6 +333,16 @@ export default function Home() {
       onClick: () => setSlideIndex(idx)
     }
   ))
+  // Preload images
+  useEffect(() => {
+    const images = [`url(${BtnGoToAppHovered})`, `url(${BtnGoToAppPressed})`];
+
+    let imgObj = new Image();
+
+    for (const img of images) {
+      imgObj.src = img
+    }
+  })
 
   useEffect(() => {
     const { scrollTop: currentScrollTop } = document.documentElement || document.body;
