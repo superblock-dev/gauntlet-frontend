@@ -21,6 +21,8 @@ import IconPageUp from 'assets/svgs/IconPageUp.svg';
 import { ReactComponent as LineDivider } from 'assets/svgs/LineHomeDivider.svg';
 import Stones from 'assets/test/HomeStones.svg';
 import BtnMore from 'assets/svgs/BtnMore.svg';
+import Lottie from 'react-lottie';
+import Pipeline from 'assets/animation/anim.json'
 
 const useStyles = makeStyles({
   root: {
@@ -151,6 +153,16 @@ const useStyles = makeStyles({
       backgroundPosition: '0 50%',
       borderRadius: 4,
       animation: '$moveGradient 4s alternate infinite',
+    },
+    '&::before': {
+      position: 'absolute',
+      content: '""',
+      top: 0,
+      left: 0,
+      display: 'none',
+      backgroundImage: `url(${BtnGoToAppHovered})`,
+      // @ts-ignore
+      backgroundImage: `url(${BtnGoToAppPressed})`,
     },
     '&:hover': {
       backgroundImage: `url(${BtnGoToAppHovered})`,
@@ -456,6 +468,25 @@ export default function Home() {
         </div>
       </div>
       <div className={classes.section}>
+        <Lottie
+          style={{
+            position: 'absolute',
+            backgroundColor: 'transparent',
+          }}
+          options={{
+            loop: true,
+            autoplay: true,
+            animationData: Pipeline,
+            rendererSettings: {
+              preserveAspectRatio: 'xMidYMid slice'
+            }
+          }}
+          isStopped={false}
+          isPaused={false}
+          height={'100%'}
+          width={'100%'}
+          isClickToPauseDisabled={false}
+        />
         <div className={`${classes.textHeader} ${section3 ? "active" : ''}`} style={{ marginTop: 251, }}>pipeline the Money legos</div>
         <div className={`${classes.textBody} ${section3 ? "active" : ''}`} style={{ textAlign: 'center', width: 700 }}>{
           `Gauntlet supports pipelining Defi services by providing Vaults so that the auto-converted asset can be invested to any Defi service to maximize your profit!`
