@@ -1,9 +1,10 @@
+import { useRecoilValue } from "recoil";
+import { userInfo, vaultInfos } from "recoil/atoms";
 import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
 import VaultItem from "components/Vaults/VaultItem";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
-import { USER_STATES, VAULTS } from "utils/vaults";
 import UserVaultsContainer from "components/Vaults/UserVaultsContainer";
 import { useWallet } from "@solana/wallet-adapter-react";
 
@@ -52,10 +53,12 @@ const useStyles = makeStyles({
 
 function Vault() {
   const classes = useStyles();
-  const userVaultIds = USER_STATES.map(userStat => userStat.vaultId);
-  const userVaults = VAULTS.filter(vault => userVaultIds.includes(vault.id));
-  const otherVaults = VAULTS.filter(vault => !userVaultIds.includes(vault.id));
+  const vaults = useRecoilValue(vaultInfos);
+  const userInfoState = useRecoilValue(userInfo);
+  const userVaultIds = userInfoState.states.map(userStat => userStat.vaultId);
   const { connected } = useWallet();
+  const userVaults = connected ? vaults.filter(vault => userVaultIds.includes(vault.id)) : [];
+  const otherVaults = connected ? vaults.filter(vault => !userVaultIds.includes(vault.id)) : vaults;
 
   return (
     <PageTemplate
@@ -65,7 +68,7 @@ function Vault() {
       <div className={classes.contentContainer}>
         {
           connected ?
-          <UserVaultsContainer vaults={userVaults} states={USER_STATES} /> :
+          <UserVaultsContainer vaults={userVaults} states={userInfoState.states} /> :
           <></>
         }
         <div className={classes.listTitle}>

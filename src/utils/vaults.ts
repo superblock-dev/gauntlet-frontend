@@ -22,8 +22,8 @@ export function calculateReward(reward: Reward, vault: Vault) {
   return Math.floor(rewardAmount.multipliedBy(Math.pow(10, reward.token.decimals)).toNumber()) / Math.pow(10, reward.token.decimals);
 }
 
-export function getVaultById(id: number) {
-  return VAULTS.find(v => v.id === id);
+export function getVaultById(vaults: Vault[], id: number) {
+  return vaults.find(v => v.id === id);
 }
 
 export function getStrategyByTokenName(vault: Vault, tname: TokenName) {
@@ -31,60 +31,60 @@ export function getStrategyByTokenName(vault: Vault, tname: TokenName) {
 }
 
 export const USER_STATES: UserState[] = [
-  {
-    vaultId: 1,
-    balance: 380,
-    rewards: [
-      // {
-      //   tokenName: 'BTC',
-      //   token: TOKENS.BTC,
-      //   amount: 50,
-      //   rewardDebt: 0.000272,
-      // },
-      // {
-      //   tokenName: 'SOL',
-      //   token: TOKENS.SOL,
-      //   amount: 230,
-      //   rewardDebt: 0.25,
-      // },
-      // {
-      //   tokenName: 'USDC',
-      //   token: TOKENS.USDC,
-      //   amount: 50,
-      //   rewardDebt: 560000,
-      // },
-      {
-        tokenName: 'LET-USDC',
-        token: LP_TOKENS['LET-USDC'],
-        amount: 380,
-        rewardDebt: 20000,
-      }
-    ]
-  },
-  {
-    vaultId: 3,
-    balance: 380,
-    rewards: [
-      {
-        tokenName: 'BTC',
-        token: TOKENS.BTC,
-        amount: 280,
-        rewardDebt: 0.000272,
-      },
-      {
-        tokenName: 'ETH',
-        token: TOKENS.ETH,
-        amount: 50,
-        rewardDebt: 0.00048,
-      },
-      {
-        tokenName: 'RAY-USDC',
-        token: LP_TOKENS['RAY-USDC-V4'],
-        amount: 50,
-        rewardDebt: 0,
-      }
-    ]
-  },
+  // {
+  //   vaultId: 1,
+  //   balance: 380,
+  //   rewards: [
+  //     // {
+  //     //   tokenName: 'BTC',
+  //     //   token: TOKENS.BTC,
+  //     //   amount: 50,
+  //     //   rewardDebt: 0.000272,
+  //     // },
+  //     // {
+  //     //   tokenName: 'SOL',
+  //     //   token: TOKENS.SOL,
+  //     //   amount: 230,
+  //     //   rewardDebt: 0.25,
+  //     // },
+  //     // {
+  //     //   tokenName: 'USDC',
+  //     //   token: TOKENS.USDC,
+  //     //   amount: 50,
+  //     //   rewardDebt: 560000,
+  //     // },
+  //     {
+  //       tokenName: 'LET-USDC',
+  //       token: LP_TOKENS['LET-USDC'],
+  //       amount: 380,
+  //       rewardDebt: 20000,
+  //     }
+  //   ]
+  // },
+  // {
+  //   vaultId: 3,
+  //   balance: 380,
+  //   rewards: [
+  //     {
+  //       tokenName: 'BTC',
+  //       token: TOKENS.BTC,
+  //       amount: 280,
+  //       rewardDebt: 0.000272,
+  //     },
+  //     {
+  //       tokenName: 'ETH',
+  //       token: TOKENS.ETH,
+  //       amount: 50,
+  //       rewardDebt: 0.00048,
+  //     },
+  //     {
+  //       tokenName: 'RAY-USDC',
+  //       token: LP_TOKENS['RAY-USDC-V4'],
+  //       amount: 50,
+  //       rewardDebt: 0,
+  //     }
+  //   ]
+  // },
 ];
 
 export const VAULTS: Vault[] = [

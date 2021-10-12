@@ -5,10 +5,11 @@ export interface StrategyFarm {
   apy: number;
 }
 
-export function calculateApyInPercentage(farmApr: BigNumber, stratApy: number) {
+// 이걸 프론트에서 직접 수행하면 너무 오래걸림.
+export function calculateApyInPercentage(farmApr: BigNumber, multiplier: number) {
   const dailyApr = farmApr.dividedBy(365);
-  const sApy = BigNumber.sum(new BigNumber(stratApy).dividedBy(365), 1);
-  const multiplier = (sApy.pow(365)).minus(1).dividedBy(sApy.minus(1));
+  // const sApy = BigNumber.sum(new BigNumber(stratApy).dividedBy(365), 1);
+  // const multiplier = (sApy.pow(365)).minus(1).dividedBy(sApy.minus(1));
   const apy = dailyApr.multipliedBy(multiplier);
 
   return apy;
@@ -17,50 +18,50 @@ export function calculateApyInPercentage(farmApr: BigNumber, stratApy: number) {
 export const STRATEGY_FARMS: StrategyFarm[] = [
   {
     token: 'BTC',
-    apy: 0.015,
+    apy: 367.744,
   },
   {
     token: 'ETH',
-    apy: 0.0923,
+    apy: 382.324,
   },
   {
     token: 'SOL',
-    apy: 0.0504,
+    apy: 374.327,
   },
   {
     token: 'USDC',
-    apy: 0.1341,
+    apy: 390.528,
   },
   {
     token: 'USDT',
-    apy: 0.1063,
+    apy: 385.046,
   },
   {
     token: 'RAY',
-    apy: 0.7021,
+    apy: 528.512,
   },
   {
     token: 'LET',
-    apy: 0.901,
+    apy: 591.183,
   },
   {
     token: 'RAY-ETH',
-    apy: 0.6978,
+    apy: 527.251,
   },
   {
     token: 'RAY-SOL',
-    apy: 0.3714,
+    apy: 441.743,
   },
   {
     token: 'RAY-USDC',
-    apy: 0.7456,
+    apy: 541.480,
   },
   {
     token: 'RAY-USDT',
-    apy: 0.7626,
+    apy: 546.656,
   },
   {
     token: 'LET-USDC',
-    apy: 9.501,
+    apy: 454914,
   }
 ];

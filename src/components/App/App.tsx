@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from "react";
 import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
-import { conn, farmInfos, liquidityPoolInfos, pairsInfo, popupState, rewardPrices, tokenInfos } from "recoil/atoms";
-import { BrowserRouter as Router, Route, Switch, useHistory } from "react-router-dom";
+import { cloneDeep } from 'lodash';
+import { conn, farmInfos, liquidityPoolInfos, pairsInfo, popupState, rewardPrices, tokenInfos, vaultInfos } from "recoil/atoms";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
@@ -84,7 +85,6 @@ function App() {
       // API server could be downed...
       try {
         const liquidityPools = await requestLiquidityInfo(connState);
-        console.log(liquidityPools['FbC6K13MzHvN42bXrtGaWsvZY9fxrackRSZcBGfjPc7m'])
         calculateLpValues(liquidityPools, priceData);
         setLiquidityInfo(liquidityPools);
 

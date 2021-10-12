@@ -4,10 +4,11 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles, withStyles } from "@material-ui/core";
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
-import { StrategyFarm } from 'utils/strategies';
+import { calculateApyInPercentage, StrategyFarm } from 'utils/strategies';
 import { TokenName } from 'types';
 import { REWARD_LP_TOKENS } from 'utils/tokens';
 import Stone from 'components/Stone/Stone';
+import BigNumber from 'bignumber.js';
 
 const Accordion = withStyles({
   root: {
@@ -56,6 +57,7 @@ const AccordionDetails = withStyles({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    cursor: `url(${CursorPointer}), pointer !important`,
     padding: 0,
   },
 })(MuiAccordionDetails);
@@ -68,6 +70,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   header: {
+    marginTop: 80,
     width: 560,
     fontFamily: 'Sen',
     fontWeight: 400,
@@ -130,9 +133,12 @@ const useStyles = makeStyles({
 export interface RewardListProps {
   rewards: StrategyFarm[];
   mainIndex: number;
+  farmApr: number;
+  lpFee: number;
+  onClick: (...args: any) => void;
 }
 
-function RewardList({ rewards, mainIndex }: RewardListProps) {
+function RewardList({ rewards, mainIndex, farmApr, lpFee, onClick }: RewardListProps) {
   const classes = useStyles();
   const index = mainIndex % rewards.length;
 
@@ -154,14 +160,14 @@ function RewardList({ rewards, mainIndex }: RewardListProps) {
                 }} 
               />
               <div className={classes.largeName}>{rewards[index].token}</div>
-              <div className={classes.largePercentage}>{`${((rewards[index].apy) * 100).toFixed(2)} %`}</div>
+              <div className={classes.largePercentage}>{`${BigNumber.sum(calculateApyInPercentage(new BigNumber(farmApr), rewards[index].apy), lpFee).toFixed(2)} %`}</div>
             </AccordionSummary>
             <AccordionDetails>
               {
                 rewards.map((r, idx) => {
                   if (r.token === rewards[index].token) return null;
                   return (
-                    <div key={`reward-${idx}`} className={classes.rewardItem}>
+                    <div key={`reward-${idx}`} className={classes.rewardItem} onClick={() => onClick(idx)}>
                       <Stone 
                         tokenName={r.token as TokenName} 
                         size="small"
@@ -172,7 +178,7 @@ function RewardList({ rewards, mainIndex }: RewardListProps) {
                         }} 
                       />
                       <div className={classes.smallName}>{r.token}</div>
-                      <div className={classes.smallPercentage}>{`${((r.apy) * 100).toFixed(2)} %`}</div>
+                      <div className={classes.smallPercentage}>{`${BigNumber.sum(calculateApyInPercentage(new BigNumber(farmApr), r.apy), lpFee).toFixed(2)} %`}</div>
                     </div>
                   )
                 })

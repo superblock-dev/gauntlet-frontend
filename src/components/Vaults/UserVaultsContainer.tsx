@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { useRecoilValue } from 'recoil';
-import { farmInfos, liquidityPoolInfos, pairsInfo, rewardPrices } from 'recoil/atoms';
+import { clone } from 'lodash';
+import { farmInfos, liquidityPoolInfos, rewardPrices, userInfo } from 'recoil/atoms';
 import { Grid, makeStyles } from "@material-ui/core";
 import UserVaultsSummary from "components/Vaults/UserVaultsSummary";
 import UserVaultItem from "components/Vaults/UserVaultItem";
@@ -64,11 +65,13 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
   const classes = useStyles();
   const prices = useRecoilValue(rewardPrices);
   const liquidityPools = useRecoilValue(liquidityPoolInfos);
+  const userInfoValue = useRecoilValue(userInfo);
   const farms = useRecoilValue(farmInfos);
 
+  const _states = clone(states);
   // 각 state들마다 pending reward 계산
-  states.forEach(s => {
-    const v = getVaultById(s.vaultId);
+  _states.forEach(s => {
+    const v = getVaultById(vaults, s.vaultId);
     if (!v) return
 
     s.rewards.forEach(r => {
@@ -110,14 +113,14 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
     s.totalApr = totalApr;
   })
   // 모든 vault의 total reward 계산
-  const [totalDeposit, totalLpValueInUSD, totalRewardsInUSD] = states.reduce((total, s) => {
+  const [totalDeposit, totalLpValueInUSD, totalRewardsInUSD] = _states.reduce((total, s) => {
     total[0] += s.balance
     if (s.lpValueInUSD) total[1] = BigNumber.sum(total[1], s.lpValueInUSD);
     if (s.totalRewardInUSD) total[2] = BigNumber.sum(total[2], s.totalRewardInUSD);
     return total
   }, [0, new BigNumber(0), new BigNumber(0)]);
 
-  const avgApr = states.reduce((weighted, s) => {
+  const avgApr = _states.reduce((weighted, s) => {
     if (s.totalApr) {
       weighted = BigNumber.sum(weighted, s.totalApr.multipliedBy(s.balance))
     }
@@ -153,20 +156,33 @@ function UserVaultsContainer({ vaults, states }: UserVaultsProps) {
         <Grid item xs={2} className={classes.headerItem}></Grid>
       </Grid>
       {
-        vaults.map((vault, idx) => (
-          <div key={`user-vault-${idx}`}>
-            <UserVaultItem
-              vault={vault}
-              userState={USER_STATES.find(state => state.vaultId === vault.id)} />
-            {
-              idx !== vaults.length - 1 ?
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, }}>
-                  <div className={classes.divider} />
-                </div> :
-                null
-            }
+        vaults.length !== 0 ?
+          vaults.map((vault, idx) => (
+            <div key={`user-vault-${idx}`}>
+              <UserVaultItem
+                vault={vault}
+                userState={userInfoValue.states.find(s => s.vaultId === vault.id)} />
+              {
+                idx !== vaults.length - 1 ?
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, }}>
+                    <div className={classes.divider} />
+                  </div> :
+                  null
+              }
+            </div>
+          )) :
+          <div style={{
+            height: 120,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            fontFamily: 'Sen',
+            fontSize: 14,
+            color: '#CBA344',
+          }}>
+            You have no active vaults.
           </div>
-        ))
       }
       <div style={{
         width: '100%',

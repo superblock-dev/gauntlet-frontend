@@ -10,6 +10,7 @@ import {
   popupState,
   isDeposit as depositState,
 } from "recoil/atoms";
+import Countup from 'react-countup';
 import { useWallet } from "@solana/wallet-adapter-react";
 import { makeStyles } from "@material-ui/core"
 import WalletConnectPopup from "components/WalletConnectPopup";
@@ -196,6 +197,11 @@ const useStyles = makeStyles({
   }
 });
 
+interface InactiveFlagProps {
+  tokenName: TokenName;
+  onClickConnect?: (...args: any) => void;
+}
+
 interface FlagProps {
   tokenName: TokenName;
   deposited: number;
@@ -203,15 +209,18 @@ interface FlagProps {
   reward?: number;
   active?: boolean;
   isHome?: boolean;
+  onClickDeposit: (amount: number, tokenName: TokenName) => void;
+  onClickWithdraw: (amount: number, tokenName: TokenName) => void;
+  onClickClaim: (...args: any) => void;
 }
 
-type ActiveFlagProps = {
+interface ActiveFlagProps {
   isDeposit?: boolean
-  onClick?: (...args: any) => void;
   onChange?: (mode: boolean) => void;
-} & FlagProps;
+  flagProps: FlagProps
+}
 
-function NotConnectedFlag({ tokenName, deposited, balance, onClick }: ActiveFlagProps) {
+function NotConnectedFlag({ tokenName, onClickConnect }: InactiveFlagProps) {
   const classes = useStyles();
   return (
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${SmallFlag})` }}>
@@ -220,22 +229,44 @@ function NotConnectedFlag({ tokenName, deposited, balance, onClick }: ActiveFlag
       <div className={classes.inputContainer} style={{ marginTop: 32, }}>
         <input className={classes.input} placeholder="0.000" />
       </div>
-      <div className={classes.labelContainer}>
-        <span className={classes.textLabel}>{`Deposit: ${(deposited).toFixed(6)}`}</span>
-        <span className={classes.textLabel}>{`Balance: ${(balance).toFixed(6)}`}</span>
-      </div>
-      <div className={classes.connectBtn} onClick={onClick}>
+      <div className={classes.connectBtn} onClick={onClickConnect}>
         <SmallPrimaryButton>Connect Wallet</SmallPrimaryButton>
       </div>
     </div>
-
   );
 }
 
-function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit, onChange }: ActiveFlagProps) {
+function InActiveFlag({ tokenName }: InactiveFlagProps) {
+  const classes = useStyles();
+  return (
+    <div
+      className={classes.inactiveFlag}
+      style={{
+        backgroundImage: `url(${MiniFlag})`,
+      }}>
+      <Stone tokenName={tokenName} size="xlarge" style={{ marginTop: 32, width: 120, }} />
+    </div>
+  );
+}
+
+function NormalFlag({
+  flagProps,
+  isDeposit,
+  onChange
+}: ActiveFlagProps) {
+  const {
+    tokenName,
+    deposited,
+    balance,
+    reward,
+    onClickClaim,
+    onClickDeposit,
+    onClickWithdraw,
+  } = flagProps;
   const classes = useStyles();
   const prices = useRecoilValue(rewardPrices);
   const [amount, setAmount] = useRecoilState(amountState);
+  const resetAmount = useResetRecoilState(amountState);
 
   const mode = isDeposit ? "Deposit" : "Withdraw";
   const price = reward ?
@@ -248,9 +279,30 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${LargeFlag})` }}>
       <Stone tokenName={tokenName} size="xxlarge" style={{ marginTop: 32, }} />
       <div className={classes.tokenName}>{tokenName}</div>
-      <div className={classes.reward}>{`${reward ? reward : 0}`}</div>
-      <div className={classes.rewardInUSD}>{`$ ${price.toFixed(3)}`}</div>
-      <div className={classes.claimButton}>
+      <div className={classes.reward}>
+        <Countup
+          start={0}
+          end={reward ? reward : 0}
+          delay={0}
+          duration={0.75}
+          separator=","
+          decimals={2}
+          decimal="."
+        />
+      </div>
+      <div className={classes.rewardInUSD}>
+        <Countup
+          start={0}
+          end={price}
+          delay={0}
+          duration={0.75}
+          separator=","
+          decimals={3}
+          decimal="."
+          prefix="$ "
+        />
+      </div>
+      <div className={classes.claimButton} onClick={onClickClaim}>
         <SmallButton text="claim" />
       </div>
       <div className={classes.topDivider0} />
@@ -267,11 +319,12 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
       </div>
       <div className={classes.inputContainer}>
         <input
+          key="input-main"
           className={classes.input}
           type='number'
           step='0.1'
           placeholder="0.000"
-          value={amount}
+          value={amount ? amount : ""}
           onChange={(e) => setAmount(parseFloat(e.target.value))}
         />
         <div
@@ -287,14 +340,27 @@ function NormalFlag({ tokenName, deposited, balance, reward, onClick, isDeposit,
         <span className={classes.textLabel}>{`Deposit: ${(deposited).toFixed(6)}`}</span>
         <span className={classes.textLabel}>{`Balance: ${(balance).toFixed(6)}`}</span>
       </div>
-      <div className={classes.confirmBtn} onClick={onClick}>
+      <div
+        className={classes.confirmBtn}
+        onClick={
+          isDeposit ?
+            () => {
+              onClickDeposit(amount, tokenName)
+              resetAmount()
+            } :
+            () => {
+              onClickWithdraw(amount, tokenName)
+              resetAmount()
+            }
+        }>
         <SmallPrimaryButton>{mode}</SmallPrimaryButton>
       </div>
     </div>
   );
 }
 
-function ActiveFlag({ tokenName, deposited, balance, reward, isHome }: ActiveFlagProps) {
+function ActiveFlag(props: ActiveFlagProps) {
+  const { tokenName, isHome } = props.flagProps;
   const [isDeposit, setIsDeposit] = useRecoilState(depositState);
   const setPopupState = useSetRecoilState(popupState);
   const resetAmount = useResetRecoilState(amountState);
@@ -307,49 +373,20 @@ function ActiveFlag({ tokenName, deposited, balance, reward, isHome }: ActiveFla
 
   return isHome || connected ?
     <NormalFlag
-      tokenName={tokenName}
-      deposited={deposited}
-      balance={balance}
-      reward={reward}
+      flagProps={props.flagProps}
       isDeposit={isDeposit}
-      onClick={() => { return }}
       onChange={(mode) => {
         setIsDeposit(mode);
         resetAmount();
       }} /> :
-    <NotConnectedFlag
-      tokenName={tokenName}
-      deposited={deposited}
-      balance={balance}
-      reward={reward}
-      onClick={handleConnect}
-    />
-
+    <NotConnectedFlag tokenName={tokenName} onClickConnect={handleConnect} />
 }
 
-function InActiveFlag({ tokenName }: FlagProps) {
-  const classes = useStyles();
+export default function Flag(props: FlagProps) {
+  const { tokenName, active } = props;
   return (
-    <div
-      className={classes.inactiveFlag}
-      style={{
-        backgroundImage: `url(${MiniFlag})`,
-      }}>
-      <Stone tokenName={tokenName} size="xlarge" style={{ marginTop: 32, width: 120, }} />
-    </div>
-  );
-}
-
-export default function Flag({ tokenName, deposited, balance, reward, active, isHome }: FlagProps) {
-  return (
-    active
-      ? <ActiveFlag
-        tokenName={tokenName}
-        deposited={deposited}
-        balance={balance}
-        reward={reward}
-        isHome={isHome}
-      />
-      : <InActiveFlag tokenName={tokenName} deposited={deposited} balance={balance} />
+    active ?
+      <ActiveFlag flagProps={props} /> :
+      <InActiveFlag tokenName={tokenName} />
   )
 }
