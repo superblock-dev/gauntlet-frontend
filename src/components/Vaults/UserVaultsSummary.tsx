@@ -118,9 +118,9 @@ const useStyles = makeStyles({
 
 interface UserVaultsSummaryProps {
   totalDeposit: number;
-  totalLpValueInUSD: BigNumber;
-  totalRewardsInUSD: BigNumber;
-  avgApr: BigNumber;
+  totalLpValueInUSD: number;
+  totalRewardsInUSD: number;
+  avgApr: number;
 }
 
 function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD, avgApr }: UserVaultsSummaryProps) {
@@ -161,7 +161,7 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD,
             <div className={classes.summarySubBody}>
               <Countup
                 start={0}
-                end={totalLpValueInUSD.toNumber()}
+                end={totalLpValueInUSD}
                 delay={0}
                 duration={0.75}
                 separator=","
@@ -176,7 +176,7 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD,
             <div className={classes.summaryBody}>
               <Countup
                 start={0}
-                end={avgApr.toNumber()}
+                end={avgApr}
                 delay={0}
                 duration={0.75}
                 decimals={2}
@@ -187,7 +187,7 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD,
             <div className={classes.summarySubBody}>
               <Countup
                 start={0}
-                end={avgApr.dividedBy(365).toNumber()}
+                end={avgApr/365}
                 delay={0}
                 duration={0.75}
                 decimals={2}
@@ -203,7 +203,7 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD,
           <div className={classes.summaryBody}>
             <Countup
               start={0}
-              end={totalRewardsInUSD.toNumber()}
+              end={totalRewardsInUSD}
               delay={0}
               duration={0.75}
               separator=","

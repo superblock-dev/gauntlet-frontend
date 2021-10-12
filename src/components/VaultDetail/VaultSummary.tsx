@@ -1,5 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import Countup from 'react-countup';
+import { useRecoilValue } from 'recoil';
+import { liquidityPoolInfos } from "recoil/atoms";
 import { makeStyles } from "@material-ui/core";
 import BGVaultSummary from 'assets/svgs/BGVaultSummary.svg';
 import WalletButton from 'components/Buttons/WalletButton';
@@ -69,19 +71,27 @@ const useStyles = makeStyles({
 
 interface VaultSummaryProps {
   balance: number;
-  lpValueInUSD: number;
+  tokenMintAddress: string;
   apr: number;
   staked: boolean;
 }
 
-function VaultSummary({ balance, lpValueInUSD, apr, staked }: VaultSummaryProps) {
+function VaultSummary({ balance, tokenMintAddress, apr, staked }: VaultSummaryProps) {
   const classes = useStyles();
+  const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const { connected } = useWallet();
   const setPopupState = useSetRecoilState(popupState);
 
   const handleConnect = () => {
     // address check
     setPopupState(<WalletConnectPopup />);
+  }
+
+  let lpValueInUSD = 0;
+
+  if (tokenMintAddress in liquidityPools) {
+    const lpValue = liquidityPools[tokenMintAddress].currentLpValue;
+    lpValueInUSD = lpValue ? lpValue * balance : 0;
   }
 
   return (

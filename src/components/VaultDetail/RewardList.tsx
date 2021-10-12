@@ -1,3 +1,5 @@
+import { useRecoilValue } from "recoil";
+import { farmInfos } from "recoil/atoms";
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
@@ -5,7 +7,7 @@ import { makeStyles, withStyles } from "@material-ui/core";
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
 import { calculateApyInPercentage, StrategyFarm } from 'utils/strategies';
-import { TokenName } from 'types';
+import { TokenName, Vault } from 'types';
 import { REWARD_LP_TOKENS } from 'utils/tokens';
 import Stone from 'components/Stone/Stone';
 import BigNumber from 'bignumber.js';
@@ -133,15 +135,24 @@ const useStyles = makeStyles({
 export interface RewardListProps {
   rewards: StrategyFarm[];
   mainIndex: number;
-  farmApr: number;
-  lpFee: number;
+  vault?: Vault;
   onClick: (...args: any) => void;
 }
 
-function RewardList({ rewards, mainIndex, farmApr, lpFee, onClick }: RewardListProps) {
+function RewardList({ rewards, mainIndex, vault, onClick }: RewardListProps) {
   const classes = useStyles();
-  const index = mainIndex % rewards.length;
+  const farms = useRecoilValue(farmInfos);
+  const mod = mainIndex % rewards.length;
+  const index = mod < 0 ? mod + 12 : mod;
 
+  let farmApr = vault?.farmApr
+  let lpFee = vault?.farmFee;
+
+  if (!farmApr || !lpFee) {
+    const f = Object.values(farms).find(f => f.lp.symbol === vault?.depositToken.symbol);
+    farmApr = f?.apr;
+    lpFee = f?.fees;
+  }
   return (
     <>
       {rewards.length === 0 ?
@@ -151,16 +162,19 @@ function RewardList({ rewards, mainIndex, farmApr, lpFee, onClick }: RewardListP
           <div className={classes.divider} />
           <Accordion style={{ marginBottom: 72, marginTop: 0, }}>
             <AccordionSummary expandIcon={<CaretDown style={{ cursor: `url(${CursorPointer}), pointer !important` }} />} >
-              <Stone 
-                tokenName={rewards[index].token as TokenName} 
-                size="normal" 
-                style={{ 
-                  marginLeft: REWARD_LP_TOKENS.includes(rewards[index].token as TokenName) ? 24 : 40, 
+              <Stone
+                tokenName={rewards[index].token as TokenName}
+                size="normal"
+                style={{
+                  marginLeft: REWARD_LP_TOKENS.includes(rewards[index].token as TokenName) ? 24 : 40,
                   marginTop: 18,
-                }} 
+                }}
               />
               <div className={classes.largeName}>{rewards[index].token}</div>
-              <div className={classes.largePercentage}>{`${BigNumber.sum(calculateApyInPercentage(new BigNumber(farmApr), rewards[index].apy), lpFee).toFixed(2)} %`}</div>
+              <div className={classes.largePercentage}>{
+                farmApr && lpFee ?
+                  `${BigNumber.sum(calculateApyInPercentage(farmApr, rewards[index].apy), lpFee).toFixed(2)} %` :
+                  ''}</div>
             </AccordionSummary>
             <AccordionDetails>
               {
@@ -168,17 +182,20 @@ function RewardList({ rewards, mainIndex, farmApr, lpFee, onClick }: RewardListP
                   if (r.token === rewards[index].token) return null;
                   return (
                     <div key={`reward-${idx}`} className={classes.rewardItem} onClick={() => onClick(idx)}>
-                      <Stone 
-                        tokenName={r.token as TokenName} 
+                      <Stone
+                        tokenName={r.token as TokenName}
                         size="small"
-                        style={{ 
-                          marginLeft: REWARD_LP_TOKENS.includes(rewards[index].token as TokenName) ? 27 : 32, 
+                        style={{
+                          marginLeft: REWARD_LP_TOKENS.includes(rewards[index].token as TokenName) ? 27 : 32,
                           marginTop: 16,
                           width: 34,
-                        }} 
+                        }}
                       />
                       <div className={classes.smallName}>{r.token}</div>
-                      <div className={classes.smallPercentage}>{`${BigNumber.sum(calculateApyInPercentage(new BigNumber(farmApr), r.apy), lpFee).toFixed(2)} %`}</div>
+                      <div className={classes.smallPercentage}>{
+                        farmApr && lpFee ?
+                          `${BigNumber.sum(calculateApyInPercentage(farmApr, r.apy), lpFee).toFixed(2)} %` :
+                          ""}</div>
                     </div>
                   )
                 })

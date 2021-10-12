@@ -346,7 +346,7 @@ export default function Home() {
         deposited={0}
         balance={159.167833}
         reward={d.amount}
-        active={slideIndex % HOME_FLAG_DATA.length === idx}
+        index={idx}
         onClickClaim={() => {}}
         onClickDeposit={() => {}}
         onClickWithdraw={() => {}}

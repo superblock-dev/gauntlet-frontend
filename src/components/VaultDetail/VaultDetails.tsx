@@ -1,6 +1,7 @@
+import { useRecoilValue } from "recoil";
+import { farmInfos } from "recoil/atoms";
 import { makeStyles } from "@material-ui/core";
 import { Vault } from "types";
-import { FarmInfo } from "utils/farms";
 
 const useStyles = makeStyles({
   root: {
@@ -74,14 +75,24 @@ const useStyles = makeStyles({
 
 interface VaultDetailProps {
   vault: Vault;
-  farm: FarmInfo;
   highestApr: number;
   lowestApr: number;
 }
 
-function VaultDetails({ vault, farm, highestApr, lowestApr }: VaultDetailProps) {
+function VaultDetails({ vault, highestApr, lowestApr }: VaultDetailProps) {
   const classes = useStyles();
-  const farmApr = Number(farm.apr) + Number(farm.fees);
+  const farms = useRecoilValue(farmInfos);
+
+  let farmApr: number = 0;
+
+  if (!vault.farmApr || !vault.farmFee) {
+    const f = Object.values(farms).find(f => f.lp.symbol === vault?.depositToken.symbol);
+    if (f && f.apr && f.fees) {
+      farmApr = Number(f.apr) + Number(f.fees);
+    }
+  } else {
+    farmApr = Number(vault.farmApr) + Number(vault.farmFee);
+  }
 
   return (
     <div className={classes.root}>

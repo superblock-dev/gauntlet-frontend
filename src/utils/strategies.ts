@@ -6,8 +6,8 @@ export interface StrategyFarm {
 }
 
 // 이걸 프론트에서 직접 수행하면 너무 오래걸림.
-export function calculateApyInPercentage(farmApr: BigNumber, multiplier: number) {
-  const dailyApr = farmApr.dividedBy(365);
+export function calculateApyInPercentage(farmApr: number, multiplier: number) {
+  const dailyApr = new BigNumber(farmApr).dividedBy(365);
   // const sApy = BigNumber.sum(new BigNumber(stratApy).dividedBy(365), 1);
   // const multiplier = (sApy.pow(365)).minus(1).dividedBy(sApy.minus(1));
   const apy = dailyApr.multipliedBy(multiplier);

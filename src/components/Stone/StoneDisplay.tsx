@@ -46,7 +46,7 @@ interface StoneDisplayProps {
 
 export default function StoneDisplay({ items, onClick }: StoneDisplayProps) {
   const classes = useStyles();
-
+  
   return (
     <div className={`${classes.container} stone`}>
       {[...tokens, ...tokens].map(((item, idx) => {

@@ -34,7 +34,7 @@ class CustomCarousel extends Carousel {
   }
 }
 
-interface SliderProps {
+export interface SliderProps {
   slides: any[]
   index: number
   style?: { [key: string]: any }

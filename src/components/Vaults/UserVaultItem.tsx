@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { UserState, Vault } from 'types';
+import { TokenName, UserState, Vault } from 'types';
 
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -116,11 +116,21 @@ const useStyles = makeStyles({
 
 interface UserVaultProps {
   vault: Vault;
-  userState?: UserState;
+  userStates: UserState[];
 }
 
-function UserVaultItem({ vault, userState }: UserVaultProps) {
+function UserVaultItem({ vault, userStates }: UserVaultProps) {
   const classes = useStyles();
+
+  const [totalApr, totalDeposit, totalRewardInUSD] = userStates.reduce((prev, s) => {
+    prev[0] = s.totalApr ? prev[0] + s.totalApr : prev[0];
+    prev[1] += s.amount;
+    prev[2] = s.totalRewardInUSD ? prev[2] + s.totalRewardInUSD : prev[2];
+
+    return prev
+  }, [0, 0, 0]);
+
+  console.log("userv ault item ", userStates)
 
   return (
     <>
@@ -132,7 +142,7 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
         <Grid item xs={2} className={classes.itemContainer} >
           <Countup
             start={0}
-            end={userState && userState.totalApr ? userState.totalApr.toNumber() : 0}
+            end={totalApr}
             delay={0}
             duration={0.75}
             decimals={2}
@@ -141,10 +151,10 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
           />
         </Grid>
         <Grid item xs={3} className={classes.itemContainer} >{
-          userState?.rewards.map(reward => (
+          userStates.map(s => (
             <Stone
-              key={reward.tokenName}
-              tokenName={reward.tokenName}
+              key={`vault-${vault.id}-${s.rewardToken.mintAddress}`}
+              tokenName={s.rewardToken.symbol as TokenName}
               size="small"
               style={{
                 marginRight: 8,
@@ -159,7 +169,6 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
             pathname: `/vault/${vault.id}`,
             state: {
               vault: vault,
-              userState: userState,
             }
           }}>
             <SmallButton />
@@ -195,7 +204,7 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
                     left: 153,
                     top: 7,
                   }}
-                >{userState?.balance.toLocaleString()}</div>
+                >{totalDeposit.toLocaleString()}</div>
                 <div
                   className={classes.textSen}
                   style={{
@@ -214,7 +223,7 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
                 >
                   <Countup
                     start={0}
-                    end={userState?.totalRewardInUSD ? userState.totalRewardInUSD : 0}
+                    end={totalRewardInUSD}
                     delay={0}
                     duration={0.75}
                     separator=","
@@ -227,22 +236,21 @@ function UserVaultItem({ vault, userState }: UserVaultProps) {
             </AccordionSummary>
             <AccordionDetails >
               {
-                userState?.rewards.map((reward, idx) => (
-                  <div key={`detail-${reward.token.symbol}-${idx}`} className={classes.rewardDetailContainer}>
+                userStates.map((state, idx) => (
+                  <div key={`detail-${vault.id}-${state.rewardToken.symbol}-${idx}`} className={classes.rewardDetailContainer}>
                     <Stone
-                      key={reward.tokenName}
-                      tokenName={reward.tokenName}
+                      tokenName={state.rewardToken.symbol as TokenName}
                       size="small"
                       style={{
                         top: 8,
                         width: 24,
                       }}
                     />
-                    <div className={classes.rewardSymbolText}>{reward.tokenName}</div>
+                    <div className={classes.rewardSymbolText}>{state.rewardToken.symbol}</div>
                     <div className={classes.rewardAmount}>
                       {
-                        reward.pendingReward ?
-                          reward.pendingReward :
+                        state.reward ?
+                          state.reward :
                           0
                       }</div>
                   </div>

@@ -9,6 +9,7 @@ import {
   rewardPrices,
   popupState,
   isDeposit as depositState,
+  activeFlagIndex,
 } from "recoil/atoms";
 import Countup from 'react-countup';
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -23,6 +24,7 @@ import LargeFlag from "assets/svgs/flags/large.svg";
 import SmallFlag from "assets/svgs/flags/small.svg";
 import MiniFlag from "assets/svgs/flags/mini-1.svg";
 import dot from "assets/svgs/Dot.svg";
+import { HOME_FLAG_DATA, REWARDS } from "utils/constants";
 
 const useStyles = makeStyles({
   activeFlag: {
@@ -206,8 +208,8 @@ interface FlagProps {
   tokenName: TokenName;
   deposited: number;
   balance: number;
+  index: number;
   reward?: number;
-  active?: boolean;
   isHome?: boolean;
   onClickDeposit: (amount: number, tokenName: TokenName) => void;
   onClickWithdraw: (amount: number, tokenName: TokenName) => void;
@@ -226,10 +228,7 @@ function NotConnectedFlag({ tokenName, onClickConnect }: InactiveFlagProps) {
     <div className={classes.activeFlag} style={{ backgroundImage: `url(${SmallFlag})` }}>
       <Stone tokenName={tokenName} size="xxlarge" style={{ marginTop: 32, }} />
       <div className={classes.tokenName}>{tokenName}</div>
-      <div className={classes.inputContainer} style={{ marginTop: 32, }}>
-        <input className={classes.input} placeholder="0.000" />
-      </div>
-      <div className={classes.connectBtn} onClick={onClickConnect}>
+      <div className={classes.connectBtn} style={{ marginTop: 120, }} onClick={onClickConnect}>
         <SmallPrimaryButton>Connect Wallet</SmallPrimaryButton>
       </div>
     </div>
@@ -383,9 +382,16 @@ function ActiveFlag(props: ActiveFlagProps) {
 }
 
 export default function Flag(props: FlagProps) {
-  const { tokenName, active } = props;
+  const { tokenName, index, isHome } = props;
+  const activeIndex = useRecoilValue(activeFlagIndex);
+  const length = isHome ? HOME_FLAG_DATA.length : REWARDS.length;
+  
+  const mod = activeIndex % length;
+  const aIndex = mod < 0 ? mod + 12 : mod;
+  
+
   return (
-    active ?
+    aIndex === index ?
       <ActiveFlag flagProps={props} /> :
       <InActiveFlag tokenName={tokenName} />
   )

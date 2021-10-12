@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenInfos } from 'recoil/atoms';
 
 interface LPTokenProps {
-  lp: LPToken,
+  lp?: LPToken,
   name?: string,
   linkVisible?: boolean,
 }
@@ -74,11 +74,11 @@ function LPTokenView({ lp, name, linkVisible }: LPTokenProps) {
   let pcIcon;
   let coinIcon;
   
-  if (lp.pc) {
+  if (lp?.pc) {
     const pc = tokens[lp.pc.symbol]
     pcIcon = pc?.icon
   }
-  if (lp.coin) {
+  if (lp?.coin) {
     const coin = tokens[lp.coin.symbol]
     coinIcon = coin?.icon
   }
@@ -129,13 +129,13 @@ function LPTokenView({ lp, name, linkVisible }: LPTokenProps) {
               <div className={classes.linkHelper} style={{
                 fontSize: 12,
                 height: 14,
-              }}>{lp.urlHelper ? `from ${lp.urlHelper}` : 0}</div>
-              <a href={lp.url} target="_blank" className={classes.link}>{`+ Add ${name} LP`}</a>
+              }}>{lp?.urlHelper ? `from ${lp.urlHelper}` : 0}</div>
+              <a href={lp?.url} target="_blank" className={classes.link}>{`+ Add ${name} LP`}</a>
             </div>
           </div> :
           <div className={classes.lpNameContainer}>
             <div className={classes.lpName}>{name}</div>
-            <div className={classes.linkHelper}>{`from ${lp.urlHelper}`}</div>
+            <div className={classes.linkHelper}>{`from ${lp?.urlHelper}`}</div>
           </div>
       }
     </div>

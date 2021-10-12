@@ -62,7 +62,7 @@ function VaultItem({ vault }: VaultItemProps) {
     // totalLApr = BigNumber.sum(totalLApr, Number(farm.apr))
   }
 
-  const highestApy = calculateApyInPercentage(totalHApr, highestStrategy.apy)
+  const highestApy = calculateApyInPercentage(totalHApr.toNumber(), highestStrategy.apy)
   // const lowestApy = calculateApyInPercentage(totalLApr, lowestStrategy.apy)
 
   if (farm && farm.fees) {

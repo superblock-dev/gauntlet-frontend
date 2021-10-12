@@ -1,15 +1,14 @@
-import BigNumber from "bignumber.js";
 import { ReactNode } from "react";
 import { LPToken, Token } from "utils/tokens";
 
-export type TokenName = 
-  "BTC" | 
-  "ETH" | 
-  "SOL" | 
-  "USDT" | 
-  "USDC" | 
-  "LET" | 
-  "RAY" | 
+export type TokenName =
+  "BTC" |
+  "ETH" |
+  "SOL" |
+  "USDT" |
+  "USDC" |
+  "LET" |
+  "RAY" |
   "RAY-ETH" |
   "RAY-SOL" |
   "RAY-USDC" |
@@ -25,36 +24,29 @@ export interface Fees {
   withdrawalFee: number;
 }
 
-export interface Strategy {
-  rewardToken: TokenName;
-  depositAmount: number;
-  accRewardPerShare: number;
-  lastRewardUpdatedTime: number;
-}
-
 export interface Vault {
   id: number;
   fees: Fees;
   depositToken: LPToken;
   totalDepositAmount: number;
-  strategies: Strategy[];
-}
-
-export interface Reward {
-  tokenName: TokenName;
-  token: Token | LPToken;
-  amount: number;
-  rewardDebt: number;
-  pendingReward?: number;
+  accPerShares: number[];
+  farmApr?: number;
+  farmFee?: number;
 }
 
 export interface UserState {
   vaultId: number;
-  balance: number;
-  rewards: Reward[];
+  rewardToken: Token | LPToken;
+  // Pending reward
+  reward: number;
+  // Deposited amount of LP token
+  amount: number;
+  // Reward debt
+  rewardDebt: number;
+  // Calculated reward
+  totalReward?: number;
   totalRewardInUSD?: number;
-  lpValueInUSD?: BigNumber;
-  totalApr?: BigNumber;
+  totalApr?: number;
 }
 
 /** Pairs **/
@@ -80,7 +72,7 @@ export interface NavBtnProp {
 
 export interface WalletBtnProp {
   connected: boolean,
-  address?: string, 
+  address?: string,
 }
 
 export interface DisconnectBtnProp {

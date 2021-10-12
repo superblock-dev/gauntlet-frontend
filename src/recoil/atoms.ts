@@ -17,7 +17,7 @@ export const conn = atom<Connection | undefined>({
   default: undefined
 });
 
-const INITIAL_PRICES: {[key: string]: number} = {
+const INITIAL_PRICES: { [key: string]: number } = {
   BTC: 0,
   ETH: 0,
   USDC: 1,
@@ -26,7 +26,7 @@ const INITIAL_PRICES: {[key: string]: number} = {
   LET: 0,
 };
 
-export const rewardPrices = atom<{[key: string]: number}>({
+export const rewardPrices = atom<{ [key: string]: number }>({
   key: "rewardPrices",
   default: INITIAL_PRICES,
 });
@@ -41,6 +41,11 @@ export const isDeposit = atom<boolean>({
   default: true,
 });
 
+export const activeFlagIndex = atom<number>({
+  key: "activeFlagIndex",
+  default: 0,
+})
+
 export const amountState = atom<number>({
   key: "amountState",
   default: 0,
@@ -51,30 +56,32 @@ export const amountState2 = atom<number>({
   default: 0,
 });
 
-export const tokenInfos = atom<{[key: string]: Token}>({
+export const tokenInfos = atom<{ [key: string]: Token }>({
   key: "tokens",
   default: TOKENS,
 });
 
-export const liquidityPoolInfos = atom<{[key: string]: LiquidityPoolInfo}>({
+export const liquidityPoolInfos = atom<{ [key: string]: LiquidityPoolInfo }>({
   key: "liquidityPools",
   default: {},
 });
 
-export const farmInfos = atom<{[key: string]: FarmInfo}> ({
+export const farmInfos = atom<{ [key: string]: FarmInfo }>({
   key: "farms",
   default: {},
 });
 
 interface UserInfo {
-  lpTokens: {[key: string]: {
-    balance: number;
-    staked: number;
-  }};
+  lpTokens: {
+    [key: string]: {
+      balance: number;
+      staked: number;
+    }
+  };
   states: UserState[];
 }
 
-export const userInfo = atom<UserInfo> ({
+export const userInfo = atom<UserInfo>({
   key: 'userInfo',
   default: {
     lpTokens: {
@@ -95,7 +102,15 @@ export const userInfo = atom<UserInfo> ({
         staked: 0,
       },
     },
-    states: [],
+    states: [
+      // {
+      //   vaultId: 1,
+      //   rewardToken: TOKENS.BTC,
+      //   reward: 30,
+      //   amount: 200,
+      //   rewardDebt: 0,
+      // }
+    ],
   }
 })
 

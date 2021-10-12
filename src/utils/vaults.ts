@@ -1,8 +1,9 @@
 import BigNumber from "bignumber.js";
-import { Fees, Reward, TokenName, UserState, Vault } from "types";
+import { Fees, UserState, Vault } from "types";
+import { getIndexFromSymbol } from "./constants";
 import { getBigNumber } from "./layouts";
 import { TokenAmount } from "./safe-math";
-import { LP_TOKENS, TOKENS } from "./tokens";
+import { LP_TOKENS } from "./tokens";
 
 export const BASE_FEE: Fees = {
   controlFee: 0.005,
@@ -11,23 +12,21 @@ export const BASE_FEE: Fees = {
   withdrawalFee: 0.001,
 };
 
-export function calculateReward(reward: Reward, vault: Vault) {
-  const amount = new TokenAmount(getBigNumber(reward.amount), reward.token.decimals);
-  const rewardDebt = new TokenAmount(getBigNumber(reward.rewardDebt), reward.token.decimals);
-  const strategy = getStrategyByTokenName(vault, reward.tokenName);
-  if (!strategy) return 0;
-  const acc = new BigNumber(strategy.accRewardPerShare);
-  const rewardAmount = amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther());
+export function calculateReward(userState: UserState, vault: Vault) {
+  const decimals = userState.rewardToken.decimals
+  const amount = new TokenAmount(getBigNumber(userState.amount), decimals);
+  const rewardDebt = new TokenAmount(getBigNumber(userState.rewardDebt), decimals);
+  const acc = new BigNumber(vault.accPerShares[getIndexFromSymbol(userState.rewardToken.symbol)]);
+  const rewardAmount = BigNumber.sum(
+    amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther()), 
+    userState.reward
+  );
   
-  return Math.floor(rewardAmount.multipliedBy(Math.pow(10, reward.token.decimals)).toNumber()) / Math.pow(10, reward.token.decimals);
+  return Math.floor(rewardAmount.multipliedBy(Math.pow(10, decimals)).toNumber()) / Math.pow(10, decimals);
 }
 
 export function getVaultById(vaults: Vault[], id: number) {
   return vaults.find(v => v.id === id);
-}
-
-export function getStrategyByTokenName(vault: Vault, tname: TokenName) {
-  return vault.strategies.find(s => s.rewardToken === tname);
 }
 
 export const USER_STATES: UserState[] = [
@@ -93,50 +92,19 @@ export const VAULTS: Vault[] = [
     fees: BASE_FEE,
     depositToken: LP_TOKENS['RAY-USDT-V4'],
     totalDepositAmount: 540120439.512,
-    strategies: [
-      {
-        rewardToken: "BTC",
-        depositAmount: 100000000,
-        accRewardPerShare: 0.01,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "ETH",
-        depositAmount: 10000000,
-        accRewardPerShare: 0.1,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "SOL",
-        depositAmount: 200000000,
-        accRewardPerShare: 680000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "USDT",
-        depositAmount: 50000000,
-        accRewardPerShare: 1340000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "USDC",
-        depositAmount: 50000000,
-        accRewardPerShare: 1560000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "LET",
-        depositAmount: 50000000,
-        accRewardPerShare: 1560000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "LET-USDC",
-        depositAmount: 50000000,
-        accRewardPerShare: 1560000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      
+    accPerShares: [
+      0.01,
+      0.1,
+      680000,
+      1340000,
+      1560000,
+      1560000,
+      1340000,
+      1560000,
+      1560000,
+      1340000,
+      1560000,
+      1560000,
     ]
   },
   {
@@ -144,119 +112,59 @@ export const VAULTS: Vault[] = [
     fees: BASE_FEE,
     depositToken: LP_TOKENS['RAY-SRM-V4'],
     totalDepositAmount: 540120439.512,
-    strategies: [
-      {
-        rewardToken: "BTC",
-        depositAmount: 100000000,
-        accRewardPerShare: 0.01,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "ETH",
-        depositAmount: 10000000,
-        accRewardPerShare: 0.1,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "SOL",
-        depositAmount: 200000000,
-        accRewardPerShare: 680000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "USDT",
-        depositAmount: 50000000,
-        accRewardPerShare: 1340000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "USDC",
-        depositAmount: 50000000,
-        accRewardPerShare: 1560000,
-        lastRewardUpdatedTime: 1632359665,
-      },
+    accPerShares: [
+      0.01,
+      0.1,
+      680000,
+      1340000,
+      1560000,
+      1560000,
+      1340000,
+      1560000,
+      1560000,
+      1340000,
+      1560000,
+      1560000,
     ]
   },
   {
     id: 3,
     fees: BASE_FEE,
-    depositToken: LP_TOKENS['RAY-USDC-V4'],
+    depositToken: LP_TOKENS['RAY-SOL-V4'],
     totalDepositAmount: 540120439.512,
-    strategies: [
-      {
-        rewardToken: "BTC",
-        depositAmount: 100000000,
-        accRewardPerShare: 0.01,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "ETH",
-        depositAmount: 10000000,
-        accRewardPerShare: 0.1,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "SOL",
-        depositAmount: 200000000,
-        accRewardPerShare: 680000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "USDT",
-        depositAmount: 50000000,
-        accRewardPerShare: 1340000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "USDC",
-        depositAmount: 50000000,
-        accRewardPerShare: 1560000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "RAY-USDC",
-        depositAmount: 50000000,
-        accRewardPerShare: 1560000,
-        lastRewardUpdatedTime: 1632359665,
-      },
+    accPerShares: [
+      0.01,
+      0.1,
+      680000,
+      1340000,
+      1560000,
+      1560000,
+      1340000,
+      1560000,
+      1560000,
+      1340000,
+      1560000,
+      1560000,
     ]
   },
   {
     id: 4,
     fees: BASE_FEE,
-    depositToken: LP_TOKENS['RAY-SOL-V4'],
+    depositToken: LP_TOKENS['RAY-USDC-V4'],
     totalDepositAmount: 540120439.512,
-    strategies: [
-      {
-        rewardToken: "BTC",
-        depositAmount: 100000000,
-        accRewardPerShare: 0.01,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "ETH",
-        depositAmount: 10000000,
-        accRewardPerShare: 0.1,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "SOL",
-        depositAmount: 200000000,
-        accRewardPerShare: 680000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "USDT",
-        depositAmount: 50000000,
-        accRewardPerShare: 1340000,
-        lastRewardUpdatedTime: 1632359665,
-      },
-      {
-        rewardToken: "USDC",
-        depositAmount: 50000000,
-        accRewardPerShare: 1560000,
-        lastRewardUpdatedTime: 1632359665,
-      },
+    accPerShares: [
+      0.01,
+      0.1,
+      680000,
+      1340000,
+      1560000,
+      1560000,
+      1340000,
+      1560000,
+      1560000,
+      1340000,
+      1560000,
+      1560000,
     ]
   },
 ]

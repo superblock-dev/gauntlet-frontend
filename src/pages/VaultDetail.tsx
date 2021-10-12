@@ -2,13 +2,13 @@ import { BigNumber } from 'bignumber.js';
 import { cloneDeep, clone } from 'lodash';
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { farmInfos, liquidityPoolInfos, userInfo, vaultInfos } from "recoil/atoms";
+import { userInfo, vaultInfos, farmInfos, activeFlagIndex } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
 
 import LPTokenView from "components/Vaults/LPTokenView";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, SliderProps } from "@material-ui/core";
 import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
 import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
 import VaultSummary from "components/VaultDetail/VaultSummary";
@@ -21,35 +21,33 @@ import Flag from "components/Vaults/Flag";
 import { v4 as uuidv4 } from "uuid";
 import FlagNavigation from "components/Vaults/FlagNavigation";
 import StoneDisplay from "components/Stone/StoneDisplay";
-import { Reward, TokenName, UserState, Vault } from "types";
+import { TokenName, UserState, Vault } from "types";
 import { calculateReward } from "utils/vaults";
 import SmallButton from "components/Buttons/SmallButton";
 import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
-import { REWARDS } from 'utils/constants';
-import { FarmInfo } from 'utils/farms';
+import { getIndexFromSymbol, REWARDS } from 'utils/constants';
 
 interface FlagCreationArgs {
   vault: Vault;
-  reward: Reward;
+  userState: UserState;
   balance: number;
-  active: boolean;
+  index: number;
   onClickDeposit: (...args: any) => void;
   onClickWithdraw: (...args: any) => void;
   onClickClaim: (...args: any) => void;
 }
 
 function createItem(args: FlagCreationArgs) {
-  const { vault, reward, balance, active, onClickDeposit, onClickWithdraw, onClickClaim } = args;
-  const pendingReward = calculateReward(reward, vault);
-  console.log('here')
+  const { vault, userState, balance, index, onClickDeposit, onClickWithdraw, onClickClaim } = args;
+  const pendingReward = calculateReward(userState, vault);
 
   return (
     <Flag
-      tokenName={reward.tokenName}
-      deposited={reward.amount}
+      tokenName={userState.rewardToken.symbol as TokenName}
+      deposited={userState.amount}
       balance={balance}
+      index={index}
       reward={pendingReward}
-      active={active}
       onClickDeposit={onClickDeposit}
       onClickWithdraw={onClickWithdraw}
       onClickClaim={onClickClaim}
@@ -71,23 +69,28 @@ function createSlide(
 function createRewardsListFromUserState(
   vault: Vault,
   balance: number,
-  slideIndex: number,
   onClickSlide: (idx: number) => void,
   onClickDeposit: (...args: any) => void,
   onClickWithdraw: (...args: any) => void,
   onClickClaim: (...args: any) => void,
-  userState?: UserState,
+  userStates: UserState[],
 ) {
-
   return ([...REWARDS]).map((reward, idx) => {
-    let userReward;
-    userReward = userState?.rewards.find(state => state.tokenName === reward.tokenName);
-
+    let userState = userStates.find(state => state.rewardToken.symbol === reward.symbol);
+    if (!userState) {
+      userState = {
+        vaultId: vault.id,
+        rewardToken: reward,
+        reward: 0,
+        amount: 0,
+        rewardDebt: 0,
+      }
+    }
     const flagArgs: FlagCreationArgs = {
       vault,
-      reward: userReward ? userReward : reward,
+      userState,
       balance,
-      active: (slideIndex % REWARDS.length) === idx,
+      index: idx,
       onClickDeposit,
       onClickWithdraw,
       onClickClaim,
@@ -170,40 +173,83 @@ function VaultDetail() {
   const { goBack } = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const [vaults, setVaults] = useRecoilState(vaultInfos);
-  const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const [userInfoState, setUserInfoState] = useRecoilState(userInfo);
   const farms = useRecoilValue(farmInfos);
+  const [slideIndex, setSlideIndex] = useRecoilState(activeFlagIndex);
 
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [farm, setFarm] = useState<FarmInfo | undefined>(undefined);
   const [vault, setVault] = useState<Vault | undefined>(undefined);
-  const [userState, setUserState] = useState<UserState | undefined>(undefined);
-  const [stones, setStones] = useState<{[key: string]: any}>({});
+  const [userStates, setUserStates] = useState<UserState[]>([]);
+  const [stones, setStones] = useState<{ [key: string]: any }>({});
+  const [flags, setFlags] = useState<SliderProps[]>([]);
+  const [apy, setApy] = useState([0, 0]);
 
-  let { vaultId } = useParams<VaultDetailParams>();
-  let vId = parseInt(vaultId);
+  const { vaultId } = useParams<VaultDetailParams>();
+  const vId = parseInt(vaultId);
 
   useEffect(() => {
-    const _vault = vaults.find(v => v.id === vId);
-    calculateLpValue(_vault!);
-    setVault(_vault);
-    console.log(stones)
-  }, [vaults]);
+    const currentVault = vaults.find(v => v.id === vId);
+    if (!currentVault) return;
+
+    const f = Object.values(farms).find(f => f.lp.symbol === currentVault?.depositToken.symbol);
+    if (!f) return;
+
+    const fApr = Number(f.apr);
+    const fFees = Number(f.fees);
+
+    if (!fApr || !fFees) {
+      return setVault(currentVault);
+    }
+
+    const aprCalculatedStates = userInfoState.states.map(s => {
+      return {
+        ...s,
+        totalApr: fApr + fFees,
+      };
+    })
+
+    setVault({
+      ...currentVault,
+      farmApr: Number(f.apr),
+      farmFee: Number(f.fees)
+    })
+    setUserInfoState({
+      ...userInfoState,
+      states: aprCalculatedStates,
+    })
+
+  }, [farms, vaults]);
+
+  useEffect(() => {
+    if (!userInfoState) return
+    const userVaultStates = userInfoState.states.filter(s => s.vaultId === vId);
+    setUserStates(userVaultStates);
+
+    if (!vault) return
+    let _stones: { [key: string]: any } = {};
+    userVaultStates.forEach(s => {
+      _stones[s.rewardToken.symbol] = calculateReward(s, vault);
+    })
+    setStones(_stones)
+
+    const _flags = createRewardsListFromUserState(
+      vault,
+      lpBalance,
+      setSlideIndex,
+      deposit,
+      withdraw,
+      claim,
+      userInfoState.states,
+    );
+    setFlags(_flags)
+
+  }, [userInfoState]);
 
   useEffect(() => {
     const timer = setInterval(async () => {
       let _vaults = cloneDeep(vaults)
-      console.log('tick');
       _vaults.forEach(v => {
-        v.strategies = v.strategies.map(s => {
-          return {
-            ...s,
-            accRewardPerShare: 1000 + s.accRewardPerShare
-          }
-        })
+        v.accPerShares = v.accPerShares.map(s => 1000 + s);
       })
-      console.log(_vaults);
-
       setVaults(_vaults);
     }, 5000);
 
@@ -211,50 +257,46 @@ function VaultDetail() {
   });
 
   useEffect(() => {
-    const _farm = Object.values(farms).find(f => f.lp.symbol === vault?.depositToken.symbol);
-    setFarm(_farm);
-  }, [vault, farms]);
+    if (!vault) return;
 
-  const calculateLpValue = (vault: Vault) => {
-    let userStateId = userInfoState.states.findIndex(s => s.vaultId === vId);
-    let _userState
+    const _flags = createRewardsListFromUserState(
+      vault,
+      lpBalance,
+      setSlideIndex,
+      deposit,
+      withdraw,
+      claim,
+      userInfoState.states,
+    );
+    setFlags(_flags)
 
-    if (!_userState) {
-      _userState = {
-        vaultId: vId,
-        balance: 0,
-        rewards: [],
-        lpValueInUSD: new BigNumber(0),
-      } as UserState
-    } else {
-      _userState = clone(userInfoState.states[userStateId]);
+  }, [vault])
+
+  useEffect(() => {
+    const highestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy < v.apy ? v : p);
+    const lowestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy > v.apy ? v : p);
+
+    let totalHApr = new BigNumber(0);
+    let totalLApr = new BigNumber(0);
+
+    if (vault?.farmApr) {
+      totalHApr = BigNumber.sum(totalHApr, Number(vault.farmApr))
+      totalLApr = BigNumber.sum(totalLApr, Number(vault.farmApr))
     }
 
-    if (vault.depositToken.mintAddress in liquidityPools) {
-      const lpValue = liquidityPools[vault.depositToken.mintAddress].currentLpValue;
-      if (lpValue) {
-        _userState.lpValueInUSD = new BigNumber(_userState.balance * lpValue)
-        setUserInfoState({
-          ...userInfoState,
-          states: [
-            ...userInfoState.states.slice(0, userStateId),
-            _userState,
-            ...userInfoState.states.slice(userStateId + 1)
-          ]
-        })
-      }
+    const highestApy = calculateApyInPercentage(totalHApr.toNumber(), highestStrategy.apy)
+    const lowestApy = calculateApyInPercentage(totalLApr.toNumber(), lowestStrategy.apy)
+
+    if (vault?.farmFee) {
+      totalHApr = BigNumber.sum(highestApy, Number(vault?.farmFee))
+      totalLApr = BigNumber.sum(lowestApy, Number(vault?.farmFee))
     }
-    setUserState(_userState);
 
-    let _stones: { [key: string]: any } = {};
-    _userState.rewards.forEach((reward) => {
-      _stones[reward.tokenName.toString()] = calculateReward(reward, vault);
-      console.log(_stones)
-    });
-    setStones(_stones);
-  }
+    setApy([totalHApr.toNumber(), totalLApr.toNumber()])
+  }, [vault]);
 
-  const deposit = (amount: number, tokenName: TokenName) => {
+
+  const deposit = (amount: number, symbol: string) => {
     if (!vault) return;
     const lpBalance = userInfoState.lpTokens[vault.depositToken.symbol].balance
     if (amount > lpBalance) {
@@ -264,41 +306,32 @@ function VaultDetail() {
     newUserInfo.lpTokens[vault.depositToken.symbol].balance -= amount
     newUserInfo.lpTokens[vault.depositToken.symbol].staked += amount
 
-    const reward = REWARDS.find(r => r.tokenName === tokenName);
-    const strategy = vault.strategies.find(s => s.rewardToken === tokenName);
-
-    if (!reward || !strategy) return;
-    const prevStateId = userInfoState.states.findIndex(s => s.vaultId === vId);
-    console.log(prevStateId);
+    const rewardIndex = getIndexFromSymbol(symbol)
+    if (rewardIndex === -1) return;
+    const rewardToken = REWARDS[rewardIndex];
+    const accPerShare = vault.accPerShares[rewardIndex];
+    const prevStateId = userInfoState.states.findIndex(s => s.rewardToken.symbol === symbol);
 
     if (prevStateId === -1) {
-      reward.amount = amount
-      reward.rewardDebt = new BigNumber(amount).multipliedBy(strategy.accRewardPerShare).toNumber();
       newUserInfo.states = [
         ...newUserInfo.states,
         {
           vaultId: vId,
-          balance: amount,
-          rewards: [
-            reward
-          ],
+          rewardToken,
+          reward: 0,
+          amount,
+          rewardDebt: new BigNumber(amount).multipliedBy(accPerShare).toNumber(),
         }
       ];
     } else {
-      let prevReward = newUserInfo.states[prevStateId].rewards.find(r => r.tokenName === tokenName);
-      if (!prevReward) {
-        reward.amount = amount
-        reward.rewardDebt = new BigNumber(amount).multipliedBy(strategy.accRewardPerShare).toNumber();
-        newUserInfo.states[prevStateId].rewards.push(reward);
-      } else {
-        const pending = new BigNumber(prevReward.amount).multipliedBy(strategy.accRewardPerShare).minus(prevReward.rewardDebt);
-        prevReward.pendingReward = prevReward.pendingReward ?
-          BigNumber.sum(prevReward.pendingReward, pending).toNumber() :
-          pending.toNumber();
-        prevReward.amount += amount;
-      }
+      let prevState = newUserInfo.states[prevStateId];
+      prevState.reward = calculateReward(prevState, vault);
+      prevState.amount += amount;
+      prevState.rewardDebt = new BigNumber(prevState.amount).multipliedBy(accPerShare).toNumber()
     }
+    console.log("new user info: ", newUserInfo)
     setUserInfoState(newUserInfo);
+    enqueueSnackbar(<SuccessSnackbar message={`${amount} LP successfully deposited!`} />)
   }
 
   const withdraw = (amount: number) => {
@@ -308,42 +341,13 @@ function VaultDetail() {
   const claim = () => {
 
   }
-  // console.log("vault", vault)
-  // console.log("userState", userState)
-  // console.log("farm", farm)
-  if (!vault || !userState || !farm) return <></>;
 
-  const lpBalance = userInfoState.lpTokens[vault.depositToken.symbol].balance
-  const lpStaked = userInfoState.lpTokens[vault.depositToken.symbol].staked
+  let lpBalance = 0;
+  let lpStaked = 0;
 
-  const flags = createRewardsListFromUserState(
-    vault,
-    lpBalance,
-    slideIndex,
-    setSlideIndex,
-    deposit,
-    withdraw,
-    claim,
-    userState,
-  );
-
-  const highestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy < v.apy ? v : p);
-  const lowestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy > v.apy ? v : p);
-
-  let totalHApr = new BigNumber(0);
-  let totalLApr = new BigNumber(0);
-
-  if (farm.apr) {
-    totalHApr = BigNumber.sum(totalHApr, Number(farm.apr))
-    totalLApr = BigNumber.sum(totalLApr, Number(farm.apr))
-  }
-
-  const highestApy = calculateApyInPercentage(totalHApr, highestStrategy.apy)
-  const lowestApy = calculateApyInPercentage(totalLApr, lowestStrategy.apy)
-
-  if (farm.fees) {
-    totalHApr = BigNumber.sum(highestApy, Number(farm.fees))
-    totalLApr = BigNumber.sum(lowestApy, Number(farm.fees))
+  if (vault) {
+    lpBalance = userInfoState.lpTokens[vault.depositToken.symbol].balance
+    lpStaked = userInfoState.lpTokens[vault.depositToken.symbol].staked
   }
 
   return (
@@ -363,7 +367,7 @@ function VaultDetail() {
           marginLeft: 8,
         }}>
           <div style={{ width: 800, }}>
-            <LPTokenView lp={vault.depositToken} name={vault.depositToken.name.split(' LP')[0]} linkVisible />
+            <LPTokenView lp={vault?.depositToken} name={vault?.depositToken.name.split(' LP')[0]} linkVisible />
           </div>
           <div style={{
             display: 'flex',
@@ -381,8 +385,10 @@ function VaultDetail() {
 
       <VaultSummary
         balance={lpStaked ? lpStaked : 0}
-        lpValueInUSD={userState.lpValueInUSD ? userState.lpValueInUSD.toNumber() : 0}
-        apr={userState.totalApr ? userState.totalApr.toNumber() : totalHApr.toNumber()}
+        tokenMintAddress={vault ? vault.depositToken.mintAddress : ''}
+        apr={userStates.length !== 0 ?
+          userStates.reduce((p, s) => s.totalApr ? p + s.totalApr : p, 0) :
+          apy[0]}
         staked={!!lpStaked}
       />
 
@@ -395,40 +401,47 @@ function VaultDetail() {
       <div className={classes.divider} style={{ marginTop: 48 }} />
       <div className={classes.helpText}>{`Choose Your Strategy & Stake LP Tokens`}</div>
 
-      <div className={classes.sliderContainer}>
-        <FlagNavigation onClick={(direction: number) => {
-          const index = slideIndex + direction;
-          setSlideIndex(index);
-        }} />
-        <Slider index={slideIndex} slides={flags} />
-      </div>
+
+      {
+        flags.length === 0 ?
+          null :
+          <div className={classes.sliderContainer}>
+            <FlagNavigation onClick={(direction: number) => {
+              const index = slideIndex + direction;
+              setSlideIndex(index);
+            }} />
+            <Slider index={slideIndex} slides={flags} />
+          </div>
+      }
 
       <RewardList
         rewards={STRATEGY_FARMS}
         mainIndex={slideIndex}
-        farmApr={farm.apr!}
-        lpFee={farm.fees!}
+        vault={vault}
         onClick={setSlideIndex}
       />
-
-      <VaultDetails
-        vault={vault}
-        farm={farm}
-        highestApr={totalHApr.toNumber()}
-        lowestApr={totalLApr.toNumber()}
-      />
-
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        width: 560,
-        marginBottom: 340,
-        marginTop: 52,
-      }}>
-        <MediumButton text="Create LP" link={vault.depositToken.url} external />
-        <MediumButton text="Farm Contract" link={`https://solscan.io/account/}`} external />
-        <MediumButton text="Vault Contract" external />
-      </div>
+      {
+        vault ?
+          <>
+            <VaultDetails
+              vault={vault}
+              highestApr={apy[0]}
+              lowestApr={apy[1]}
+            />
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: 560,
+              marginBottom: 340,
+              marginTop: 52,
+            }}>
+              <MediumButton text="Create LP" link={vault.depositToken.url} external />
+              <MediumButton text="Farm Contract" link={`https://solscan.io/account/}`} external />
+              <MediumButton text="Vault Contract" external />
+            </div>
+          </> :
+          null
+      }
     </div>
   )
 };

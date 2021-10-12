@@ -1,7 +1,7 @@
 import { Spring } from "react-spring/renderprops";
 
 interface IProps {
-  content: JSX.Element;
+  content: React.FC;
   onClick?: () => void;
   offsetRadius: number;
   isParellel?: boolean;
