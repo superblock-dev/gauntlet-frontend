@@ -14,7 +14,7 @@ import BigNumber from 'bignumber.js';
 import CursorPointer from 'assets/CursorPointer.svg';
 import dot from "assets/svgs/Dot.svg";
 import SmallPrimaryButton from 'components/Buttons/SmallPrimaryButton';
-import './carousel.css';
+import './Carousel.css';
 
 export interface FlagItemProps {
   id: any;

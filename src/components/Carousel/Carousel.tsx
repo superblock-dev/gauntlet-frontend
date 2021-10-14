@@ -5,7 +5,7 @@ import FlagItem from './FlagItem';
 import CursorPointer from "assets/CursorPointer.svg";
 import IconLeftNavigation from "assets/svgs/big-arrow-left.svg";
 import IconRightNavigation from "assets/svgs/big-arrow-right.svg";
-import './carousel.css';
+import './Carousel.css';
 
 interface CarouselProps {
   items: any[],
