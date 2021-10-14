@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import { v4 as uuidv4 } from "uuid";
 import { makeStyles } from "@material-ui/core";
 import { STONES } from "utils/stones";
-import { HOME_FLAG_DATA } from "utils/constants";
-import { TokenName } from "types";
 import HomeHeader from "components/Home/HomeHeader";
-import Slider from "components/Slider";
-import Flag from "components/Vaults/Flag";
-import BgHome from 'assets/backgrounds/bg_home_main.png';
+import Carousel from 'components/Carousel';
 import TextLets from 'assets/logos/title 1.png';
 import TextGauntlet from 'assets/logos/title 2.png';
 // import TextLets from 'assets/logos/lets.png';
@@ -337,24 +332,6 @@ export default function Home() {
     if (scrollBottom > THROTTLE3) setSection3(true);
   }
 
-  const flags = HOME_FLAG_DATA.map((d, idx) => (
-    {
-      key: uuidv4(),
-      content: <Flag
-        isHome={true}
-        tokenName={d.name as TokenName}
-        deposited={0}
-        balance={159.167833}
-        reward={d.amount}
-        index={idx}
-        onClickClaim={() => {}}
-        onClickDeposit={() => {}}
-        onClickWithdraw={() => {}}
-      />,
-      onClick: () => setSlideIndex(idx)
-    }
-  ))
-
   useEffect(() => {
     const { scrollTop: currentScrollTop } = document.documentElement || document.body;
     const scrollBottom = currentScrollTop + window.innerHeight;
@@ -369,7 +346,7 @@ export default function Home() {
 
   useEffect(() => {
     var timer = setInterval(() => {
-      setSlideIndex(slideIndex + 2);
+      setSlideIndex(slideIndex + 1);
     }, 3000);
 
     return () => {
@@ -387,7 +364,7 @@ export default function Home() {
   return (
     <div className={classes.root}>
       <div className={classes.mainBackground}>
-        <video src={'/space.mp4'} style={{ position: 'absolute', top: 0, left: 0, }} width={'100%'} height={'auto'} autoPlay loop muted/>
+        <video src={'/space.mp4'} style={{ position: 'absolute', top: 0, left: 0, }} width={'100%'} height={'auto'} autoPlay loop muted />
         <div className={classes.mainSection}>
           <img src={TextLets} className={classes.textLets} />
           <img src={TextGauntlet} className={classes.textGauntlet} />
@@ -450,7 +427,78 @@ export default function Home() {
             width: '100%',
             height: '100%',
           }}>
-            <Slider index={slideIndex} slides={flags} />
+            <Carousel items={[
+              {
+                symbol: 'BTC',
+                amount: 0.001,
+                deposit: 1,
+              },
+              {
+                symbol: 'ETH',
+                amount: 0.001,
+                deposit: 1,
+              },
+              {
+                symbol: 'SOL',
+                amount: 0.1,
+                deposit: 1,
+              },
+              {
+                symbol: 'USDC',
+                amount: 3.132,
+                deposit: 1,
+              },
+              {
+                symbol: 'USDT',
+                amount: 3.132,
+                deposit: 1,
+              },
+              {
+                symbol: 'RAY',
+                amount: 3.132,
+                deposit: 1,
+              },
+              {
+                symbol: 'LET',
+                amount: 3.132,
+                deposit: 1,
+              },
+              {
+                symbol: 'BTC',
+                amount: 0.001,
+                deposit: 1,
+              },
+              {
+                symbol: 'ETH',
+                amount: 0.001,
+                deposit: 1,
+              },
+              {
+                symbol: 'SOL',
+                amount: 0.1,
+                deposit: 1,
+              },
+              {
+                symbol: 'USDC',
+                amount: 3.132,
+                deposit: 1,
+              },
+              {
+                symbol: 'USDT',
+                amount: 3.132,
+                deposit: 1,
+              },
+              {
+                symbol: 'RAY',
+                amount: 3.132,
+                deposit: 1,
+              },
+              {
+                symbol: 'LET',
+                amount: 3.132,
+                deposit: 1,
+              },
+            ]} active={slideIndex} />
           </div>
         </div>
         <div

@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { cloneDeep, clone } from 'lodash';
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { userInfo, vaultInfos, farmInfos, activeFlagIndex } from "recoil/atoms";
+import { userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
@@ -26,6 +26,7 @@ import { calculateReward } from "utils/vaults";
 import SmallButton from "components/Buttons/SmallButton";
 import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
 import { getIndexFromSymbol, REWARDS } from 'utils/constants';
+import Carousel from 'components/Carousel';
 
 interface FlagCreationArgs {
   vault: Vault;
@@ -156,9 +157,11 @@ const useStyles = makeStyles({
   },
   sliderContainer: {
     width: 1440,
-    minHeight: 760,
     height: 'auto',
     position: "relative",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   stoneDisplayContainer: {
     overflowX: 'hidden',
@@ -295,6 +298,69 @@ function VaultDetail() {
     setApy([totalHApr.toNumber(), totalLApr.toNumber()])
   }, [vault]);
 
+  const rewards: Reward[] = [
+    {
+      symbol: 'BTC',
+      amount: 0.001,
+      deposit: 1,
+    },
+    {
+      symbol: 'ETH',
+      amount: 0.001,
+      deposit: 1,
+    },
+    {
+      symbol: 'SOL',
+      amount: 0.1,
+      deposit: 1,
+    },
+    {
+      symbol: 'USDC',
+      amount: 3.132,
+      deposit: 1,
+    },
+    {
+      symbol: 'USDT',
+      amount: 3.132,
+      deposit: 1,
+    },
+    {
+      symbol: 'RAY',
+      amount: 3.132,
+      deposit: 1,
+    },
+    {
+      symbol: 'LET',
+      amount: 3.132,
+      deposit: 1,
+    },
+    {
+      symbol: 'RAY-ETH',
+      amount: 0.001,
+      deposit: 1,
+    },
+    {
+      symbol: 'RAY-SOL',
+      amount: 0.001,
+      deposit: 1,
+    },
+    {
+      symbol: 'RAY-USDC',
+      amount: 0.1,
+      deposit: 1,
+    },
+    {
+      symbol: 'RAY-USDT',
+      amount: 3.132,
+      deposit: 1,
+    },
+    {
+      symbol: 'LET-USDC',
+      amount: 3.132,
+      deposit: 1,
+    },
+  ];
+
 
   const deposit = (amount: number, symbol: string) => {
     if (!vault) return;
@@ -395,14 +461,15 @@ function VaultDetail() {
       <div className={classes.divider} />
 
       <div className={classes.stoneDisplayContainer}>
-        <StoneDisplay items={stones} onClick={setSlideIndex} />
+        <StoneDisplay items={rewards} onClick={setSlideIndex} />
       </div>
       <SmallButton text={'claim all'} />
       <div className={classes.divider} style={{ marginTop: 48 }} />
       <div className={classes.helpText}>{`Choose Your Strategy & Stake LP Tokens`}</div>
-
-
-      {
+      <div className={classes.sliderContainer}>
+        <Carousel items={rewards} active={slideIndex} />
+      </div>
+      {/* {
         flags.length === 0 ?
           null :
           <div className={classes.sliderContainer}>
@@ -412,7 +479,7 @@ function VaultDetail() {
             }} />
             <Slider index={slideIndex} slides={flags} />
           </div>
-      }
+      } */}
 
       <RewardList
         rewards={STRATEGY_FARMS}
