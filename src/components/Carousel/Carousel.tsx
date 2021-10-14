@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { makeStyles } from '@material-ui/core';
 import FlagItem from './FlagItem';
-import './Carousel.css';
 import CursorPointer from "assets/CursorPointer.svg";
 import IconLeftNavigation from "assets/svgs/big-arrow-left.svg";
 import IconRightNavigation from "assets/svgs/big-arrow-right.svg";
+import './carousel.css';
 
 interface CarouselProps {
   items: any[],

@@ -10,11 +10,11 @@ import FlagLeftDeco from 'assets/backgrounds/flag_left_deco.png';
 import FlagRightDeco from 'assets/backgrounds/flag_right_deco.png';
 import FlagLeftTail from 'assets/backgrounds/flag_left_tail.png';
 import FlagRightTail from 'assets/backgrounds/flag_right_tail.png';
-import './Carousel.css';
 import BigNumber from 'bignumber.js';
 import CursorPointer from 'assets/CursorPointer.svg';
 import dot from "assets/svgs/Dot.svg";
 import SmallPrimaryButton from 'components/Buttons/SmallPrimaryButton';
+import './carousel.css';
 
 export interface FlagItemProps {
   id: any;

@@ -50,6 +50,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "resolutions": {
+    "react-scripts/postcss-preset-env/postcss-custom-properties": "^10.0.0"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
