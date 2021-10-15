@@ -20,6 +20,7 @@ import StoneDisplay from "components/Stone/StoneDisplay";
 import CursorPointer from 'assets/CursorPointer.svg';
 import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
 import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
+import { calculateReward } from 'utils/vaults';
 
 interface VaultDetailParams {
   vaultId: string,
@@ -95,6 +96,34 @@ const useStyles = makeStyles({
   },
 });
 
+const basicRewardsList: Reward[] = [
+  {
+    symbol: 'BTC',
+    amount: 0,
+    deposit: 0,
+  },
+  {
+    symbol: 'ETH',
+    amount: 0,
+    deposit: 0,
+  },
+  {
+    symbol: 'SOL',
+    amount: 0,
+    deposit: 0,
+  },
+  {
+    symbol: 'USDC',
+    amount: 0,
+    deposit: 0,
+  },
+  {
+    symbol: 'USDT',
+    amount: 0,
+    deposit: 0,
+  },
+];
+
 function VaultDetail() {
   const classes = useStyles();
   const { goBack } = useHistory();
@@ -107,6 +136,7 @@ function VaultDetail() {
   const [vault, setVault] = useState<Vault | undefined>(undefined);
   const [farm, setFarm] = useState<Farm | undefined>(undefined);
   const [userStates, setUserStates] = useState<User[]>([]);
+  const [rewards, setRewards] = useState<Reward[]>(basicRewardsList);
   const [apy, setApy] = useState([0, 0]);
 
   const { vaultId } = useParams<VaultDetailParams>();
@@ -148,22 +178,23 @@ function VaultDetail() {
 
   useEffect(() => {
     if (!userInfoState) return
-    const userVaultStates = userInfoState.states.filter(s => s.stateAccount === vId);
+    const userVaultStates = userInfoState.states.filter(s => s.vaultStateAccount === vId);
     setUserStates(userVaultStates);
 
+    if (!vault) return
+    const newRewards: Reward[] = rewards.map(r => {
+      const userState = userVaultStates.find(s => s.rewardToken.symbol === r.symbol);
+      if (userState) {
+        return {
+          symbol: r.symbol,
+          amount: calculateReward(userState, vault),
+          deposit: userState.amount.toNumber(),
+        }
+      }
+      return r
+    })
+    setRewards(newRewards)
   }, [userInfoState]);
-
-  useEffect(() => {
-    const timer = setInterval(async () => {
-      let _vaults = cloneDeep(vaults)
-      _vaults.forEach(v => {
-        v.accPerShares = v.accPerShares ? v.accPerShares.map(s => 1000 + s) : []
-      })
-      setVaults(_vaults);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  });
 
   useEffect(() => {
     const highestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy < v.apy ? v : p);
@@ -188,35 +219,7 @@ function VaultDetail() {
     setApy([totalHApr.toNumber(), totalLApr.toNumber()])
   }, [vault]);
 
-  const rewards: Reward[] = [
-    {
-      symbol: 'BTC',
-      amount: 0,
-      deposit: 0,
-    },
-    {
-      symbol: 'ETH',
-      amount: 0.001,
-      deposit: 1,
-    },
-    {
-      symbol: 'SOL',
-      amount: 0,
-      deposit: 0,
-    },
-    {
-      symbol: 'USDC',
-      amount: 0,
-      deposit: 0,
-    },
-    {
-      symbol: 'USDT',
-      amount: 0,
-      deposit: 0,
-    },
-  ];
   let lpStaked = rewards.reduce((prev, r) => BigNumber.sum(prev, r.deposit).toNumber(), 0);
-
   let lpBalance = 0;
 
   if (vault) {

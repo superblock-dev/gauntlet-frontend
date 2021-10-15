@@ -230,7 +230,6 @@ function PoolFlag({
   useEffect(() => {
     resetAmount()
     resetAmount2()
-    console.log(amount)
   }, [mode]);
 
   return (

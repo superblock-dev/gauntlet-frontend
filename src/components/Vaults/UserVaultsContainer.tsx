@@ -80,15 +80,15 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
   // UserState가 바뀌면 total 정보 변화
   useEffect(() => {
     const [totalDeposit, totalLpValueInUSD, totalRewardsInUSD] = userInfoValue.states.reduce((total, s) => {
-      total[0] += s.amount
-      const v = vaults.find(v => v.stateAccount === s.vault.stateAccount);
+      total[0] = BigNumber.sum(total[0], s.amount);
+      const v = vaults.find(v => v.stateAccount === s.vaultStateAccount);
       if (v && v.depositToken.mintAddress in liquidityPools) {
         const lpValue = liquidityPools[v.depositToken.mintAddress].currentLpValue;
-        total[1] = BigNumber.sum(total[1], lpValue ? lpValue * s.amount : 0);
+        total[1] = BigNumber.sum(total[1], lpValue ? s.amount.multipliedBy(lpValue) : 0);
       }
       if (s.totalRewardInUSD) total[2] = BigNumber.sum(total[2], s.totalRewardInUSD);
       return total
-    }, [0, new BigNumber(0), new BigNumber(0)]);
+    }, [new BigNumber(0), new BigNumber(0), new BigNumber(0)]);
 
     const avgApr = userInfoValue.states.reduce((weighted, s) => {
       if (s.totalApr) {
@@ -98,7 +98,7 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
     }, new BigNumber(0)).dividedBy(totalDeposit).toNumber();
 
     setUserVaultStats({
-      totalDeposit,
+      totalDeposit: totalDeposit.toNumber(),
       totalLpValueInUSD: totalLpValueInUSD.toNumber(),
       totalRewardsInUSD: totalRewardsInUSD.toNumber(),
       avgApr
@@ -141,7 +141,7 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
             <div key={`user-vault-${idx}`}>
               <UserVaultItem
                 vault={vault}
-                userStates={userInfoValue.states.filter(s => s.vault.stateAccount === vault.stateAccount)} />
+                userStates={userInfoValue.states.filter(s => s.vaultStateAccount === vault.stateAccount)} />
               {
                 idx !== vaults.length - 1 ?
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, }}>

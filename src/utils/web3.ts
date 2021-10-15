@@ -2,7 +2,6 @@ import {
   Connection,
   PublicKey,
   Commitment,
-  Keypair,
   AccountInfo,
   Transaction,
   Account,
@@ -11,11 +10,12 @@ import {
   TransactionInstruction
 } from '@solana/web3.js';
 import { Token } from '@solana/spl-token';
+import { struct, u8 } from '@project-serum/borsh'
 import { initializeAccount } from '@project-serum/serum/lib/token-instructions';
+
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID, RENT_PROGRAM_ID, SYSTEM_PROGRAM_ID, TOKEN_PROGRAM_ID
 } from './ids';
-import { struct, u8 } from '@project-serum/borsh'
 import { ACCOUNT_LAYOUT } from './layouts';
 
 export const commitment: Commitment = 'confirmed'
@@ -135,6 +135,16 @@ export async function getFilteredProgramAccountsAmmOrMarketCache(
 export async function findProgramAddress(seeds: Array<Buffer | Uint8Array>, programId: PublicKey) {
   const [publicKey, nonce] = await PublicKey.findProgramAddress(seeds, programId)
   return { publicKey, nonce }
+}
+
+export async function findProgramAddressBulk(seedsArray: Array<Buffer | Uint8Array>[], programId: PublicKey): Promise<Array<PublicKey>> {
+  const data = await Promise.all(
+    seedsArray.map(async seeds => {
+      const { publicKey } = await findProgramAddress(seeds, programId)
+      return publicKey
+    })
+  )
+  return data
 }
 
 export async function createAmmAuthority(programId: PublicKey) {

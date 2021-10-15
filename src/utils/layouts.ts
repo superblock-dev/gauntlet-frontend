@@ -1,4 +1,4 @@
-import { bool, publicKey, struct, u128, u32, u64, u8, vec, i64 } from '@project-serum/borsh'
+import { bool, publicKey, struct, u128, u32, u64, u8, vec, array, i64 } from '@project-serum/borsh'
 // @ts-ignore
 import { blob } from 'buffer-layout';
 
@@ -251,18 +251,18 @@ export const GAUNTLET_VAULT_LAYOUT = struct([
   bool('is_initialized'),
   u8('index'),
   u8('status'),
-  blob(GAUNTLET_FEE_LAYOUT.span, 'fee'),
+  blob(GAUNTLET_FEE_LAYOUT.span, 'fees'),
   publicKey('gauntlet_state_account'),
   publicKey('deposit_token_account'),
   publicKey('reward_token_account'),
   publicKey('reward_token_b_account'),
   publicKey('withdraw_fee_account'),
   u64('total_deposit_amount'),
-  vec(u64('length'), 'deposit_amounts'),
-  vec(u64('length'), 'reward_token_remain_amounts'),
-  vec(u64('length'), 'reward_token_b_remain_amounts'),
-  vec(u64('length'), 'usdc_token_amounts'),
-  vec(u128('length'), 'accumulated_reward_per_shares'),
+  array(u64(), 50, 'deposit_amounts'),
+  array(u64(), 50, 'reward_token_remain_amounts'),
+  array(u64(), 50, 'reward_token_b_remain_amounts'),
+  array(u64(), 50, 'usdc_token_amounts'),
+  array(u128(), 50, 'accumulated_reward_per_shares'),
   i64('last_reward_update_time'),
   publicKey('raydium_state_account'),
 ])
@@ -284,7 +284,7 @@ export const GAUNTLET_STRATEGY_LAYOUT = struct([
   u8('status'),
   i64('last_reward_update_time'),
   u64('total_deposit_amount'),
-  vec(u64('length'), 'deposit_amounts'),
+  array(u64('deposit_amounts'), 50),
   publicKey('strategy_token_account'),
 ])
 
