@@ -573,6 +573,7 @@ export const LP_TOKENS = {
     mintAddress: 'C3sT1R3nsw4AVdepvLTLKr5Gvszr7jufyBWUCvy4TUvT',
     decimals: TOKENS.RAY.decimals,
     urlHelper: 'Raydium',
+    url: 'https://raydium.io/liquidity/?ammId=DVa7Qmb5ct9RCpaU7UTpSaf3GVMYz17vNVU67XpdCRut',
   },
   'SOL-USDC-V4': {
     symbol: 'SOL-USDC',
@@ -993,6 +994,7 @@ export const LP_TOKENS = {
     mintAddress: 'FbC6K13MzHvN42bXrtGaWsvZY9fxrackRSZcBGfjPc7m',
     decimals: TOKENS.RAY.decimals,
     urlHelper: 'Raydium',
+    url: 'https://raydium.io/liquidity/?ammId=6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg',
   },
   'RAY-SRM-V4': {
     symbol: 'RAY-SRM',
@@ -1003,6 +1005,7 @@ export const LP_TOKENS = {
     mintAddress: '7P5Thr9Egi2rvMmEuQkLn8x8e8Qro7u2U7yLD2tU2Hbe',
     decimals: TOKENS.RAY.decimals,
     urlHelper: 'Raydium',
+    url: 'https://raydium.io/liquidity/?ammId=GaqgfieVmnmY4ZsZHHA6L5RSVzCGL3sKx4UgHBaYNy8m',
   },
   'RAY-ETH-V4': {
     symbol: 'RAY-ETH',
@@ -1013,6 +1016,7 @@ export const LP_TOKENS = {
     mintAddress: 'mjQH33MqZv5aKAbKHi8dG3g3qXeRQqq1GFcXceZkNSr',
     decimals: TOKENS.RAY.decimals,
     urlHelper: 'Raydium',
+    url: 'https://raydium.io/liquidity/?ammId=8iQFhWyceGREsWnLM8NkG9GC8DvZunGZyMzuyUScgkMK',
   },
   'RAY-SOL-V4': {
     symbol: 'RAY-SOL',
@@ -1023,6 +1027,7 @@ export const LP_TOKENS = {
     mintAddress: '89ZKE4aoyfLBe2RuV6jM3JGNhaV18Nxh8eNtjRcndBip',
     decimals: TOKENS.RAY.decimals,
     urlHelper: 'Raydium',
+    url: 'https://raydium.io/liquidity/?ammId=AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA',
   },
   'DXL-USDC-V4': {
     symbol: 'DXL-USDC',

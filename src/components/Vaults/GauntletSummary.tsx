@@ -116,17 +116,17 @@ const useStyles = makeStyles({
   },
 });
 
-interface UserVaultsSummaryProps {
+interface GauntletSummaryProps {
   totalDeposit: number;
   totalLpValueInUSD: number;
   totalRewardsInUSD: number;
   avgApr: number;
+  userSummary?: boolean;
 }
 
-function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD, avgApr }: UserVaultsSummaryProps) {
+function GauntletSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD, avgApr, userSummary }: GauntletSummaryProps) {
   const classes = useStyles();
   const rewardTokenList = [
-    'LET',
     'RAY',
     'USDT',
     'USDC',
@@ -172,7 +172,7 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD,
             </div>
           </div>
           <div className={classes.summaryContent}>
-            <div className={classes.summaryHeader}>Average APR</div>
+            <div className={classes.summaryHeader}>Average Max. APR</div>
             <div className={classes.summaryBody}>
               <Countup
                 start={0}
@@ -187,7 +187,7 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD,
             <div className={classes.summarySubBody}>
               <Countup
                 start={0}
-                end={avgApr/365}
+                end={avgApr / 365}
                 delay={0}
                 duration={0.75}
                 decimals={2}
@@ -199,18 +199,22 @@ function UserVaultsSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD,
           </div>
         </div>
         <div className={classes.summaryContent}>
-          <div className={classes.summaryHeader}>User Rewards</div>
+          <div className={classes.summaryHeader}>My Rewards</div>
           <div className={classes.summaryBody}>
-            <Countup
-              start={0}
-              end={totalRewardsInUSD}
-              delay={0}
-              duration={0.75}
-              separator=","
-              decimals={3}
-              decimal="."
-              prefix="$ "
-            />
+            {
+              userSummary ?
+                <Countup
+                  start={0}
+                  end={totalRewardsInUSD}
+                  delay={0}
+                  duration={0.75}
+                  separator=","
+                  decimals={3}
+                  decimal="."
+                  prefix="$ "
+                /> :
+                "-"
+            }
           </div>
         </div>
       </div>
@@ -235,4 +239,4 @@ collect what you want`}
   )
 }
 
-export default UserVaultsSummary;
+export default GauntletSummary;

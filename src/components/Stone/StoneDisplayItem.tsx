@@ -8,8 +8,9 @@ const useStyles = makeStyles({
   container: {
     position: "relative",
     display: 'inline-block',
-    width: 120,
+    width: 80,
     height: 120,
+    margin: '0 16px',
     '&:hover $tooltipBox': {
       display: 'inline-block',
     },
@@ -24,11 +25,12 @@ const useStyles = makeStyles({
   tooltipBox: {
     position: 'absolute',
     top: 0,
-    left: 0,
+    left: '50%',
+    transform: 'translate(-50%, 0)',
     width: 120,
-    height: 33,
+    height: 34,
     backgroundImage: `url(${TooltipVaultDetail})`,
-    backgroundSize: 'cover',
+    backgroundSize: 'contain',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     display: 'none',
@@ -37,7 +39,7 @@ const useStyles = makeStyles({
     position: 'absolute',
     top: 4,
     left: 0,
-    width: 120,
+    width: "100%",
     textAlign: 'center',
     color: '#CBA344',
     fontSize: 14,
@@ -106,7 +108,7 @@ export default function StoneDisplayItem({ tokenName, amount, onClick }: StonePr
     return (
       <>
         {amount !== undefined ? (
-          <div className={classes.container} onClick={onClick}>
+          <div className={classes.container} style={{ width: 120, }} onClick={onClick}>
             <div className={classes.tooltipBox} />
             <div className={classes.tooltipText}>{`${tokenName} / ${amount}`}</div>
             <img className={classes.stoneBg} src={STONE_BG_EFFECTS[firstToken].bgEffect} />
@@ -114,7 +116,7 @@ export default function StoneDisplayItem({ tokenName, amount, onClick }: StonePr
             <img className={classes.stone1} src={STONES[firstToken]} />
           </div>
         ) : (
-          <div className={classes.container} onClick={onClick}>
+          <div className={classes.container} style={{ width: 120, }} onClick={onClick}>
             <div className={classes.tooltipBox} />
             <div className={classes.tooltipText}>{`${tokenName} / 0`}</div>
             <img className={classes.inactiveStone2} src={STONE_BG_EFFECTS[secondToken].outline} />

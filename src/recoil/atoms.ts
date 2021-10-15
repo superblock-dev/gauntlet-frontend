@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { atom } from "recoil";
 import { Connection } from '@solana/web3.js';
-import { PairInfo, UserState, Vault } from "types";
+import { PairInfo, TokenName, UserState, Vault } from "types";
 import { Token, TOKENS } from "utils/tokens";
 import { LiquidityPoolInfo } from "utils/pools";
 import { FarmInfo } from "utils/farms";
@@ -117,4 +117,17 @@ export const userInfo = atom<UserInfo>({
 export const vaultInfos = atom<Vault[]>({
   key: 'vaultInfo',
   default: VAULTS,
+})
+
+export interface Reward {
+  symbol: TokenName;
+  amount: number;
+  deposit: number;
+}
+
+export const rewards = atom<Reward[]>({
+  key: 'rewards',
+  default: [
+
+  ]
 })

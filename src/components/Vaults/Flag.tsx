@@ -131,7 +131,7 @@ const useStyles = makeStyles({
     marginBottom: 1,
     width: 266,
     height: 54,
-    background: "radial-gradient(78.76% 933.51% at 50% 100%, rgba(136, 98, 241, 0.11) 0%, rgba(138, 100, 247, 0) 79.55%)",
+    background: "linear-gradient(78deg rgba(136, 98, 241, 0.11) 0%, rgba(138, 100, 247, 0) 79.55%)",
     display: "flex",
     alignItems: "center",
     '&:hover': {

@@ -1,37 +1,20 @@
 import { makeStyles } from "@material-ui/styles";
+import { Reward } from "recoil/atoms";
 import { TokenName } from "types";
 import Stone from "./StoneDisplayItem";
 
 const tokens: TokenName[] = [
-  "BTC", 
-  "ETH", 
-  "SOL", 
-  "USDC", 
-  "USDT", 
+  "BTC",
+  "ETH",
+  "SOL",
+  "USDC",
+  "USDT",
   "RAY",
-  "LET", 
-  "RAY-ETH",
-  "RAY-SOL",
-  "RAY-USDC",
-  "RAY-USDT",
-  "LET-USDC",
-  "BTC", 
-  "ETH", 
-  "SOL", 
-  "USDC", 
-  "USDT", 
-  "RAY",
-  "LET", 
-  "RAY-ETH",
-  "RAY-SOL",
-  "RAY-USDC",
-  "RAY-USDT",
-  "LET-USDC",
 ];
 
 const useStyles = makeStyles({
   container: {
-    width: 120 * tokens.length * 2,
+    width: (112 * 6),
     height: 160,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
@@ -39,19 +22,27 @@ const useStyles = makeStyles({
 })
 
 interface StoneDisplayProps {
-  items: { [key: string]: number },
+  items: Reward[],
   onClick: any,
 }
 
 
 export default function StoneDisplay({ items, onClick }: StoneDisplayProps) {
   const classes = useStyles();
-  
+
   return (
-    <div className={`${classes.container} stone`}>
-      {[...tokens, ...tokens].map(((item, idx) => {
+    <div className={`${classes.container}`}>
+      {[...tokens].map(((item, idx) => {
+        const symbol = items.find(i => i.symbol === item)
         return (
-          <Stone key={`stone-${idx}`} tokenName={item} amount={item in items ? items[item] : undefined} onClick={() => onClick(idx)} />
+          <Stone
+            key={`stone-${idx}`}
+            tokenName={item}
+            amount={
+              symbol && symbol.deposit !== 0 ?
+                symbol.amount :
+                undefined}
+            onClick={() => onClick(idx)} />
         )
       }
       ))}
