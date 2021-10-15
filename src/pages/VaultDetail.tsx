@@ -147,7 +147,7 @@ function VaultDetail() {
   const { vaultId } = useParams<VaultDetailParams>();
   const vId = vaultId;
 
-  const updateUserInfo = async (seed: any, totalApr: number, depositTokenMintAddress: string ) => {
+  const updateUserInfo = async (seed: any, totalApr: number, depositTokenMintAddress: string) => {
     if (connState && publicKey != null) {
       const userDepositTokenStatus = cloneDeep(userInfoState.lpTokens)
       const depoistTokenMintPubkey = new PublicKey(depositTokenMintAddress)
@@ -208,7 +208,7 @@ function VaultDetail() {
           seed.push([new PublicKey(vId).toBuffer(), publicKey?.toBuffer(), new PublicKey(s.stateAccount.toString()).toBuffer()])
         }
       })
-      updateUserInfo(seed, totalApr, currentVault.depositToken.mintAddress)      
+      updateUserInfo(seed, totalApr, currentVault.depositToken.mintAddress)
     }
 
     // setUserInfoState({
