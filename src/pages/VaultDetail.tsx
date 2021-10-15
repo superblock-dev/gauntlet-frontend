@@ -5,31 +5,21 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
-import { makeStyles, SliderProps } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
-import LPTokenView from "components/Vaults/LPTokenView";
+import { User, Vault } from "types";
+import { calculateReward } from "utils/vaults";
+import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
+import { getIndexFromSymbol, REWARDS } from 'utils/constants';
 import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
+import Carousel from 'components/Carousel';
+import LPTokenView from "components/Vaults/LPTokenView";
 import VaultSummary from "components/VaultDetail/VaultSummary";
 import VaultDetails from "components/VaultDetail/VaultDetails";
-import RewardList from "components/VaultDetail/RewardList";
 import MediumButton from "components/Buttons/MediumButton";
-import SmallButton from "components/Buttons/SmallButton";
-import Carousel from 'components/Carousel';
+import RewardList from "components/VaultDetail/RewardList";
 import StoneDisplay from "components/Stone/StoneDisplay";
-import { calculateReward } from "utils/vaults";
-import { getIndexFromSymbol, REWARDS } from 'utils/constants';
-import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
-import { 
-  harvest, 
-  harvestV4, 
-  swapToUsdc, 
-  swapToStrategy, 
-  deposit, 
-  depositV4, 
-  withdraw, 
-  withdrawV4,
-} from 'utils/transactions';
-import { UserState, Vault } from "types";
+import SmallButton from "components/Buttons/SmallButton";
 import CursorPointer from 'assets/CursorPointer.svg';
 import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
 import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
@@ -118,14 +108,14 @@ function VaultDetail() {
   const [slideIndex, setSlideIndex] = useRecoilState(activeFlagIndex);
 
   const [vault, setVault] = useState<Vault | undefined>(undefined);
-  const [userStates, setUserStates] = useState<UserState[]>([]);
+  const [userStates, setUserStates] = useState<User[]>([]);
   const [apy, setApy] = useState([0, 0]);
 
   const { vaultId } = useParams<VaultDetailParams>();
-  const vId = parseInt(vaultId);
+  const vId = vaultId;
 
   useEffect(() => {
-    const currentVault = vaults.find(v => v.id === vId);
+    const currentVault = vaults.find(v => v.stateAccount === vId);
     if (!currentVault) return;
 
     const f = Object.values(farms).find(f => f.lp.symbol === currentVault?.depositToken.symbol);
@@ -159,7 +149,7 @@ function VaultDetail() {
 
   useEffect(() => {
     if (!userInfoState) return
-    const userVaultStates = userInfoState.states.filter(s => s.vaultId === vId);
+    const userVaultStates = userInfoState.states.filter(s => s.stateAccount === vId);
     setUserStates(userVaultStates);
 
   }, [userInfoState]);
@@ -168,7 +158,7 @@ function VaultDetail() {
     const timer = setInterval(async () => {
       let _vaults = cloneDeep(vaults)
       _vaults.forEach(v => {
-        v.accPerShares = v.accPerShares.map(s => 1000 + s);
+        v.accPerShares = v.accPerShares ? v.accPerShares.map(s => 1000 + s) : []
       })
       setVaults(_vaults);
     }, 5000);
@@ -227,11 +217,10 @@ function VaultDetail() {
     },
     {
       symbol: 'RAY',
-      amount: 0,
+      amount:0,
       deposit: 0,
     },
   ];
-  
   let lpStaked = rewards.reduce((prev, r) => BigNumber.sum(prev, r.deposit).toNumber(), 0);
 
 
@@ -248,29 +237,31 @@ function VaultDetail() {
     const rewardIndex = getIndexFromSymbol(symbol)
     if (rewardIndex === -1) return;
     const rewardToken = REWARDS[rewardIndex];
-    const accPerShare = vault.accPerShares[rewardIndex];
+    const accPerShare = vault.accPerShares ? vault.accPerShares[rewardIndex] : 0;
     const prevStateId = userInfoState.states.findIndex(s => s.rewardToken.symbol === symbol);
 
-    if (prevStateId === -1) {
-      newUserInfo.states = [
-        ...newUserInfo.states,
-        {
-          vaultId: vId,
-          rewardToken,
-          reward: 0,
-          amount,
-          rewardDebt: new BigNumber(amount).multipliedBy(accPerShare).toNumber(),
-        }
-      ];
-    } else {
-      let prevState = newUserInfo.states[prevStateId];
-      prevState.reward = calculateReward(prevState, vault);
-      prevState.amount += amount;
-      prevState.rewardDebt = new BigNumber(prevState.amount).multipliedBy(accPerShare).toNumber()
-    }
-    console.log("new user info: ", newUserInfo)
+    // if (prevStateId === -1) {
+    //   newUserInfo.states = [
+    //     ...newUserInfo.states,
+    //     {
+    //       stateAccount: , // PDA 
+    //       vault: vault,
+    //       strategyStateAccount: // strategy state account
+    //       rewardToken,
+    //       reward: 0,
+    //       amount,
+    //       rewardDebt: new BigNumber(amount).multipliedBy(accPerShare).toNumber(),
+    //     }
+    //   ];
+    // } else {
+    //   let prevState = newUserInfo.states[prevStateId];
+    //   prevState.reward = calculateReward(prevState, vault);
+    //   prevState.amount += amount;
+    //   prevState.rewardDebt = new BigNumber(prevState.amount).multipliedBy(accPerShare).toNumber()
+    // }
+    // console.log("new user info: ", newUserInfo)
+
     setUserInfoState(newUserInfo);
-    let transactions = []
     enqueueSnackbar(<SuccessSnackbar message={`${amount} LP successfully deposited!`} />)
   }
 

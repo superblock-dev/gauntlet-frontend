@@ -1,14 +1,15 @@
+import BigNumber from 'bignumber.js';
+import { Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import Countup from 'react-countup';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from "@material-ui/core";
+
+import { farmInfos } from 'recoil/atoms';
+import { Vault } from 'types';
+import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
 import SmallButton from "components/Buttons/SmallButton";
 import LPTokenView from './LPTokenView';
-import { Link } from 'react-router-dom';
-import { Vault } from 'types';
-import { farmInfos } from 'recoil/atoms';
-import BigNumber from 'bignumber.js';
-import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
 
 const useStyles = makeStyles({
   container: {
@@ -99,7 +100,7 @@ function VaultItem({ vault }: VaultItemProps) {
           />
         </Grid>
         <Grid item xs={2} className={classes.btnContainer}>
-          <Link to={`/vault/${vault.id}`}>
+          <Link to={`/vault/${vault.stateAccount}`}>
             <SmallButton />
           </Link>
         </Grid>

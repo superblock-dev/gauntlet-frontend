@@ -6,8 +6,8 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles, withStyles } from "@material-ui/core";
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
-import { calculateApyInPercentage, StrategyFarm } from 'utils/strategies';
-import { TokenName, Vault } from 'types';
+import { calculateApyInPercentage } from 'utils/strategies';
+import { StrategyApy, TokenName, Vault } from 'types';
 import { REWARD_LP_TOKENS } from 'utils/tokens';
 import Stone from 'components/Stone/Stone';
 import BigNumber from 'bignumber.js';
@@ -133,7 +133,7 @@ const useStyles = makeStyles({
 });
 
 export interface RewardListProps {
-  rewards: StrategyFarm[];
+  rewards: StrategyApy[];
   mainIndex: number;
   vault?: Vault;
   onClick: (...args: any) => void;

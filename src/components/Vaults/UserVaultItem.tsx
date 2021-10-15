@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
-import { TokenName, UserState, Vault } from 'types';
-
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from "@material-ui/core";
 import Countup from 'react-countup';
+
+import { TokenName, User, Vault } from 'types';
 import SmallButton from "components/Buttons/SmallButton";
+import Stone from 'components/Stone/Stone';
+import LPTokenView from './LPTokenView';
 import LinePurpleShort from 'assets/svgs/LinePurpleShort.svg';
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
-import LPTokenView from './LPTokenView';
 import CursorPointer from 'assets/CursorPointer.svg';
-import Stone from 'components/Stone/Stone';
 
 const AccordionSummary = withStyles({
   root: {
@@ -116,7 +116,7 @@ const useStyles = makeStyles({
 
 interface UserVaultProps {
   vault: Vault;
-  userStates: UserState[];
+  userStates: User[];
 }
 
 function UserVaultItem({ vault, userStates }: UserVaultProps) {
@@ -153,7 +153,7 @@ function UserVaultItem({ vault, userStates }: UserVaultProps) {
         <Grid item xs={3} className={classes.itemContainer} >{
           userStates.map(s => (
             <Stone
-              key={`vault-${vault.id}-${s.rewardToken.mintAddress}`}
+              key={`vault-${vault.stateAccount}-${s.rewardToken.mintAddress}`}
               tokenName={s.rewardToken.symbol as TokenName}
               size="small"
               style={{
@@ -166,7 +166,7 @@ function UserVaultItem({ vault, userStates }: UserVaultProps) {
         }</Grid>
         <Grid item xs={2} className={classes.btnContainer}>
           <Link to={{
-            pathname: `/vault/${vault.id}`,
+            pathname: `/vault/${vault.stateAccount}`,
             state: {
               vault: vault,
             }
@@ -237,7 +237,7 @@ function UserVaultItem({ vault, userStates }: UserVaultProps) {
             <AccordionDetails >
               {
                 userStates.map((state, idx) => (
-                  <div key={`detail-${vault.id}-${state.rewardToken.symbol}-${idx}`} className={classes.rewardDetailContainer}>
+                  <div key={`detail-${vault.stateAccount}-${state.rewardToken.symbol}-${idx}`} className={classes.rewardDetailContainer}>
                     <Stone
                       tokenName={state.rewardToken.symbol as TokenName}
                       size="small"

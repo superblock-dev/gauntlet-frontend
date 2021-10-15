@@ -77,8 +77,6 @@ function App() {
 
   const updateInfos = async () => {
     const priceData = await getPrices();
-    priceData["LET"] = 0.939;
-    priceData["LET-USDC"] = 1.939;
     const pairsData = await getPairs();
     setPairsInfo(pairsData);
     if (connState) {

@@ -1,13 +1,6 @@
 import BigNumber from "bignumber.js";
-
-export interface StrategyFarm {
-  token: string;
-  apy: number;
-  strategyStateAccount?: string,
-  strategyTokenAccount?: string,
-  performanceFeeTokenAccount?: string,
-  strategyTokenMintAccount?: string
-}
+import { Strategy, StrategyApy } from "types";
+import { TOKENS } from "./tokens";
 
 // 이걸 프론트에서 직접 수행하면 너무 오래걸림.
 export function calculateApyInPercentage(farmApr: number, multiplier: number) {
@@ -19,7 +12,7 @@ export function calculateApyInPercentage(farmApr: number, multiplier: number) {
   return apy;
 }
 
-export const STRATEGY_FARMS: StrategyFarm[] = [
+export const STRATEGY_FARMS: StrategyApy[] = [
   {
     token: 'BTC',
     apy: 367.744,
@@ -35,10 +28,6 @@ export const STRATEGY_FARMS: StrategyFarm[] = [
   {
     token: 'USDC',
     apy: 390.528,
-    strategyStateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
-    strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
-    strategyTokenMintAccount: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
-    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
   },
   {
     token: 'USDT',
@@ -48,30 +37,43 @@ export const STRATEGY_FARMS: StrategyFarm[] = [
     token: 'RAY',
     apy: 528.512,
   },
-  // {
-  //   token: 'LET',
-  //   // apy: 591.183,
-  //   apy: 528.512,
-  // },
-  // {
-  //   token: 'RAY-ETH',
-  //   apy: 527.251,
-  // },
-  // {
-  //   token: 'RAY-SOL',
-  //   apy: 441.743,
-  // },
-  // {
-  //   token: 'RAY-USDC',
-  //   apy: 541.480,
-  // },
-  // {
-  //   token: 'RAY-USDT',
-  //   apy: 546.656,
-  // },
-  // {
-  //   token: 'LET-USDC',
-  //   // apy: 454914,
-  //   apy: 541.480,
-  // }
-];
+]
+
+export const STRATEGIES: Strategy[] = [
+  {
+    stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
+    strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
+    strategyTokenMintAccount: TOKENS.USDT.mintAddress,
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+  },
+  {
+    stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
+    strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
+    strategyTokenMintAccount: TOKENS.USDT.mintAddress,
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+  },
+  {
+    stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
+    strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
+    strategyTokenMintAccount: TOKENS.USDT.mintAddress,
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+  },
+  {
+    stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
+    strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
+    strategyTokenMintAccount: TOKENS.USDT.mintAddress,
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+  },
+  {
+    stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
+    strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
+    strategyTokenMintAccount: TOKENS.USDT.mintAddress,
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+  },
+  {
+    stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
+    strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
+    strategyTokenMintAccount: TOKENS.USDT.mintAddress,
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+  },
+]

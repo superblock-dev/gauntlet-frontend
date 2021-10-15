@@ -1,10 +1,9 @@
 import { ReactNode } from "react";
 import { atom } from "recoil";
 import { Connection } from '@solana/web3.js';
-import { PairInfo, TokenName, UserState, Vault } from "types";
+import { Farm, PairInfo, TokenName, User, Vault } from "types";
 import { Token, TOKENS } from "utils/tokens";
 import { LiquidityPoolInfo } from "utils/pools";
-import { FarmInfo } from "utils/farms";
 import { VAULTS } from "utils/vaults";
 
 export const popupState = atom<ReactNode | ReactNode[] | undefined>({
@@ -66,7 +65,7 @@ export const liquidityPoolInfos = atom<{ [key: string]: LiquidityPoolInfo }>({
   default: {},
 });
 
-export const farmInfos = atom<{ [key: string]: FarmInfo }>({
+export const farmInfos = atom<{ [key: string]: Farm }>({
   key: "farms",
   default: {},
 });
@@ -78,7 +77,7 @@ interface UserInfo {
       staked: number;
     }
   };
-  states: UserState[];
+  states: User[];
 }
 
 export const userInfo = atom<UserInfo>({

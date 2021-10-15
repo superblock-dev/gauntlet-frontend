@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { Fees, UserState, Vault } from "types";
+import { Fees, User, Vault } from "types";
 import { getIndexFromSymbol } from "./constants";
 import { getBigNumber } from "./layouts";
 import { TokenAmount } from "./safe-math";
@@ -10,13 +10,16 @@ export const BASE_FEE: Fees = {
   performanceFee: 0.02,
   treasuryFee: 0.025,
   withdrawalFee: 0.001,
-};
+}
 
-export function calculateReward(userState: UserState, vault: Vault) {
+export function calculateReward(userState: User, vault: Vault) {
   const decimals = userState.rewardToken.decimals
   const amount = new TokenAmount(getBigNumber(userState.amount), decimals);
   const rewardDebt = new TokenAmount(getBigNumber(userState.rewardDebt), decimals);
-  const acc = new BigNumber(vault.accPerShares[getIndexFromSymbol(userState.rewardToken.symbol)]);
+  const acc = new BigNumber(
+    vault.accPerShares ?
+      vault.accPerShares[getIndexFromSymbol(userState.rewardToken.symbol)] :
+      0)
   const rewardAmount = BigNumber.sum(
     amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther()),
     userState.reward
@@ -25,25 +28,15 @@ export function calculateReward(userState: UserState, vault: Vault) {
   return Math.floor(rewardAmount.multipliedBy(Math.pow(10, decimals)).toNumber()) / Math.pow(10, decimals);
 }
 
-export function getVaultById(vaults: Vault[], id: number) {
-  return vaults.find(v => v.id === id);
+export function getVaultByAccountId(vaults: Vault[], id: string) {
+  return vaults.find(v => v.stateAccount === id);
 }
 
 export const VAULTS: Vault[] = [
   {
-    id: 1,
     fees: BASE_FEE,
     depositToken: LP_TOKENS['RAY-USDT-V4'],
-    totalDepositAmount: 540120439.512,
-    accPerShares: [
-      0.01,
-      0.1,
-      680000,
-      1340000,
-      1560000,
-      1560000,
-    ],
-    vaultStateAccount: "FgPqAkiqEqRH5Y2qc5JpUTELgg4Kt1kKbyFfsis8nEKV",
+    stateAccount: "FgPqAkiqEqRH5Y2qc5JpUTELgg4Kt1kKbyFfsis8nEKV",
     vaultStrategyAccount: "DnEpq8Z2TKFU1xQCie1iCvnU5qhnwMhiCxccF4KkKjzQ",
     vaultDepositTokenAccount: "J27PU3toMReud3cwdWJYh4qJ6o4b5CCwVDWypCvBJZPa",
     farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
@@ -51,59 +44,43 @@ export const VAULTS: Vault[] = [
     withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
   },
   {
-    id: 2,
     fees: BASE_FEE,
     depositToken: LP_TOKENS['RAY-SRM-V4'],
-    totalDepositAmount: 540120439.512,
-    accPerShares: [
-      0.01,
-      0.1,
-      680000,
-      1340000,
-      1560000,
-      1560000,
-    ]
+    stateAccount: "FgPqAkiqEqRH5Y2qc5JpUTELgg4Kt1kKbyFfsis8nEKV",
+    vaultStrategyAccount: "DnEpq8Z2TKFU1xQCie1iCvnU5qhnwMhiCxccF4KkKjzQ",
+    vaultDepositTokenAccount: "J27PU3toMReud3cwdWJYh4qJ6o4b5CCwVDWypCvBJZPa",
+    farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
+    vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
+    withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
   },
   {
-    id: 3,
     fees: BASE_FEE,
     depositToken: LP_TOKENS['RAY-SOL-V4'],
-    totalDepositAmount: 540120439.512,
-    accPerShares: [
-      0.01,
-      0.1,
-      680000,
-      1340000,
-      1560000,
-      1560000,
-    ]
+    stateAccount: "FgPqAkiqEqRH5Y2qc5JpUTELgg4Kt1kKbyFfsis8nEKV",
+    vaultStrategyAccount: "DnEpq8Z2TKFU1xQCie1iCvnU5qhnwMhiCxccF4KkKjzQ",
+    vaultDepositTokenAccount: "J27PU3toMReud3cwdWJYh4qJ6o4b5CCwVDWypCvBJZPa",
+    farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
+    vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
+    withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
   },
   {
-    id: 4,
     fees: BASE_FEE,
     depositToken: LP_TOKENS['RAY-USDC-V4'],
-    totalDepositAmount: 540120439.512,
-    accPerShares: [
-      0.01,
-      0.1,
-      680000,
-      1340000,
-      1560000,
-      1560000,
-    ]
+    stateAccount: "FgPqAkiqEqRH5Y2qc5JpUTELgg4Kt1kKbyFfsis8nEKV",
+    vaultStrategyAccount: "DnEpq8Z2TKFU1xQCie1iCvnU5qhnwMhiCxccF4KkKjzQ",
+    vaultDepositTokenAccount: "J27PU3toMReud3cwdWJYh4qJ6o4b5CCwVDWypCvBJZPa",
+    farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
+    vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
+    withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
   },
   {
-    id: 5,
     fees: BASE_FEE,
     depositToken: LP_TOKENS['RAY-ETH-V4'],
-    totalDepositAmount: 540120439.512,
-    accPerShares: [
-      0.01,
-      0.1,
-      680000,
-      1340000,
-      1560000,
-      1560000,
-    ]
+    stateAccount: "FgPqAkiqEqRH5Y2qc5JpUTELgg4Kt1kKbyFfsis8nEKV",
+    vaultStrategyAccount: "DnEpq8Z2TKFU1xQCie1iCvnU5qhnwMhiCxccF4KkKjzQ",
+    vaultDepositTokenAccount: "J27PU3toMReud3cwdWJYh4qJ6o4b5CCwVDWypCvBJZPa",
+    farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
+    vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
+    withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
   },
 ]

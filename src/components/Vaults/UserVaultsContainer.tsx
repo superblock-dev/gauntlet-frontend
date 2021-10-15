@@ -81,7 +81,7 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
   useEffect(() => {
     const [totalDeposit, totalLpValueInUSD, totalRewardsInUSD] = userInfoValue.states.reduce((total, s) => {
       total[0] += s.amount
-      const v = vaults.find(v => v.id === s.vaultId);
+      const v = vaults.find(v => v.stateAccount === s.vault.stateAccount);
       if (v && v.depositToken.mintAddress in liquidityPools) {
         const lpValue = liquidityPools[v.depositToken.mintAddress].currentLpValue;
         total[1] = BigNumber.sum(total[1], lpValue ? lpValue * s.amount : 0);
@@ -141,7 +141,7 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
             <div key={`user-vault-${idx}`}>
               <UserVaultItem
                 vault={vault}
-                userStates={userInfoValue.states.filter(s => s.vaultId === vault.id)} />
+                userStates={userInfoValue.states.filter(s => s.vault.stateAccount === vault.stateAccount)} />
               {
                 idx !== vaults.length - 1 ?
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, }}>

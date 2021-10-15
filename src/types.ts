@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { LPToken, Token } from "utils/tokens";
+import { ReactNode } from "react"
+import { LPToken, Token } from "utils/tokens"
 
 export type TokenName =
   "BTC" |
@@ -14,76 +14,115 @@ export type TokenName =
   "RAY-USDC" |
   "RAY-USDT" |
   "LET-USDC" |
-  "ETC";
+  "ETC"
 
-// Temporary types
+/** Gauntlet related types **/
 export interface Fees {
-  controlFee: number;
-  performanceFee: number;
-  treasuryFee: number;
-  withdrawalFee: number;
+  controlFee: number
+  performanceFee: number
+  treasuryFee: number
+  withdrawalFee: number
 }
 
 export interface Vault {
-  id: number;
-  fees: Fees;
-  depositToken: LPToken;
-  totalDepositAmount: number;
-  accPerShares: number[];
-  farmApr?: number;
-  farmFee?: number;
-  vaultStateAccount?: string;
-  vaultStrategyAccount?: string;
-  vaultDepositTokenAccount?: string;
-  farmRewardTokenAccount?: string;
-  farmRewardTokenAccountB?: string;
-  vaultRaydiumStateAccount?: string;
-  withdrawFeeTokenAccount?: string;
+  stateAccount: string
+  fees: Fees
+  depositToken: LPToken
+  vaultStrategyAccount: string
+  vaultDepositTokenAccount: string
+  farmRewardTokenAccount: string
+  farmRewardTokenAccountB?: string
+  vaultRaydiumStateAccount: string
+  withdrawFeeTokenAccount: string
+  // load 해야 되는 애들
+  totalDepositAmount?: number
+  accPerShares?: number[]
+  farmApr?: number
+  farmFee?: number
 }
 
-export interface UserState {
-  vaultId: number;
-  rewardToken: Token | LPToken;
-  // Pending reward
-  reward: number;
+export interface User {
+  stateAccount: string
+  vault: Vault
+  strategyStateAccount: string
+  rewardToken: Token | LPToken
   // Deposited amount of LP token
-  amount: number;
+  amount: number
+  // Pending reward
+  reward: number
   // Reward debt
-  rewardDebt: number;
+  rewardDebt: number
   // Calculated reward
-  totalReward?: number;
-  totalRewardInUSD?: number;
-  totalApr?: number;
+  totalReward?: number
+  totalRewardInUSD?: number
+  totalApr?: number
+}
+
+export interface Strategy {
+  stateAccount: string
+  strategyTokenAccount: string
+  strategyTokenMintAccount: string
+  performanceFeeTokenAccount: string
+}
+
+export interface StrategyApy {
+  token: string
+  apy: number
+}
+
+/** Farm **/
+export interface Farm {
+  name: string
+  lp: LPToken
+  reward: Token
+  rewardB?: Token
+  isStake: boolean
+
+  fusion: boolean
+  dual: boolean
+  version: number
+  programId: string
+
+  poolId: string
+  poolAuthority: string
+
+  poolLpTokenAccount: string
+  poolRewardTokenAccount: string
+  poolRewardTokenAccountB?: string
+
+  user?: object
+  apr?: number
+  aprTotal?: number
+  fees?: number;
 }
 
 /** Pairs **/
 export interface PairInfo {
-  [key: string]: string | number;
+  [key: string]: string | number
 }
 
 export interface Route {
-  label: string,
-  path: string,
-  // component: ComponentType,
+  label: string
+  path: string
 }
 
 export interface PrimaryBtnProp {
-  disabled?: boolean,
+  disabled?: boolean
   children: ReactNode | ReactNode[] | string | string[] | undefined
 }
 
 export interface NavBtnProp {
-  active?: boolean,
-  title: string,
+  active?: boolean
+  title: string
 }
 
 export interface WalletBtnProp {
-  connected: boolean,
-  address?: string,
+  connected: boolean
+  address?: string
 }
 
 export interface DisconnectBtnProp {
-  handleClick: any,
+  handleClick: any
 }
 
 export interface ChildrenProp {
@@ -91,9 +130,9 @@ export interface ChildrenProp {
 }
 
 export interface PageTemplateProp {
-  children: ReactNode | ReactNode[] | string | string[] | undefined,
-  title: string,
-  subtitle?: string,
+  children: ReactNode | ReactNode[] | string | string[] | undefined
+  title: string
+  subtitle?: string
 }
 
 // Token types

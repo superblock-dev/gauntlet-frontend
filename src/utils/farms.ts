@@ -1,35 +1,9 @@
 import { getBigNumber } from 'utils/layouts';
 import { STAKE_PROGRAM_ID, STAKE_PROGRAM_ID_V4, STAKE_PROGRAM_ID_V5 } from 'utils/ids'
-import { LPToken, LP_TOKENS, Token, TOKENS } from 'utils/tokens'
+import { LP_TOKENS, TOKENS } from 'utils/tokens'
 import { TokenAmount } from 'utils/safe-math';
 import { LiquidityPoolInfo } from './pools';
-import { PairInfo } from 'types';
-
-
-export interface FarmInfo {
-  name: string
-  lp: LPToken
-  reward: Token
-  rewardB?: Token
-  isStake: boolean
-
-  fusion: boolean
-  dual: boolean
-  version: number
-  programId: string
-
-  poolId: string
-  poolAuthority: string
-
-  poolLpTokenAccount: string
-  poolRewardTokenAccount: string
-  poolRewardTokenAccountB?: string
-
-  user?: object
-  apr?: number
-  aprTotal?: number
-  fees?: number;
-}
+import { Farm, PairInfo } from 'types';
 
 export function getAddressForWhat(address: string) {
   // dont use forEach
@@ -55,7 +29,7 @@ export function getAddressForWhat(address: string) {
 }
 
 export function calculateAprValues(
-  farms: {[key: string]: FarmInfo}, 
+  farms: {[key: string]: Farm}, 
   pairs: PairInfo[],
   liquidityPools: {[key: string]: LiquidityPoolInfo},
   prices: {[key: string]: number},
@@ -231,7 +205,7 @@ export function calculateAprValues(
   });
 }
 
-export const FARMS: FarmInfo[] = [
+export const FARMS: Farm[] = [
   {
     name: 'RAY-USDT',
     lp: { ...LP_TOKENS['RAY-USDT-V4'] },

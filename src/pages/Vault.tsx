@@ -10,7 +10,7 @@ import VaultItem from "components/Vaults/VaultItem";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import UserVaultsContainer from "components/Vaults/UserVaultsContainer";
-import { calculateReward, getVaultById } from 'utils/vaults';
+import { calculateReward, getVaultByAccountId } from 'utils/vaults';
 import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
 
 const useStyles = makeStyles({
@@ -65,9 +65,9 @@ function Vault() {
   const [avgApr, setAvgApr] = useState(0);
 
   const { connected } = useWallet();
-  const userVaultIds = userInfoValue.states.map(userStat => userStat.vaultId);
-  const userVaults = connected ? vaults.filter(vault => userVaultIds.includes(vault.id)) : [];
-  const otherVaults = connected ? vaults.filter(vault => !userVaultIds.includes(vault.id)) : vaults;
+  const userVaultIds = userInfoValue.states.map(userStat => userStat.vault.stateAccount);
+  const userVaults = connected ? vaults.filter(vault => userVaultIds.includes(vault.stateAccount)) : [];
+  const otherVaults = connected ? vaults.filter(vault => !userVaultIds.includes(vault.stateAccount)) : vaults;
 
   useEffect(() => {
     const _vaults = vaults.map(v => {
@@ -89,9 +89,7 @@ function Vault() {
   // Vault 업데이트 되면, 각 state들마다 pending reward 계산
   useEffect(() => {
     const _states = userInfoValue.states.map(s => {
-      const v = getVaultById(vaults, s.vaultId);
-
-      if (!v) return s;
+      const v = s.vault;
 
       const totalReward = calculateReward(s, v);
 
