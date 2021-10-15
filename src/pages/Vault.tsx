@@ -125,9 +125,9 @@ function Vault() {
       if (v.farmApr) {
         totalHApr = BigNumber.sum(totalHApr, Number(v.farmApr)).toNumber();
       }
-  
+
       const highestApy = calculateApyInPercentage(totalHApr, highestStrategy.apy)
-  
+
       if (v.farmFee) {
         totalHApr = BigNumber.sum(highestApy, Number(v.farmFee)).toNumber()
       }

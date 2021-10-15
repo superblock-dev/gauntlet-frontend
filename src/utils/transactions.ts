@@ -26,7 +26,7 @@ import {
 
 export async function harvest(
   connection: Connection | undefined | null,
-  wallet: any,
+  owner: PublicKey,
   vaultInfo: Vault,
   strategyInfo: Strategy,
   farmInfo: Farm,
@@ -34,8 +34,6 @@ export async function harvest(
   if (!connection) throw Error("HARVEST: Connection failed")
 
   const transaction = new Transaction()
-  const owner = wallet.publicKey
-  if (!wallet || !owner) throw Error("HARVEST: Owner not found")
 
   const depositorUserAccount = await createGauntletUserAccountIfNotExist(
     connection,
@@ -70,7 +68,7 @@ export async function harvest(
 
 export async function harvestV4(
   connection: Connection | undefined | null,
-  wallet: any,
+  owner: PublicKey,
   vaultInfo: Vault,
   strategyInfo: Strategy,
   farmInfo: Farm,
@@ -78,8 +76,6 @@ export async function harvestV4(
   if (!connection) throw Error("HARVEST V4: Connection failed")
 
   const transaction = new Transaction()
-  const owner = wallet.publicKey
-  if (!wallet || !owner) throw Error("HARVEST V4: Owner not found")
 
   if (!vaultInfo.farmRewardTokenAccountB) throw Error("HARVEST V4: Not dual yield vault")
   if (!farmInfo.poolRewardTokenAccountB) throw Error("HARVEST V4: Not dual yield farm")
@@ -118,7 +114,7 @@ export async function harvestV4(
 
 export async function swapToUsdc(
   connection: Connection | undefined | null,
-  wallet: any,
+  owner: PublicKey,
   vaultInfo: Vault,
   strategyInfo: Strategy,
   poolInfo: LiquidityPoolInfo,
@@ -127,8 +123,6 @@ export async function swapToUsdc(
   if (!connection) throw Error("SWAP TO USDC: Connection failed")
 
   const transaction = new Transaction()
-  const owner = wallet.publicKey
-  if (!wallet || !owner) throw Error("SWAP TO USDC: Owner not found")
 
   if (!poolInfo.serumBids || !poolInfo.serumAsks || !poolInfo.serumEventQueue) {
     throw Error("SWAP TO USDC: Serum related infos not found")
@@ -179,7 +173,7 @@ export async function swapToUsdc(
 
 export async function swapToStrategy(
   connection: Connection | undefined | null,
-  wallet: any,
+  owner: PublicKey,
   vaultInfo: Vault,
   strategyInfo: Strategy,
   poolInfo: LiquidityPoolInfo,
@@ -187,8 +181,6 @@ export async function swapToStrategy(
   if (!connection) throw Error("SWAP TO STRATEGY: Connection failed")
 
   const transaction = new Transaction()
-  const owner = wallet.publicKey
-  if (!wallet || !owner) throw Error("SWAP TO STRATEGY: Owner not found")
 
   if (!poolInfo.serumBids || !poolInfo.serumAsks || !poolInfo.serumEventQueue) {
     throw Error("SWAP TO STRATEGY: Serum related infos not found")
@@ -235,7 +227,7 @@ export async function swapToStrategy(
 // deposit
 export async function deposit(
   connection: Connection | undefined | null,
-  wallet: any,
+  owner: PublicKey,
   vaultInfo: Vault,
   strategyInfo: Strategy,
   farmInfo: Farm,
@@ -244,8 +236,6 @@ export async function deposit(
   if (!connection) throw Error("DEPOSIT: Connection failed")
 
   const transaction = new Transaction()
-  const owner = wallet.publicKey
-  if (!wallet || !owner) throw Error("DEPOSIT: Owner not found")
   
   const depositorUserAccount = await getGauntletUserAccount(
     new PublicKey(vaultInfo.stateAccount),
@@ -283,7 +273,7 @@ export async function deposit(
 // depositV4
 export async function depositV4(
   connection: Connection | undefined | null,
-  wallet: any,
+  owner: PublicKey,
   vaultInfo: Vault,
   strategyInfo: Strategy,
   farmInfo: Farm,
@@ -292,8 +282,6 @@ export async function depositV4(
   if (!connection) throw Error("DEPOSIT V4: Connection failed")
 
   const transaction = new Transaction()
-  const owner = wallet.publicKey
-  if (!wallet || !owner) throw Error("DEPOSIT V4: Owner not found")
   
   if (!vaultInfo.farmRewardTokenAccountB) throw Error("DEPOSIT V4: Not dual yield vault")
   if (!farmInfo.poolRewardTokenAccountB) throw Error("DEPOSIT V4: Not dual yield farm")
@@ -335,7 +323,7 @@ export async function depositV4(
 // withdraw
 export async function withdraw(
   connection: Connection | undefined | null,
-  wallet: any,
+  owner: PublicKey,
   vaultInfo: Vault,
   strategyInfo: Strategy,
   farmInfo: Farm,
@@ -345,8 +333,6 @@ export async function withdraw(
   if (!connection) throw Error("WITHDRAW: Connection failed")
 
   const transaction = new Transaction()
-  const owner = wallet.publicKey
-  if (!wallet || !owner) throw Error("WITHDRAW: Owner not found")
 
   const depositorUserAccount = await getGauntletUserAccount(
     new PublicKey(vaultInfo.stateAccount),
@@ -397,7 +383,7 @@ export async function withdraw(
 // withdrawV4
 export async function withdrawV4(
   connection: Connection | undefined | null,
-  wallet: any,
+  owner: PublicKey,
   vaultInfo: Vault,
   strategyInfo: Strategy,
   farmInfo: Farm,
@@ -407,8 +393,6 @@ export async function withdrawV4(
   if (!connection) throw Error("WITHDRAW V4: Connection failed")
 
   const transaction = new Transaction()
-  const owner = wallet.publicKey
-  if (!wallet || !owner) throw Error("WITHDRAW V4: Owner not found")
   
   if (!vaultInfo.farmRewardTokenAccountB) throw Error("WITHDRAW V4: Not dual yield vault")
   if (!farmInfo.poolRewardTokenAccountB) throw Error("WITHDRAW V4: Not dual yield farm")

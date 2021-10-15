@@ -1,18 +1,26 @@
 import { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 import { makeStyles } from '@material-ui/core';
+
+import { conn, liquidityPoolInfos } from 'recoil/atoms';
+import { Farm, Strategy, Vault } from 'types';
+import { harvest } from 'utils/transactions';
 import FlagItem from './FlagItem';
+import NotConnectedFlagItem from './NotConnectedFlagItem';
 import CursorPointer from "assets/CursorPointer.svg";
 import IconLeftNavigation from "assets/svgs/big-arrow-left.svg";
 import IconRightNavigation from "assets/svgs/big-arrow-right.svg";
 import './Carousel.css';
-import NotConnectedFlagItem from './NotConnectedFlagItem';
 
 interface CarouselProps {
+  vault: Vault;
+  farm: Farm;
   items: any[];
   active: number;
   handleChangeIndex?: (index: number) => void;
+  isHome?: boolean;
 }
 
 interface CarouselAnimState {
@@ -60,8 +68,10 @@ const useStyles = makeStyles({
 
 export default function Carousel(props: CarouselProps) {
   const classes = useStyles();
+  const { vault, farm, isHome } = props;
+  const connection = useRecoilValue(conn);
+  const { connected, publicKey } = useWallet();
   const [items, _] = useState<any[]>(props.items);
-  const { connected } = useWallet();
   const [animState, setAnimState] = useState<CarouselAnimState>({
     active: props.active,
     direction: "left",
@@ -139,11 +149,32 @@ export default function Carousel(props: CarouselProps) {
     })
   }
 
+
+  // 공통으로 필요한, 커넥션, 오너 등은 Carousel 레벨에서 전달
+  // Strategy, amount 등 FlagItem 레벨에서 결정해야하는 것들은 함수 인자로 정의
+  const deposit = (amount: number, strategyInfo: Strategy) => {
+    if (!vault.farmRewardTokenAccountB) {
+      // Not dual
+      const txHarvest = harvest(connection, publicKey!, vault, strategyInfo, farm)
+    }
+  }
+
+  const withdraw = (amount: number, rewardAmount: number, strategyInfo: Strategy) => {
+    if (!vault.farmRewardTokenAccountB) {
+      // Not dual
+      const txHarvest = harvest(connection, publicKey!, vault, strategyInfo, farm)
+    }
+  }
+
+  const claim = () => {
+
+  }
+
   return (
     <div className={classes.carouselRoot}>
       <div className={classes.leftArrow} onClick={(leftClick)}></div>
       {generateItems(animState.active).map((i, idx) => {
-        if (connected) {
+        if (connected || isHome) {
           return (
             <CSSTransition
               key={i.key}
@@ -152,16 +183,17 @@ export default function Carousel(props: CarouselProps) {
             >
               <FlagItem
                 id={`${i.item.symbol}-${i.key}`}
-                // id={i.key}
                 level={i.level}
                 item={i.item}
                 onClick={() => {
-                  console.log(i.item)
                   setAnimState({
                     direction: i.level < 0 ? 'left' : 'right',
                     active: i.key
                   })
                 }}
+                handleDeposit={deposit}
+                handleWithdraw={withdraw}
+                handleClaim={claim}
               />
             </CSSTransition>
           );
@@ -178,7 +210,6 @@ export default function Carousel(props: CarouselProps) {
                 symbol={i.item.symbol}
                 level={i.level}
                 onClick={() => {
-                  console.log(i.item)
                   setAnimState({
                     direction: i.level < 0 ? 'left' : 'right',
                     active: i.key

@@ -7,10 +7,8 @@ import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import { makeStyles } from "@material-ui/core";
 
-import { User, Vault } from "types";
-import { calculateReward } from "utils/vaults";
+import { Farm, User, Vault } from "types";
 import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
-import { getIndexFromSymbol, REWARDS } from 'utils/constants';
 import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
 import Carousel from 'components/Carousel';
 import LPTokenView from "components/Vaults/LPTokenView";
@@ -19,7 +17,6 @@ import VaultDetails from "components/VaultDetail/VaultDetails";
 import MediumButton from "components/Buttons/MediumButton";
 import RewardList from "components/VaultDetail/RewardList";
 import StoneDisplay from "components/Stone/StoneDisplay";
-import SmallButton from "components/Buttons/SmallButton";
 import CursorPointer from 'assets/CursorPointer.svg';
 import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
 import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
@@ -108,6 +105,7 @@ function VaultDetail() {
   const [slideIndex, setSlideIndex] = useRecoilState(activeFlagIndex);
 
   const [vault, setVault] = useState<Vault | undefined>(undefined);
+  const [farm, setFarm] = useState<Farm | undefined>(undefined);
   const [userStates, setUserStates] = useState<User[]>([]);
   const [apy, setApy] = useState([0, 0]);
 
@@ -140,6 +138,7 @@ function VaultDetail() {
       farmApr: Number(f.apr),
       farmFee: Number(f.fees)
     })
+    setFarm(f);
     setUserInfoState({
       ...userInfoState,
       states: aprCalculatedStates,
@@ -217,61 +216,11 @@ function VaultDetail() {
     },
     {
       symbol: 'RAY',
-      amount:0,
+      amount: 0,
       deposit: 0,
     },
   ];
   let lpStaked = rewards.reduce((prev, r) => BigNumber.sum(prev, r.deposit).toNumber(), 0);
-
-
-  const deposit = (amount: number, symbol: string) => {
-    if (!vault) return;
-    const lpBalance = userInfoState.lpTokens[vault.depositToken.symbol].balance
-    if (amount > lpBalance) {
-      return enqueueSnackbar(<ErrorSnackbar message={"Not enough balance."} />)
-    }
-    let newUserInfo = cloneDeep(userInfoState);
-    newUserInfo.lpTokens[vault.depositToken.symbol].balance -= amount
-    newUserInfo.lpTokens[vault.depositToken.symbol].staked += amount
-
-    const rewardIndex = getIndexFromSymbol(symbol)
-    if (rewardIndex === -1) return;
-    const rewardToken = REWARDS[rewardIndex];
-    const accPerShare = vault.accPerShares ? vault.accPerShares[rewardIndex] : 0;
-    const prevStateId = userInfoState.states.findIndex(s => s.rewardToken.symbol === symbol);
-
-    // if (prevStateId === -1) {
-    //   newUserInfo.states = [
-    //     ...newUserInfo.states,
-    //     {
-    //       stateAccount: , // PDA 
-    //       vault: vault,
-    //       strategyStateAccount: // strategy state account
-    //       rewardToken,
-    //       reward: 0,
-    //       amount,
-    //       rewardDebt: new BigNumber(amount).multipliedBy(accPerShare).toNumber(),
-    //     }
-    //   ];
-    // } else {
-    //   let prevState = newUserInfo.states[prevStateId];
-    //   prevState.reward = calculateReward(prevState, vault);
-    //   prevState.amount += amount;
-    //   prevState.rewardDebt = new BigNumber(prevState.amount).multipliedBy(accPerShare).toNumber()
-    // }
-    // console.log("new user info: ", newUserInfo)
-
-    setUserInfoState(newUserInfo);
-    enqueueSnackbar(<SuccessSnackbar message={`${amount} LP successfully deposited!`} />)
-  }
-
-  const withdraw = (amount: number) => {
-
-  }
-
-  const claim = () => {
-
-  }
 
   let lpBalance = 0;
 
@@ -326,11 +275,15 @@ function VaultDetail() {
       <div className={classes.stoneDisplayContainer}>
         <StoneDisplay items={rewards} onClick={setSlideIndex} />
       </div>
-      <SmallButton text={'claim all'} />
+      {/* <SmallButton text={'claim all'} /> */}
       <div className={classes.divider} style={{ marginTop: 48 }} />
       <div className={classes.helpText}>{`Choose Your Strategy & Stake LP Tokens`}</div>
       <div className={classes.sliderContainer}>
-        <Carousel items={rewards} active={slideIndex} />
+        {
+          vault && farm ?
+            <Carousel vault={vault} farm={farm} items={rewards} active={slideIndex} /> :
+            null
+        }
       </div>
       {/* {
         flags.length === 0 ?
