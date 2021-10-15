@@ -13,6 +13,7 @@ import LPTokenView from './LPTokenView';
 import LinePurpleShort from 'assets/svgs/LinePurpleShort.svg';
 import { ReactComponent as CaretDown } from 'assets/svgs/CaretDown.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
+import BigNumber from 'bignumber.js';
 
 const AccordionSummary = withStyles({
   root: {
@@ -124,13 +125,12 @@ function UserVaultItem({ vault, userStates }: UserVaultProps) {
 
   const [totalApr, totalDeposit, totalRewardInUSD] = userStates.reduce((prev, s) => {
     prev[0] = s.totalApr ? prev[0] + s.totalApr : prev[0];
-    prev[1] += s.amount;
+    prev[1] = BigNumber.sum(prev[1], s.amount);
     prev[2] = s.totalRewardInUSD ? prev[2] + s.totalRewardInUSD : prev[2];
 
     return prev
-  }, [0, 0, 0]);
+  }, [0, new BigNumber(0), 0]);
 
-  console.log("userv ault item ", userStates)
 
   return (
     <>
@@ -250,7 +250,7 @@ function UserVaultItem({ vault, userStates }: UserVaultProps) {
                     <div className={classes.rewardAmount}>
                       {
                         state.reward ?
-                          state.reward :
+                          state.reward.toNumber() :
                           0
                       }</div>
                   </div>
