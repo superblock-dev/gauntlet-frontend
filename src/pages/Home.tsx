@@ -490,7 +490,6 @@ export default function Home() {
           target="_blank"
           className={`${classes.btnMoreContainer} ${section2 ? "active" : ''}`}
           style={{ marginTop: 80, }}
-          onClick={() => console.log('click')}
         >
           <span>LEARN MORE</span>
           <div className={classes.btnMore} />
@@ -525,7 +524,6 @@ export default function Home() {
           target="_blank"
           className={`${classes.btnMoreContainer} ${section3 ? "active" : ''}`}
           style={{ marginTop: 80, }}
-          onClick={() => console.log('click')}
         >
           <span>LEARN MORE</span>
           <div className={classes.btnMore} />
