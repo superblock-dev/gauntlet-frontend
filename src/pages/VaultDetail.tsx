@@ -8,7 +8,7 @@ import { useSnackbar } from 'notistack';
 import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
 
 import LPTokenView from "components/Vaults/LPTokenView";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, SliderProps } from "@material-ui/core";
 import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
 import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
 import VaultSummary from "components/VaultDetail/VaultSummary";
@@ -93,7 +93,8 @@ const useStyles = makeStyles({
     height: 160,
     position: 'relative',
     display: 'flex',
-  justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -151,12 +152,6 @@ function VaultDetail() {
     const userVaultStates = userInfoState.states.filter(s => s.vaultId === vId);
     setUserStates(userVaultStates);
 
-    if (!vault) return
-    let _stones: { [key: string]: any } = {};
-    userVaultStates.forEach(s => {
-      _stones[s.rewardToken.symbol] = calculateReward(s, vault);
-    })
-
   }, [userInfoState]);
 
   useEffect(() => {
@@ -197,8 +192,8 @@ function VaultDetail() {
   const rewards: Reward[] = [
     {
       symbol: 'BTC',
-      amount: 0.001,
-      deposit: 1,
+      amount: 0,
+      deposit: 0,
     },
     {
       symbol: 'ETH',
@@ -207,25 +202,27 @@ function VaultDetail() {
     },
     {
       symbol: 'SOL',
-      amount: 0.1,
-      deposit: 1,
+      amount: 0,
+      deposit: 0,
     },
     {
       symbol: 'USDC',
-      amount: 3.132,
-      deposit: 1,
+      amount: 0,
+      deposit: 0,
     },
     {
       symbol: 'USDT',
-      amount: 3.132,
-      deposit: 1,
+      amount: 0,
+      deposit: 0,
     },
     {
       symbol: 'RAY',
-      amount: 3.132,
-      deposit: 1,
+      amount: 0,
+      deposit: 0,
     },
   ];
+  
+  let lpStaked = rewards.reduce((prev, r) => BigNumber.sum(prev, r.deposit).toNumber(), 0);
 
 
   const deposit = (amount: number, symbol: string) => {
@@ -275,11 +272,9 @@ function VaultDetail() {
   }
 
   let lpBalance = 0;
-  let lpStaked = 0;
 
   if (vault) {
     lpBalance = userInfoState.lpTokens[vault.depositToken.symbol].balance
-    lpStaked = userInfoState.lpTokens[vault.depositToken.symbol].staked
   }
 
   return (
@@ -332,10 +327,20 @@ function VaultDetail() {
       <SmallButton text={'claim all'} />
       <div className={classes.divider} style={{ marginTop: 48 }} />
       <div className={classes.helpText}>{`Choose Your Strategy & Stake LP Tokens`}</div>
-
       <div className={classes.sliderContainer}>
-        <Carousel items={rewards} active={slideIndex} handleChangeIndex={(i: number) => setSlideIndex(i)}/>
+        <Carousel items={rewards} active={slideIndex} />
       </div>
+      {/* {
+        flags.length === 0 ?
+          null :
+          <div className={classes.sliderContainer}>
+            <FlagNavigation onClick={(direction: number) => {
+              const index = slideIndex + direction;
+              setSlideIndex(index);
+            }} />
+            <Slider index={slideIndex} slides={flags} />
+          </div>
+      } */}
 
       <RewardList
         rewards={STRATEGY_FARMS}
