@@ -13,7 +13,7 @@ import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import UserVaultsContainer from "components/Vaults/UserVaultsContainer";
 import { calculateReward } from 'utils/vaults';
 import { calculateApyInPercentage, STRATEGY_FARMS, STRATEGIES } from 'utils/strategies';
-import { fetchUserState } from 'api/vaults';
+import { fetchUserState } from 'api/users';
 import { Vault } from 'types';
 
 const useStyles = makeStyles({
@@ -78,7 +78,6 @@ function VaultPage() {
       const _userStates = userStates.map(userState => {
         const v = vaults.find(vault => vault.stateAccount === userState.vaultStateAccount)
         if (v === undefined) return userState
-        // const v = userState.vault;
 
         const totalReward = calculateReward(userState, v);
 
@@ -152,7 +151,7 @@ function VaultPage() {
         farmFee: Number(f.fees),
       };
     });
-    
+
     setVaults(_vaults)
   }, [farms]);
 
