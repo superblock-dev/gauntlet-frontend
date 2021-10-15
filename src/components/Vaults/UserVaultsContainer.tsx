@@ -1,18 +1,15 @@
 import { BigNumber } from 'bignumber.js';
+import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { clone } from 'lodash';
-import { farmInfos, liquidityPoolInfos, rewardPrices, userInfo } from 'recoil/atoms';
+import { liquidityPoolInfos, rewardPrices, userInfo } from 'recoil/atoms';
+import { Vault } from "types";
 import { Grid, makeStyles } from "@material-ui/core";
-import UserVaultsSummary from "components/Vaults/UserVaultsSummary";
+import GauntletSummary from "components/Vaults/GauntletSummary";
 import UserVaultItem from "components/Vaults/UserVaultItem";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import IconHelp from 'assets/svgs/IconHelp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import { ReactComponent as LineDivider } from 'assets/svgs/LineDivider.svg';
-import { calculateReward, getVaultById, USER_STATES, } from "utils/vaults";
-import { UserState, Vault } from "types";
-import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
-import { useEffect, useState } from 'react';
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -111,11 +108,12 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
 
   return (
     <>
-      <UserVaultsSummary
+      <GauntletSummary
         totalDeposit={userVaultStats.totalDeposit}
         totalLpValueInUSD={userVaultStats.totalLpValueInUSD}
         totalRewardsInUSD={userVaultStats.totalRewardsInUSD}
         avgApr={userVaultStats.avgApr}
+        userSummary
       />
       <div className={classes.listTitle}>
         My Vaults

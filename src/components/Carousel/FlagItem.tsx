@@ -189,7 +189,7 @@ export default function FlagItem(props: FlagItemProps) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: level === 0 ? 40 : Math.abs(level) == 1 ? 160 : 129,
+        marginTop: level === 0 ? 40 : Math.abs(level) === 1 ? 160 : 129,
         marginBottom: level === 0 ? 0 : 16,
         transition: 'all 0.25s',
         transitionDelay: '0s',
@@ -197,7 +197,6 @@ export default function FlagItem(props: FlagItemProps) {
         <Stone tokenName={item.symbol} size="xlarge" />
         <span className={classes.textSymbol}>{item.symbol}</span>
         <div style={{
-          // opacity: level === 0 ? 1 : 0,
           width: level === 0 ? 266 : 0,
           height: level === 0 ? 488 : 0,
           transition: 'height 0s ease 0.25s, width 0s ease 0s',

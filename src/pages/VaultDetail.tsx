@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { cloneDeep, clone } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward } from "recoil/atoms";
@@ -8,97 +8,21 @@ import { useSnackbar } from 'notistack';
 import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
 
 import LPTokenView from "components/Vaults/LPTokenView";
-import { makeStyles, SliderProps } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
 import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
 import VaultSummary from "components/VaultDetail/VaultSummary";
 import VaultDetails from "components/VaultDetail/VaultDetails";
 import MediumButton from "components/Buttons/MediumButton";
 import RewardList from "components/VaultDetail/RewardList";
-import Slider from "components/Slider";
 import CursorPointer from 'assets/CursorPointer.svg';
-import Flag from "components/Vaults/Flag";
-import { v4 as uuidv4 } from "uuid";
-import FlagNavigation from "components/Vaults/FlagNavigation";
 import StoneDisplay from "components/Stone/StoneDisplay";
-import { TokenName, UserState, Vault } from "types";
+import { UserState, Vault } from "types";
 import { calculateReward } from "utils/vaults";
 import SmallButton from "components/Buttons/SmallButton";
 import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
 import { getIndexFromSymbol, REWARDS } from 'utils/constants';
 import Carousel from 'components/Carousel';
-
-interface FlagCreationArgs {
-  vault: Vault;
-  userState: UserState;
-  balance: number;
-  index: number;
-  onClickDeposit: (...args: any) => void;
-  onClickWithdraw: (...args: any) => void;
-  onClickClaim: (...args: any) => void;
-}
-
-function createItem(args: FlagCreationArgs) {
-  const { vault, userState, balance, index, onClickDeposit, onClickWithdraw, onClickClaim } = args;
-  const pendingReward = calculateReward(userState, vault);
-
-  return (
-    <Flag
-      tokenName={userState.rewardToken.symbol as TokenName}
-      deposited={userState.amount}
-      balance={balance}
-      index={index}
-      reward={pendingReward}
-      onClickDeposit={onClickDeposit}
-      onClickWithdraw={onClickWithdraw}
-      onClickClaim={onClickClaim}
-    />
-  );
-}
-
-function createSlide(
-  flagArgs: FlagCreationArgs,
-  onClickSlide: () => void,
-) {
-  return {
-    key: uuidv4(),
-    content: createItem(flagArgs),
-    onClick: onClickSlide,
-  }
-}
-
-function createRewardsListFromUserState(
-  vault: Vault,
-  balance: number,
-  onClickSlide: (idx: number) => void,
-  onClickDeposit: (...args: any) => void,
-  onClickWithdraw: (...args: any) => void,
-  onClickClaim: (...args: any) => void,
-  userStates: UserState[],
-) {
-  return ([...REWARDS]).map((reward, idx) => {
-    let userState = userStates.find(state => state.rewardToken.symbol === reward.symbol);
-    if (!userState) {
-      userState = {
-        vaultId: vault.id,
-        rewardToken: reward,
-        reward: 0,
-        amount: 0,
-        rewardDebt: 0,
-      }
-    }
-    const flagArgs: FlagCreationArgs = {
-      vault,
-      userState,
-      balance,
-      index: idx,
-      onClickDeposit,
-      onClickWithdraw,
-      onClickClaim,
-    }
-    return createSlide(flagArgs, () => onClickSlide(idx));
-  })
-}
 
 interface VaultDetailParams {
   vaultId: string,
@@ -182,8 +106,6 @@ function VaultDetail() {
 
   const [vault, setVault] = useState<Vault | undefined>(undefined);
   const [userStates, setUserStates] = useState<UserState[]>([]);
-  const [stones, setStones] = useState<{ [key: string]: any }>({});
-  const [flags, setFlags] = useState<SliderProps[]>([]);
   const [apy, setApy] = useState([0, 0]);
 
   const { vaultId } = useParams<VaultDetailParams>();
@@ -232,18 +154,6 @@ function VaultDetail() {
     userVaultStates.forEach(s => {
       _stones[s.rewardToken.symbol] = calculateReward(s, vault);
     })
-    setStones(_stones)
-
-    const _flags = createRewardsListFromUserState(
-      vault,
-      lpBalance,
-      setSlideIndex,
-      deposit,
-      withdraw,
-      claim,
-      userInfoState.states,
-    );
-    setFlags(_flags)
 
   }, [userInfoState]);
 
@@ -258,22 +168,6 @@ function VaultDetail() {
 
     return () => clearTimeout(timer);
   });
-
-  useEffect(() => {
-    if (!vault) return;
-
-    const _flags = createRewardsListFromUserState(
-      vault,
-      lpBalance,
-      setSlideIndex,
-      deposit,
-      withdraw,
-      claim,
-      userInfoState.states,
-    );
-    setFlags(_flags)
-
-  }, [vault])
 
   useEffect(() => {
     const highestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy < v.apy ? v : p);
@@ -466,20 +360,10 @@ function VaultDetail() {
       <SmallButton text={'claim all'} />
       <div className={classes.divider} style={{ marginTop: 48 }} />
       <div className={classes.helpText}>{`Choose Your Strategy & Stake LP Tokens`}</div>
+
       <div className={classes.sliderContainer}>
-        <Carousel items={rewards} active={slideIndex} />
+        <Carousel items={rewards} active={slideIndex} handleChangeIndex={(i: number) => setSlideIndex(i)}/>
       </div>
-      {/* {
-        flags.length === 0 ?
-          null :
-          <div className={classes.sliderContainer}>
-            <FlagNavigation onClick={(direction: number) => {
-              const index = slideIndex + direction;
-              setSlideIndex(index);
-            }} />
-            <Slider index={slideIndex} slides={flags} />
-          </div>
-      } */}
 
       <RewardList
         rewards={STRATEGY_FARMS}

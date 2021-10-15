@@ -83,15 +83,3 @@ export const STONE_BG_EFFECTS: { [key: string]: StoneDisplayEffect } = {
     outline: OutlineRAY,
   },
 }
-
-
-interface StoneAsset {
-  normal: string;
-  small: string;
-  xlarge: string;
-  xlargeBgEffect: string;
-  xlargeDeactivated: string;
-  xlargeOutline: string;
-  xxlarge: string,
-}
-

@@ -1,17 +1,17 @@
-import { clone } from 'lodash';
-import { useEffect } from "react";
+import BigNumber from 'bignumber.js';
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { farmInfos, rewardPrices, userInfo, vaultInfos } from "recoil/atoms";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
+import GauntletSummary from 'components/Vaults/GauntletSummary';
 import VaultItem from "components/Vaults/VaultItem";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import UserVaultsContainer from "components/Vaults/UserVaultsContainer";
 import { calculateReward, getVaultById } from 'utils/vaults';
 import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
-import BigNumber from 'bignumber.js';
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -62,6 +62,7 @@ function Vault() {
   const farms = useRecoilValue(farmInfos);
   const prices = useRecoilValue(rewardPrices);
   const [userInfoValue, setUserInfo] = useRecoilState(userInfo);
+  const [avgApr, setAvgApr] = useState(0);
 
   const { connected } = useWallet();
   const userVaultIds = userInfoValue.states.map(userStat => userStat.vaultId);
@@ -110,6 +111,7 @@ function Vault() {
       if (v.fees) {
         totalApr = BigNumber.sum(totalApr, Number(v.farmFee)).toNumber();
       }
+
       return {
         ...s,
         totalReward,
@@ -117,6 +119,27 @@ function Vault() {
         totalApr,
       }
     });
+
+    const highestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy < v.apy ? v : p);
+
+    let avgApr = vaults.reduce((prev, v) => {
+      let totalHApr = 0;
+      if (v.farmApr) {
+        totalHApr = BigNumber.sum(totalHApr, Number(v.farmApr)).toNumber();
+      }
+  
+      const highestApy = calculateApyInPercentage(totalHApr, highestStrategy.apy)
+  
+      if (v.farmFee) {
+        totalHApr = BigNumber.sum(highestApy, Number(v.farmFee)).toNumber()
+      }
+
+      prev += totalHApr / vaults.length
+
+      return prev;
+    }, 0);
+
+    setAvgApr(avgApr);
 
     setUserInfo({
       ...userInfoValue,
@@ -134,7 +157,12 @@ function Vault() {
         {
           connected ?
             <UserVaultsContainer vaults={userVaults} /> :
-            <></>
+            <GauntletSummary
+              totalDeposit={120381294} //TODO
+              totalLpValueInUSD={12903810293808}
+              totalRewardsInUSD={0}
+              avgApr={avgApr}
+            />
         }
         <div className={classes.listTitle}>
           All Vaults
@@ -162,7 +190,7 @@ function Vault() {
               />
               {
                 idx !== otherVaults.length - 1 ?
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 29, }}>
                     <div className={classes.divider} />
                   </div> :
                   null

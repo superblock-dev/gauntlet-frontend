@@ -3,9 +3,8 @@
   color: white;
   font-size: 40px;
   position: absolute;
-  transition: height 0.25s, width 0.25s, left 1s, margin-top 0.25s;
+  transition: height 0.25s, width 0.25s, left 1s, margin-top 0.25s, opacity 0.25s;
 }
-
 
 .item {
   --padding-top-level2: 129px;
@@ -16,14 +15,35 @@
   --level1-width: 259px;
   --level0-height: 608px;
   --level0-width: 328px;
+  --level-3-left: -966px;
   --level-2-left: -766px;
   --level-1-left: -509px;
   --level-0-left: -164px;
   --level1-left: 250px;
   --level2-left: 541px;
+  --level3-left: 741px;
   --margin-top-level1: 80px;
   --margin-top-level2: 120px;
   --margin-top-enter: 120px;
+}
+
+.level99 {
+  opacity: 0;
+
+  height: var(--level2-height);
+  width: var(--level2-width);
+  left: calc(50% + var(--level-0-left));
+  margin-top: var(--margin-top-level2);
+  z-index: -1;
+}
+
+.level-3 {
+  opacity: 0;
+  height: var(--level2-height);
+  width: var(--level2-width);
+  left: calc(50% + var(--level-3-left));
+  margin-top: var(--margin-top-level2);
+  z-index: 2;
 }
 
 .level-2 {
@@ -140,6 +160,15 @@
   left: calc(50% + var(--level2-left));
   margin-top: var(--margin-top-level2);
   z-index: 3;
+}
+
+.level3 {
+  opacity: 0;
+  height: var(--level2-height);
+  width: var(--level2-width);
+  left: calc(50% + var(--level3-left));
+  margin-top: var(--margin-top-level2);
+  z-index: 2;
 }
 
 .right-enter {

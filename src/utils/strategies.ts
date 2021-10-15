@@ -42,7 +42,8 @@ export const STRATEGY_FARMS: StrategyFarm[] = [
   },
   {
     token: 'LET',
-    apy: 591.183,
+    // apy: 591.183,
+    apy: 528.512,
   },
   {
     token: 'RAY-ETH',
@@ -62,6 +63,7 @@ export const STRATEGY_FARMS: StrategyFarm[] = [
   },
   {
     token: 'LET-USDC',
-    apy: 454914,
+    // apy: 454914,
+    apy: 541.480,
   }
 ];

@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash';
 import { getBigNumber } from 'utils/layouts';
 import { STAKE_PROGRAM_ID, STAKE_PROGRAM_ID_V4, STAKE_PROGRAM_ID_V5 } from 'utils/ids'
 import { LPToken, LP_TOKENS, Token, TOKENS } from 'utils/tokens'
