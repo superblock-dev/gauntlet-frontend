@@ -18,6 +18,7 @@ import {
   withdrawV4,
 } from 'utils/transactions';
 import { sendAndConfirmRawTransaction } from '@solana/web3.js';
+import { SuccessSnackbar, ErrorSnackbar } from 'components/Snackbar/Snackbar';
 import FlagItem from './FlagItem';
 import NotConnectedFlagItem from './NotConnectedFlagItem';
 import CursorPointer from "assets/CursorPointer.svg";
@@ -28,6 +29,7 @@ import { STRATEGIES } from 'utils/strategies';
 import { getIndexFromSymbol } from 'utils/constants';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from 'utils/safe-math';
+import { useSnackbar } from 'notistack';
 
 interface CarouselProps {
   vault: Vault;
@@ -87,6 +89,7 @@ export default function Carousel(props: CarouselProps) {
   const connection = useRecoilValue(conn);
   const poolInfos = useRecoilValue(liquidityPoolInfos);
   const userInfoState = useRecoilValue(userInfo)
+  const { enqueueSnackbar } = useSnackbar();
   const { connected, publicKey, signAllTransactions } = useWallet();
   const [items, setItems] = useState<any[]>(props.items);
   const [animState, setAnimState] = useState<CarouselAnimState>({
@@ -95,7 +98,7 @@ export default function Carousel(props: CarouselProps) {
   });
 
   const balance = new TokenAmount(
-    userInfoState.lpTokens[vault.depositToken.symbol].balance, 
+    userInfoState.lpTokens[vault.depositToken.symbol].balance,
     vault.depositToken.decimals).toEther();
 
   useEffect(() => {
@@ -245,8 +248,10 @@ export default function Carousel(props: CarouselProps) {
       for (let signedTransaction of signedTransactions) {
         await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
       }
+      enqueueSnackbar(<SuccessSnackbar message="Transaction sent successfully" />)
     } catch (e) {
-      console.log(e)
+      console.error(e)
+      enqueueSnackbar(<ErrorSnackbar message={`Transaction failed`} />)
     }
   }
 
@@ -314,11 +319,11 @@ export default function Carousel(props: CarouselProps) {
     try {
       for (let signedTransaction of signedTransactions) {
         await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
-        // await new Promise((resolve) => setTimeout(resolve, 500))
       }
+      enqueueSnackbar(<SuccessSnackbar message="Transaction sent successfully" />)
     } catch (e) {
-      console.log(e)
-
+      console.error(e)
+      enqueueSnackbar(<ErrorSnackbar message={`Transaction failed`} />)
     }
   }
 
