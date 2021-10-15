@@ -228,8 +228,12 @@ export default function Carousel(props: CarouselProps) {
     transactions = await Promise.all(transactions);
     const signedTransactions = await signAllTransactions!(transactions)
     console.log(signedTransactions)
-    for (let signedTransaction of signedTransactions) {
-      await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
+    try {
+      for (let signedTransaction of signedTransactions) {
+        await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -294,9 +298,13 @@ export default function Carousel(props: CarouselProps) {
     transactions = await Promise.all(transactions);
     const signedTransactions = await signAllTransactions!(transactions)
     console.log(signedTransactions)
-    for (let signedTransaction of signedTransactions) {
-      await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
-      // await new Promise((resolve) => setTimeout(resolve, 500))
+    try {
+      for (let signedTransaction of signedTransactions) {
+        await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
+        // await new Promise((resolve) => setTimeout(resolve, 500))
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 
