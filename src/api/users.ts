@@ -31,11 +31,6 @@ export const fetchUserState = async (conn: Connection, seed: any): Promise<Array
       const address = decodeValue.strategy_account.toBase58()
       const strategy = STRATEGIES.find(strategy => strategy.stateAccount === address)
       const vault = VAULTS.find(v => v.stateAccount === decodeValue.vault_account.toBase58())
-      console.log(account.publicKey.toBase58())
-      console.log(address);
-      console.log(decodeValue.reward_debt)
-      console.log(decodeValue.last_reward_update_time.toNumber())
-      console.log(decodeValue.strategy_account.toBase58())
       const rewardToken = Object.keys(TOKENS).find(key => TOKENS[key].mintAddress === strategy!.strategyTokenMintAccount)
 
       return {

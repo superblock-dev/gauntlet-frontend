@@ -55,9 +55,8 @@ const useStyles = makeStyles({
 
 const routeList = [
   { label: "DOCS", path: "https://superblock.gitbook.io/gauntlet/" },
-  { label: "MEDIUM", path: "https://superblock.gitbook.io/gauntlet/" },
-  { label: "DISCORD", path: "https://superblock.gitbook.io/gauntlet/" },
-  { label: "TELEGRAM", path: "https://superblock.gitbook.io/gauntlet/" },
+  { label: "DISCORD", path: "/" },
+  { label: "TWITTER", path: "https://twitter.com/GauntletVault" },
 ]
 
 export default function HomeHeader() {

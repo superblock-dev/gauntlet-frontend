@@ -295,9 +295,11 @@ export default function FlagItem(props: FlagItemProps) {
                 mode ?
                   () => {
                     handleDeposit(new BigNumber(amount).multipliedBy(new BigNumber(10).pow(vault.depositToken.decimals)), strategy)
+                    setAmount("")
                   } :
                   () => {
                     handleWithdraw(new BigNumber(amount).multipliedBy(new BigNumber(10).pow(vault.depositToken.decimals)), new BigNumber(0), strategy)
+                    setAmount("")
                   } :
                 () => { }
             }

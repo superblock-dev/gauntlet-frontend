@@ -5,13 +5,11 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { conn, userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
-import { useSnackbar } from 'notistack';
 import { makeStyles } from "@material-ui/core";
 import { PublicKey } from '@solana/web3.js';
 
 import { Farm, User, Vault } from "types";
 import { calculateApyInPercentage, STRATEGY_FARMS, STRATEGIES } from "utils/strategies";
-import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
 import Carousel from 'components/Carousel';
 import LPTokenView from "components/Vaults/LPTokenView";
 import VaultSummary from "components/VaultDetail/VaultSummary";
@@ -132,8 +130,7 @@ function VaultDetail() {
   const connState = useRecoilValue(conn)
   const { connected, publicKey } = useWallet();
   const { goBack } = useHistory();
-  const { enqueueSnackbar } = useSnackbar();
-  const [vaults, setVaults] = useRecoilState(vaultInfos);
+  const vaults = useRecoilValue(vaultInfos);
   const [userInfoState, setUserInfoState] = useRecoilState(userInfo);
   const farms = useRecoilValue(farmInfos);
   const [slideIndex, setSlideIndex] = useRecoilState(activeFlagIndex);
@@ -142,6 +139,7 @@ function VaultDetail() {
   const [farm, setFarm] = useState<Farm | undefined>(undefined);
   const [userStates, setUserStates] = useState<User[]>([]);
   const [rewards, setRewards] = useState<Reward[]>(basicRewardsList);
+  const [updateCounter, setUpdateCounter] = useState<number>(0);
   const [apy, setApy] = useState([0, 0]);
 
   const { vaultId } = useParams<VaultDetailParams>();
@@ -165,8 +163,6 @@ function VaultDetail() {
           totalApr
         }
       })
-      console.log('_userStates', _userStates)
-      console.log('userDepositTokenState', userDepositTokenStatus)
       setUserInfoState({
         ...userInfoState,
         lpTokens: userDepositTokenStatus,
@@ -216,7 +212,7 @@ function VaultDetail() {
     //   states: aprCalculatedStates,
     // })
 
-  }, [farms, vaults, connState, publicKey]);
+  }, [farms, vaults, connState, publicKey, updateCounter]);
 
   useEffect(() => {
     if (!userInfoState) return
@@ -226,9 +222,7 @@ function VaultDetail() {
     if (!vault) return
     const newRewards: Reward[] = rewards.map(r => {
       const userState = userVaultStates.find(s => s.rewardToken.symbol === r.symbol);
-      console.log('userState', userState)
       if (userState) {
-        console.log('calcReward', userState, vault)
         return {
           symbol: r.symbol,
           amount: calculateReward(userState, vault),
@@ -237,7 +231,6 @@ function VaultDetail() {
       }
       return r
     })
-    console.log('newReward', newRewards)
     setRewards(newRewards)
   }, [userInfoState]);
 
@@ -324,7 +317,7 @@ function VaultDetail() {
       <div className={classes.sliderContainer}>
         {
           vault && farm ?
-            <Carousel vault={vault} farm={farm} items={rewards} active={slideIndex} /> :
+            <Carousel vault={vault} farm={farm} items={rewards} active={slideIndex} handleUpdateInfo={() => setUpdateCounter(updateCounter+1)} /> :
             null
         }
       </div>
@@ -351,8 +344,8 @@ function VaultDetail() {
               marginTop: 52,
             }}>
               <MediumButton text="Create LP" link={vault.depositToken.url} external />
-              <MediumButton text="Farm Contract" link={`https://solscan.io/account/}`} external />
-              <MediumButton text="Vault Contract" external />
+              <MediumButton text="Farm Contract" link={`https://solscan.io/account/${farm?.poolId}`} external />
+              <MediumButton text="Vault Contract" link={`https://solscan.io/account/${vault.stateAccount}`} external />
             </div>
           </> :
           null

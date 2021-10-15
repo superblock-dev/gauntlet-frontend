@@ -35,7 +35,6 @@ export const requestVaultsState = async (conn: Connection) => {
     return v
   })
 
-  console.log("New vaults: ", newVaults)
 
   return newVaults
 }

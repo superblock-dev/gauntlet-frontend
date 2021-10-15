@@ -185,7 +185,6 @@ function VaultPage() {
           prices[s.rewardToken.symbol] :
           0
       )
-      console.log('ssibal', totalRewardInUSD)
       const strategyFarm = STRATEGY_FARMS.find(sf => sf.token === s.rewardToken.symbol);
       let totalApr;
       if (!v.farmApr || !strategyFarm) {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { CSSTransition } from 'react-transition-group';
 import { makeStyles } from '@material-ui/core';
 
-import { conn, liquidityPoolInfos, userInfo } from 'recoil/atoms';
+import { conn, liquidityPoolInfos, popupState, userInfo } from 'recoil/atoms';
 import { Farm, Strategy, Vault } from 'types';
 import {
   harvest,
@@ -30,6 +30,7 @@ import { getIndexFromSymbol } from 'utils/constants';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from 'utils/safe-math';
 import { useSnackbar } from 'notistack';
+import LoadingPopup from 'components/Popup/Loading';
 
 interface CarouselProps {
   vault: Vault;
@@ -37,6 +38,7 @@ interface CarouselProps {
   items: any[];
   active: number;
   handleChangeIndex?: (index: number) => void;
+  handleUpdateInfo?: () => void;
   isHome?: boolean;
 }
 
@@ -85,7 +87,8 @@ const useStyles = makeStyles({
 
 export default function Carousel(props: CarouselProps) {
   const classes = useStyles();
-  const { vault, farm, isHome } = props;
+  const { vault, farm, isHome, handleUpdateInfo } = props;
+  const setPopupState = useSetRecoilState(popupState);
   const connection = useRecoilValue(conn);
   const poolInfos = useRecoilValue(liquidityPoolInfos);
   const userInfoState = useRecoilValue(userInfo)
@@ -140,7 +143,6 @@ export default function Carousel(props: CarouselProps) {
     var _items = []
     var level
     var halfLen = Math.floor(items.length / 2)
-    console.log(items)
 
     for (var i = active - halfLen; i < active + halfLen + 1; i++) {
       var index = i;
@@ -183,6 +185,7 @@ export default function Carousel(props: CarouselProps) {
   // 공통으로 필요한, 커넥션, 오너 등은 Carousel 레벨에서 전달
   // Strategy, amount 등 FlagItem 레벨에서 결정해야하는 것들은 함수 인자로 정의
   const handleDeposit = async (amount: BigNumber, strategyInfo: Strategy) => {
+    setPopupState(<LoadingPopup />)
     let transactions = []
     if (!vault.farmRewardTokenAccountB) {
       transactions.push(
@@ -204,7 +207,6 @@ export default function Carousel(props: CarouselProps) {
           swapRewardToStrategy(connection, publicKey!, vault, strategyInfo, rewardToStrategyPoolInfo, false)
         )
       }
-      console.log(amount.toString())
       transactions.push(
         deposit(connection, publicKey!, vault, strategyInfo, farm, amount.toString())
       )
@@ -243,7 +245,6 @@ export default function Carousel(props: CarouselProps) {
     }
     transactions = await Promise.all(transactions);
     const signedTransactions = await signAllTransactions!(transactions)
-    console.log(signedTransactions)
     try {
       for (let signedTransaction of signedTransactions) {
         await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
@@ -253,9 +254,12 @@ export default function Carousel(props: CarouselProps) {
       console.error(e)
       enqueueSnackbar(<ErrorSnackbar message={`Transaction failed`} />)
     }
+    if (handleUpdateInfo) handleUpdateInfo();
+    setPopupState(undefined)
   }
 
   const handleWithdraw = async (amount: BigNumber, rewardAmount: BigNumber, strategyInfo: Strategy) => {
+    setPopupState(<LoadingPopup />)
     let transactions = []
     if (!vault.farmRewardTokenAccountB) {
       transactions.push(
@@ -315,7 +319,6 @@ export default function Carousel(props: CarouselProps) {
     }
     transactions = await Promise.all(transactions);
     const signedTransactions = await signAllTransactions!(transactions)
-    console.log(signedTransactions)
     try {
       for (let signedTransaction of signedTransactions) {
         await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
@@ -325,6 +328,8 @@ export default function Carousel(props: CarouselProps) {
       console.error(e)
       enqueueSnackbar(<ErrorSnackbar message={`Transaction failed`} />)
     }
+    if (handleUpdateInfo) handleUpdateInfo();
+    setPopupState(undefined)
   }
 
   return (
