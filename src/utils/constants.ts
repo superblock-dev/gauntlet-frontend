@@ -71,13 +71,6 @@ export const REWARDS: (Token | LPToken)[] = [
   TOKENS.SOL,
   TOKENS.USDC,
   TOKENS.USDT,
-  TOKENS.RAY,
-  TOKENS.LET,
-  LP_TOKENS['RAY-ETH-V4'],
-  LP_TOKENS['RAY-SOL-V4'],
-  LP_TOKENS['RAY-USDC-V4'],
-  LP_TOKENS['RAY-USDT-V4'],
-  LP_TOKENS['LET-USDC'],
 ];
 
 export function getIndexFromSymbol(symbol: string) {

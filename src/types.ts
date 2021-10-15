@@ -35,6 +35,7 @@ export interface Vault {
   vaultRaydiumStateAccount: string
   withdrawFeeTokenAccount: string
   rewardUsdcLpMintAccount: string
+  rewardUsdcLpMintAccountB?: string
   // load 해야 되는 애들
   totalDepositAmount?: number
   accPerShares?: number[]
@@ -61,10 +62,12 @@ export interface User {
 
 export interface Strategy {
   stateAccount: string
+  strategyTokenSymbol: string
   strategyTokenAccount: string
   strategyTokenMintAccount: string
   performanceFeeTokenAccount: string
-  usdcStrategyLpMintAccount: string
+  strategyLpMintAccount: string
+  strategyLpMintAccountB?: string
   isUsdcProxyEnabled?: boolean
 }
 

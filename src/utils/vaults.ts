@@ -36,12 +36,12 @@ export const VAULTS: Vault[] = [
   {
     fees: BASE_FEE,
     depositToken: LP_TOKENS['RAY-USDT-V4'],
-    stateAccount: "FgPqAkiqEqRH5Y2qc5JpUTELgg4Kt1kKbyFfsis8nEKV",
-    vaultStrategyAccount: "DnEpq8Z2TKFU1xQCie1iCvnU5qhnwMhiCxccF4KkKjzQ",
-    vaultDepositTokenAccount: "J27PU3toMReud3cwdWJYh4qJ6o4b5CCwVDWypCvBJZPa",
-    farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
-    vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
-    withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
+    stateAccount: "5LnQySeixstwUtGBvPMFNpuLzDybumLQ89yaQUu5jZ5R",
+    vaultStrategyAccount: "5r7AGTEbQJf8RmGNrwS8e4VWnywXd44xsTmaghbuK4V",
+    vaultDepositTokenAccount: "GbpyZbueWTyXFtkGQLZNURSEDA9ahX8uZvCEyvuM2gUc",
+    farmRewardTokenAccount: "4838cJqUQLza6hosKug1iUFC5ZnJMHGFD5nnMHGADfL1",
+    vaultRaydiumStateAccount: "BZW7hwvnWovsg1Vy9gwBKBDCwouNVdnLbL4h17HeLdJZ",
+    withdrawFeeTokenAccount: "HFWu4pSsbx26nPSnRr6eHrq2Nfq9o85thG4q7j3SA5AW",
     rewardUsdcLpMintAccount: LP_TOKENS['RAY-USDC-V4'].mintAddress,
   },
   {
