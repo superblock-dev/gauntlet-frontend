@@ -2,9 +2,22 @@ import {
   Connection,
   PublicKey,
   Commitment,
+  Keypair,
   AccountInfo,
+  Transaction,
+  Account,
+  SystemProgram,
+  TransactionSignature,
+  TransactionInstruction
 } from '@solana/web3.js';
-
+import { Token } from '@solana/spl-token';
+import { initializeAccount } from '@project-serum/serum/lib/token-instructions';
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID, RENT_PROGRAM_ID, SYSTEM_PROGRAM_ID, TOKEN_PROGRAM_ID
+} from './ids';
+import { bool, publicKey, struct, u128, u32, u64, u8 } from '@project-serum/borsh'
+import { ACCOUNT_LAYOUT, MINT_LAYOUT } from './layouts';
+import { TOKENS } from './tokens';
 export const web3Config = {
   strategy: 'speed',
   rpcs: [
@@ -16,6 +29,7 @@ export const web3Config = {
   ]
 }
 
+export const commitment: Commitment = 'confirmed'
 // getMultipleAccounts
 export async function getMultipleAccounts(
   connection: Connection,
@@ -139,4 +153,237 @@ export async function createAmmAuthority(programId: PublicKey) {
     [new Uint8Array(Buffer.from('amm authority'.replace('\u00A0', ' '), 'utf-8'))],
     programId
   )
+}
+
+export async function createTokenAccountIfNotExist(
+  connection: Connection,
+  account: string | undefined | null,
+  owner: PublicKey,
+  mintAddress: string,
+  lamports: number | null,
+
+  transaction: Transaction,
+  signer: Array<Account>
+) {
+  let publicKey
+
+  if (account) {
+    publicKey = new PublicKey(account)
+  } else {
+    publicKey = await createProgramAccountIfNotExist(
+      connection,
+      account,
+      owner,
+      TOKEN_PROGRAM_ID,
+      lamports,
+      ACCOUNT_LAYOUT,
+      transaction,
+      signer
+    )
+
+    transaction.add(
+      initializeAccount({
+        account: publicKey,
+        mint: new PublicKey(mintAddress),
+        owner
+      })
+    )
+  }
+
+  return publicKey
+}
+
+export async function createAssociatedTokenAccountIfNotExist(
+  connection: Connection,
+  owner: PublicKey,
+  mintAddress: PublicKey,
+
+  transaction: Transaction,
+) {
+  const depositorRewardTokenAccount = await findAssociatedTokenAddress(owner, mintAddress)
+  const accountInfo = await connection.getAccountInfo(depositorRewardTokenAccount)
+  if (accountInfo == null) {
+    transaction.add(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        mintAddress,
+        depositorRewardTokenAccount,
+        owner,
+        owner
+      )
+    )
+  }
+
+  return depositorRewardTokenAccount
+}
+
+export async function createProgramAccountIfNotExist(
+  connection: Connection,
+  account: string | undefined | null,
+  owner: PublicKey,
+  programId: PublicKey,
+  lamports: number | null,
+  layout: any,
+
+  transaction: Transaction,
+  signer: Array<Account>
+) {
+  let publicKey
+
+  if (account) {
+    publicKey = new PublicKey(account)
+  } else {
+    const newAccount = new Account()
+    publicKey = newAccount.publicKey
+
+    transaction.add(
+      SystemProgram.createAccount({
+        fromPubkey: owner,
+        newAccountPubkey: publicKey,
+        lamports: lamports ?? (await connection.getMinimumBalanceForRentExemption(layout.span)),
+        space: layout.span,
+        programId
+      })
+    )
+
+    signer.push(newAccount)
+  }
+
+  return publicKey
+}
+
+export async function createGauntletUserAccountIfNotExist(
+  connection: Connection,
+  vaultAccount: PublicKey,
+  depositor: PublicKey,
+  strategyAccount: PublicKey,
+  gauntletProgramId: PublicKey,
+  transaction: Transaction,
+) {
+  const depositorUserAccount = await PublicKey.findProgramAddress([
+    vaultAccount.toBuffer(),
+    depositor.toBuffer(),
+    strategyAccount.toBuffer(),
+  ], gauntletProgramId);
+  const depositorUserAccountPubkey = depositorUserAccount[0]
+  const accountInfo = await connection.getAccountInfo(depositorUserAccountPubkey)
+  if (accountInfo == null) {
+    const createKeys = [
+      { pubkey: depositor, isSigner: true, isWritable: false },
+      { pubkey: vaultAccount, isSigner: false, isWritable: false },
+      { pubkey: strategyAccount, isSigner: false, isWritable: false },
+      { pubkey: depositorUserAccountPubkey, isSigner: false, isWritable: true },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ]
+    const createDataLayout = struct([u8('instruction')])
+    const createtData = Buffer.alloc(createDataLayout.span)
+    createDataLayout.encode(
+      {
+        instruction: 12,
+      },
+      createtData
+    )
+    const createInstruction = new TransactionInstruction({
+      keys: createKeys,
+      programId: gauntletProgramId,
+      data: createtData
+    })
+    transaction.add(createInstruction);
+  }
+  return depositorUserAccountPubkey
+}
+
+export async function getGauntletUserAccount(
+  vaultAccount: PublicKey,
+  depositor: PublicKey,
+  strategyAccount: PublicKey,
+  gauntletProgramId: PublicKey,
+) {
+  const depositorUserAccount = await PublicKey.findProgramAddress([
+    vaultAccount.toBuffer(),
+    depositor.toBuffer(),
+    strategyAccount.toBuffer(),
+  ], gauntletProgramId);
+  const depositorUserAccountPubkey = depositorUserAccount[0]
+  return depositorUserAccountPubkey
+}
+
+export async function findAssociatedTokenAddress(walletAddress: PublicKey, tokenMintAddress: PublicKey) {
+  const { publicKey } = await findProgramAddress(
+    [walletAddress.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenMintAddress.toBuffer()],
+    ASSOCIATED_TOKEN_PROGRAM_ID
+  )
+  return publicKey
+}
+
+export async function createAssociatedTokenAccount(
+  tokenMintAddress: PublicKey,
+  owner: PublicKey,
+  transaction: Transaction
+) {
+  const associatedTokenAddress = await findAssociatedTokenAddress(owner, tokenMintAddress)
+
+  const keys = [
+    {
+      pubkey: owner,
+      isSigner: true,
+      isWritable: true
+    },
+    {
+      pubkey: associatedTokenAddress,
+      isSigner: false,
+      isWritable: true
+    },
+    {
+      pubkey: owner,
+      isSigner: false,
+      isWritable: false
+    },
+    {
+      pubkey: tokenMintAddress,
+      isSigner: false,
+      isWritable: false
+    },
+    {
+      pubkey: SYSTEM_PROGRAM_ID,
+      isSigner: false,
+      isWritable: false
+    },
+    {
+      pubkey: TOKEN_PROGRAM_ID,
+      isSigner: false,
+      isWritable: false
+    },
+    {
+      pubkey: RENT_PROGRAM_ID,
+      isSigner: false,
+      isWritable: false
+    }
+  ]
+
+  transaction.add(
+    new TransactionInstruction({
+      keys,
+      programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+      data: Buffer.from([])
+    })
+  )
+
+  return associatedTokenAddress
+}
+
+export async function sendTransaction(
+  connection: Connection,
+  wallet: any,
+  transaction: Transaction,
+  signers: Array<Account> = []
+) {
+  const txid: TransactionSignature = await wallet.sendTransaction(transaction, connection, {
+    signers,
+    skipPreflight: true,
+    preflightCommitment: commitment
+  })
+
+  return txid
 }

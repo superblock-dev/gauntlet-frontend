@@ -5,24 +5,34 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
-import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
+import { makeStyles, SliderProps } from "@material-ui/core";
 
 import LPTokenView from "components/Vaults/LPTokenView";
-import { makeStyles, SliderProps } from "@material-ui/core";
-import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
-import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
+import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
 import VaultSummary from "components/VaultDetail/VaultSummary";
 import VaultDetails from "components/VaultDetail/VaultDetails";
-import MediumButton from "components/Buttons/MediumButton";
 import RewardList from "components/VaultDetail/RewardList";
-import CursorPointer from 'assets/CursorPointer.svg';
-import StoneDisplay from "components/Stone/StoneDisplay";
-import { UserState, Vault } from "types";
-import { calculateReward } from "utils/vaults";
+import MediumButton from "components/Buttons/MediumButton";
 import SmallButton from "components/Buttons/SmallButton";
-import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
-import { getIndexFromSymbol, REWARDS } from 'utils/constants';
 import Carousel from 'components/Carousel';
+import StoneDisplay from "components/Stone/StoneDisplay";
+import { calculateReward } from "utils/vaults";
+import { getIndexFromSymbol, REWARDS } from 'utils/constants';
+import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
+import { 
+  harvest, 
+  harvestV4, 
+  swapToUsdc, 
+  swapToStrategy, 
+  deposit, 
+  depositV4, 
+  withdraw, 
+  withdrawV4,
+} from 'utils/transactions';
+import { UserState, Vault } from "types";
+import CursorPointer from 'assets/CursorPointer.svg';
+import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
+import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
 
 interface VaultDetailParams {
   vaultId: string,
@@ -260,6 +270,7 @@ function VaultDetail() {
     }
     console.log("new user info: ", newUserInfo)
     setUserInfoState(newUserInfo);
+    let transactions = []
     enqueueSnackbar(<SuccessSnackbar message={`${amount} LP successfully deposited!`} />)
   }
 
