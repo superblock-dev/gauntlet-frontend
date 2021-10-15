@@ -409,10 +409,10 @@ export default function Home() {
           `Gauntlet is the first Defi service that harvests Yield automatically and turn them into a targeted asset. You can collect any asset you want whichever Defi service you farm!`
         }</div>
         <div className={`${classes.stones} ${section1 ? "active" : ''}`} />
-        <div className={`${classes.btnMoreContainer} ${section1 ? "active" : ''}`}>
+        <a href="https://superblock.gitbook.io/gauntlet/" target="_blank" className={`${classes.btnMoreContainer} ${section1 ? "active" : ''}`}>
           <span>LEARN MORE</span>
           <div className={classes.btnMore} />
-        </div>
+        </a>
       </div>
       <div className={classes.section} style={{ alignItems: 'flex-start' }}>
         <div style={{
@@ -485,14 +485,16 @@ export default function Home() {
           }}>{
             `Automated Yield Converter converts any yields to targeted assets to avoid or speculate on volatility. Also, if there are people who have taken the same strategy, the performing cost will be lowered to maximize the profit.`
           }</div>
-        <div
+        <a
+          href="https://superblock.gitbook.io/gauntlet/"
+          target="_blank"
           className={`${classes.btnMoreContainer} ${section2 ? "active" : ''}`}
           style={{ marginTop: 80, }}
           onClick={() => console.log('click')}
         >
           <span>LEARN MORE</span>
           <div className={classes.btnMore} />
-        </div>
+        </a>
       </div>
       <div className={classes.section}>
         <Lottie
@@ -518,14 +520,16 @@ export default function Home() {
         <div className={`${classes.textBody} ${section3 ? "active" : ''}`} style={{ textAlign: 'center', width: 700 }}>{
           `Gauntlet supports pipelining Defi services by providing Vaults so that the auto-converted asset can be invested to any Defi service to maximize your profit!`
         }</div>
-        <div
+        <a
+          href="https://superblock.gitbook.io/gauntlet/overview-1"
+          target="_blank"
           className={`${classes.btnMoreContainer} ${section3 ? "active" : ''}`}
           style={{ marginTop: 80, }}
           onClick={() => console.log('click')}
         >
           <span>LEARN MORE</span>
           <div className={classes.btnMore} />
-        </div>
+        </a>
       </div>
       <div className={classes.footer}>
         <div className={classes.iconPageUp} onClick={() => {
@@ -554,10 +558,9 @@ export default function Home() {
                 gap: 32,
               }}
             >
-              <span className={classes.footerText}>Docs</span>
-              <span className={classes.footerText}>Medium</span>
+              <a href="https://superblock.gitbook.io/gauntlet/" target="_blank" className={classes.footerText}>Docs</a>
               <span className={classes.footerText}>Discord</span>
-              <span className={classes.footerText}>Telegram</span>
+              <a href="https://twitter.com/GauntletVault" target="_blank" className={classes.footerText}>Twitter</a>
             </div>
             <span className={classes.footerText} style={{ fontSize: 12, }}>© 2021 by Gauntlet Protocol. All rights reserved.</span>
           </div>
