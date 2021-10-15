@@ -29,7 +29,7 @@ export const requestVaultsState = async (conn: Connection) => {
         ...v,
         totalDepositAmount: new TokenAmount(new BigNumber(decodedValue.total_deposit_amount), v.depositToken.decimals),
         // @ts-ignore
-        accPerShares: decodedValue.accumulated_reward_per_shares.slice(0, 5).map((i) => new BigNumber(i).dividedBy(denominator))
+        accPerShares: decodedValue.accumulated_reward_per_shares.map((i) => new BigNumber(i).dividedBy(denominator))
       }
     }
     return v

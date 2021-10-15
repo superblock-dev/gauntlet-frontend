@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
@@ -7,6 +8,7 @@ import { makeStyles, withStyles } from "@material-ui/core";
 import Countup from 'react-countup';
 
 import { TokenName, User, Vault } from 'types';
+import { liquidityPoolInfos } from 'recoil/atoms';
 import SmallButton from "components/Buttons/SmallButton";
 import Stone from 'components/Stone/Stone';
 import LPTokenView from './LPTokenView';
@@ -122,14 +124,21 @@ interface UserVaultProps {
 
 function UserVaultItem({ vault, userStates }: UserVaultProps) {
   const classes = useStyles();
+  const liquidityPools = useRecoilValue(liquidityPoolInfos);
 
   const [totalApr, totalDeposit, totalRewardInUSD] = userStates.reduce((prev, s) => {
-    prev[0] = s.totalApr ? prev[0] + s.totalApr : prev[0];
+    prev[0] = s.totalApr ? BigNumber.sum(new BigNumber(s.totalApr).multipliedBy(s.amount.toEther()), prev[0]) : prev[0];
     prev[1] = BigNumber.sum(prev[1], s.amount.toEther());
     prev[2] = s.totalRewardInUSD ? prev[2] + s.totalRewardInUSD : prev[2];
 
     return prev
-  }, [0, new BigNumber(0), 0]);
+  }, [new BigNumber(0), new BigNumber(0), 0]);
+
+  let lpValue = 0;
+  const lp = liquidityPools[vault.depositToken.mintAddress];
+  if (lp && lp.currentLpValue) {
+    lpValue = lp.currentLpValue;
+  }
 
 
   return (
@@ -138,11 +147,24 @@ function UserVaultItem({ vault, userStates }: UserVaultProps) {
         <Grid item xs={3} className={classes.itemContainer} >
           <LPTokenView lp={vault.depositToken} name={vault.depositToken.name.split('LP')[0]} />
         </Grid>
-        <Grid item xs={2} className={classes.itemContainer} >540.1 M</Grid>
         <Grid item xs={2} className={classes.itemContainer} >
           <Countup
             start={0}
-            end={totalApr}
+            end={vault.totalDepositAmount ?
+              vault.totalDepositAmount.toEther().multipliedBy(lpValue ? lpValue : 0).toNumber() :
+              0
+            }
+            delay={0}
+            duration={0.75}
+            decimals={2}
+            decimal="."
+            prefix="$ "
+          />
+        </Grid>
+        <Grid item xs={2} className={classes.itemContainer} >
+          <Countup
+            start={0}
+            end={totalApr.dividedBy(totalDeposit).toNumber()}
             delay={0}
             duration={0.75}
             decimals={2}

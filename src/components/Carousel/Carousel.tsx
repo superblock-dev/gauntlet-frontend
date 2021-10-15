@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { CSSTransition } from 'react-transition-group';
 import { makeStyles } from '@material-ui/core';
 
-import { conn, liquidityPoolInfos } from 'recoil/atoms';
+import { conn, liquidityPoolInfos, userInfo } from 'recoil/atoms';
 import { Farm, Strategy, Vault } from 'types';
 import {
   harvest,
@@ -27,6 +27,7 @@ import './Carousel.css';
 import { STRATEGIES } from 'utils/strategies';
 import { getIndexFromSymbol } from 'utils/constants';
 import BigNumber from 'bignumber.js';
+import { TokenAmount } from 'utils/safe-math';
 
 interface CarouselProps {
   vault: Vault;
@@ -85,12 +86,17 @@ export default function Carousel(props: CarouselProps) {
   const { vault, farm, isHome } = props;
   const connection = useRecoilValue(conn);
   const poolInfos = useRecoilValue(liquidityPoolInfos);
+  const userInfoState = useRecoilValue(userInfo)
   const { connected, publicKey, signAllTransactions } = useWallet();
-  const [items, _] = useState<any[]>(props.items);
+  const [items, setItems] = useState<any[]>(props.items);
   const [animState, setAnimState] = useState<CarouselAnimState>({
     active: props.active,
     direction: "left",
   });
+
+  const balance = new TokenAmount(
+    userInfoState.lpTokens[vault.depositToken.symbol].balance, 
+    vault.depositToken.decimals).toEther();
 
   useEffect(() => {
     const target = props.active % items.length;
@@ -117,6 +123,11 @@ export default function Carousel(props: CarouselProps) {
   }, [props.active]);
 
   useEffect(() => {
+    setItems(props.items)
+  }, [props.items]);
+
+
+  useEffect(() => {
     if (props.handleChangeIndex) {
       props.handleChangeIndex(animState.active % items.length)
     }
@@ -126,6 +137,7 @@ export default function Carousel(props: CarouselProps) {
     var _items = []
     var level
     var halfLen = Math.floor(items.length / 2)
+    console.log(items)
 
     for (var i = active - halfLen; i < active + halfLen + 1; i++) {
       var index = i;
@@ -326,6 +338,7 @@ export default function Carousel(props: CarouselProps) {
                 level={i.level}
                 item={i.item}
                 vault={vault}
+                balance={balance}
                 strategy={STRATEGIES[getIndexFromSymbol(i.item.symbol)]}
                 onClick={() => {
                   setAnimState({

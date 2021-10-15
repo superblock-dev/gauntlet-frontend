@@ -5,6 +5,7 @@ import { Farm, PairInfo, TokenName, User, Vault } from "types";
 import { Token, TOKENS } from "utils/tokens";
 import { LiquidityPoolInfo } from "utils/pools";
 import { VAULTS } from "utils/vaults";
+import BigNumber from "bignumber.js";
 
 export const popupState = atom<ReactNode | ReactNode[] | undefined>({
   key: "popup",
@@ -74,8 +75,7 @@ export const farmInfos = atom<{ [key: string]: Farm }>({
 interface UserInfo {
   lpTokens: {
     [key: string]: {
-      balance: number;
-      staked: number;
+      balance: BigNumber;
     }
   };
   states: User[];
@@ -86,30 +86,19 @@ export const userInfo = atom<UserInfo>({
   default: {
     lpTokens: {
       'RAY-USDT': {
-        balance: 230.134,
-        staked: 0,
+        balance: new BigNumber(0),
       },
       'RAY-USDC': {
-        balance: 0,
-        staked: 0,
+        balance: new BigNumber(0),
       },
       'RAY-SRM': {
-        balance: 0,
-        staked: 0,
+        balance: new BigNumber(0),
       },
       'RAY-SOL': {
-        balance: 0,
-        staked: 0,
+        balance: new BigNumber(0),
       },
     },
     states: [
-      // {
-      //   vaultId: 1,
-      //   rewardToken: TOKENS.BTC,
-      //   reward: 30,
-      //   amount: 200,
-      //   rewardDebt: 0,
-      // }
     ],
   }
 })

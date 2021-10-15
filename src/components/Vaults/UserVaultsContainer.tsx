@@ -80,6 +80,8 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
   useEffect(() => {
     const [totalDeposit, totalLpValueInUSD, totalRewardsInUSD] = userInfoValue.states.reduce((total, s) => {
       total[0] = BigNumber.sum(total[0], s.amount.toEther());
+      console.log(total[0].toNumber());
+      
       const v = vaults.find(v => v.stateAccount === s.vaultStateAccount);
       if (v && v.depositToken.mintAddress in liquidityPools) {
         const lpValue = liquidityPools[v.depositToken.mintAddress].currentLpValue;
@@ -88,6 +90,8 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
       if (s.totalRewardInUSD) total[2] = BigNumber.sum(total[2], s.totalRewardInUSD);
       return total
     }, [new BigNumber(0), new BigNumber(0), new BigNumber(0)]);
+
+    console.log(totalDeposit.toNumber())
 
     const avgApr = userInfoValue.states.reduce((weighted, s) => {
       if (s.totalApr) {

@@ -71,7 +71,7 @@ export const TOKENS: { [key: string]: Token } = {
     decimals: 6,
   },
   WSOL: {
-    symbol: 'WSOL',
+    symbol: 'SOL',
     name: 'Wrapped Solana',
     mintAddress: 'So11111111111111111111111111111111111111112',
     decimals: 9,
@@ -402,7 +402,7 @@ export const TOKENS: { [key: string]: Token } = {
   }
 };
 
-export const LP_TOKENS = {
+export const LP_TOKENS: { [key: string]: LPToken }= {
   'LET-USDC': {
     symbol: 'LET-USDC',
     name: 'LET-USDC LP',

@@ -10,7 +10,7 @@ import {
   TransactionInstruction
 } from '@solana/web3.js';
 import { Token } from '@solana/spl-token';
-import { struct, u8 } from '@project-serum/borsh'
+import { publicKey, struct, u8 } from '@project-serum/borsh'
 import { initializeAccount } from '@project-serum/serum/lib/token-instructions';
 
 import {
@@ -398,3 +398,16 @@ export async function sendTransaction(
 //   });
 //   connection.sendRawTransaction(signedTransactions[0])
 // }
+
+export async function getAssociatedTokenAccount(
+  owner: PublicKey,
+  mintAddressList: PublicKey[]
+) {
+  const atas = await Promise.all(
+    mintAddressList.map(async (mintAddress) => {
+      const ata = await findAssociatedTokenAddress(owner, mintAddress)
+      return ata
+    })
+  )
+  return atas
+}
