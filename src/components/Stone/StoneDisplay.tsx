@@ -9,12 +9,11 @@ const tokens: TokenName[] = [
   "SOL",
   "USDC",
   "USDT",
-  "RAY",
 ];
 
 const useStyles = makeStyles({
   container: {
-    width: (112 * 6),
+    width: (112 * 5),
     height: 160,
     overflow: 'hidden',
     whiteSpace: 'nowrap',

@@ -102,7 +102,7 @@ export default function Carousel(props: CarouselProps) {
     var level
     var halfLen = Math.floor(items.length / 2)
 
-    for (var i = active - halfLen; i < active + halfLen; i++) {
+    for (var i = active - halfLen; i < active + halfLen + 1; i++) {
       var index = i;
       if ((i % items.length) < 0) {
         index = (i % items.length) + items.length
@@ -156,7 +156,6 @@ export default function Carousel(props: CarouselProps) {
                 level={i.level}
                 item={i.item}
                 onClick={() => {
-                  console.log(i.item)
                   setAnimState({
                     direction: i.level < 0 ? 'left' : 'right',
                     active: i.key
@@ -178,7 +177,6 @@ export default function Carousel(props: CarouselProps) {
                 symbol={i.item.symbol}
                 level={i.level}
                 onClick={() => {
-                  console.log(i.item)
                   setAnimState({
                     direction: i.level < 0 ? 'left' : 'right',
                     active: i.key

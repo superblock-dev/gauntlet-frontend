@@ -20,6 +20,7 @@ export function calculateReward(userState: User, vault: Vault) {
     vault.accPerShares ?
       vault.accPerShares[getIndexFromSymbol(userState.rewardToken.symbol)] :
       0)
+  console.log("acc: ", acc.toNumber());
   const rewardAmount = BigNumber.sum(
     amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther()),
     userState.reward

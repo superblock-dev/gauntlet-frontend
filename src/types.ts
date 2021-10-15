@@ -37,10 +37,9 @@ export interface Vault {
   withdrawFeeTokenAccount: string
   // load 해야 되는 애들
   totalDepositAmount?: number
-  accPerShares?: number[]
+  accPerShares?: BigNumber[]
   farmApr?: number
   farmFee?: number,
-  state?: any,
 }
 
 export interface User {

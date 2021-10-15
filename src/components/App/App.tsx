@@ -31,6 +31,7 @@ import VaultDetail from "pages/VaultDetail";
 import Staking from 'pages/Staking';
 import Stake from "pages/Stake";
 import LetLpPool from "pages/Pool";
+import { requestVaultsState } from "api/vaults";
 
 const useStyles = makeStyles({
   containerRoot: {
@@ -74,6 +75,7 @@ function App() {
   const setTokenInfo = useSetRecoilState(tokenInfos);
   const setLiquidityInfo = useSetRecoilState(liquidityPoolInfos);
   const setFarmInfo = useSetRecoilState(farmInfos);
+  const setVaultsInfo = useSetRecoilState(vaultInfos);
 
   const updateInfos = async () => {
     const priceData = await getPrices();
@@ -89,6 +91,9 @@ function App() {
         const farmInfos = await requestFarmInfo(connState);
         calculateAprValues(farmInfos, pairsData, liquidityPools, priceData);
         setFarmInfo(farmInfos);
+
+        const vaultInfos = await requestVaultsState(connState);
+        setVaultsInfo(vaultInfos);
       } catch (e) {
         console.error(e)
       }

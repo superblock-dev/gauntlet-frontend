@@ -33,10 +33,6 @@ export const STRATEGY_FARMS: StrategyApy[] = [
     token: 'USDT',
     apy: 385.046,
   },
-  {
-    token: 'RAY',
-    apy: 528.512,
-  },
 ]
 
 export const STRATEGIES: Strategy[] = [
