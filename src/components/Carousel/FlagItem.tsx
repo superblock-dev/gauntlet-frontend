@@ -24,6 +24,7 @@ export interface FlagItemProps {
   level: number;
   item: Reward;
   vault: Vault;
+  balance: BigNumber;
   strategy: Strategy;
   onClick: () => void;
   handleDeposit: (amount: BigNumber, strategyInfo: Strategy) => void;
@@ -179,7 +180,7 @@ export default function FlagItem(props: FlagItemProps) {
   const prices = useRecoilValue(rewardPrices);
   const [mode, setMode] = useState(true);
   const [amount, setAmount] = useState<string>("");
-  const { level, item, vault, strategy, onClick, handleDeposit, handleWithdraw } = props;
+  const { balance, level, item, vault, strategy, onClick, handleDeposit, handleWithdraw } = props;
 
   const confirmText = mode ? "Deposit" : "Withdraw";
 
@@ -246,11 +247,17 @@ export default function FlagItem(props: FlagItemProps) {
           </div>
           <div className={classes.divider} />
           <div className={classes.modeBtnContainer}>
-            <div className={classes.modeBtnWrapper} onClick={() => setMode(true)}>
+            <div className={classes.modeBtnWrapper} onClick={() => {
+              setAmount('')
+              setMode(true)
+            }}>
               {mode ? <img src={dot} /> : undefined}
               <div className={mode ? classes.activeModeBtn : classes.inactiveModeBtn}>DEPOSIT</div>
             </div>
-            <div className={classes.modeBtnWrapper} onClick={() => setMode(false)}>
+            <div className={classes.modeBtnWrapper} onClick={() => {
+              setAmount('')
+              setMode(false)
+            }}>
               {!mode ? <img src={dot} /> : undefined}
               <div className={!mode ? classes.activeModeBtn : classes.inactiveModeBtn}>WITHDRAW</div>
             </div>
@@ -271,15 +278,15 @@ export default function FlagItem(props: FlagItemProps) {
             <div
               className={classes.maxButton}
               onClick={() => {
-                // isDeposit ?
-                //   setAmount(balance) :
-                //   setAmount(deposited)
+                mode ?
+                  setAmount(balance.toString()) :
+                  setAmount(item.deposit.toString())
               }}
             >MAX</div>
           </div>
           <div className={classes.labelContainer}>
             <span className={classes.textLabel}>{`Deposit: ${(item.deposit).toFixed(6)}`}</span>
-            {/* <span className={classes.textLabel}>{`Balance: ${(balance).toFixed(6)}`}</span> */}
+            <span className={classes.textLabel}>{`Balance: ${(balance).toFixed(6)}`}</span>
           </div>
           <div
             className={classes.confirmBtn}
