@@ -279,7 +279,7 @@ export async function createGauntletUserAccountIfNotExist(
     const createtData = Buffer.alloc(createDataLayout.span)
     createDataLayout.encode(
       {
-        instruction: 13,
+        instruction: 10,
       },
       createtData
     )

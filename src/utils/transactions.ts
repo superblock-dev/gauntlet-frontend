@@ -704,7 +704,7 @@ export function swapRewardToUsdcInstruction(
   const data = Buffer.alloc(dataLayout.span)
   dataLayout.encode(
     {
-      instruction: 10,
+      instruction: 7,
       swap_type: 0,
     },
     data
@@ -779,7 +779,7 @@ export function swapUsdcToStrategyInstruction(
   const data = Buffer.alloc(dataLayout.span)
   dataLayout.encode(
     {
-      instruction: 11,
+      instruction: 8,
       swap_type: 0,
     },
     data
@@ -854,7 +854,7 @@ export function swapRewardToStrategyInstruction(
   const data = Buffer.alloc(dataLayout.span)
   dataLayout.encode(
     {
-      instruction: 12,
+      instruction: 9,
       swap_type: 0,
     },
     data
