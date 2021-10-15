@@ -18,17 +18,6 @@ import {
 } from './ids';
 import { ACCOUNT_LAYOUT } from './layouts';
 
-export const web3Config = {
-  strategy: 'speed',
-  rpcs: [
-    { url: 'https://free.rpcpool.com', weight: 10 },
-    { url: 'https://api.rpcpool.com', weight: 10 },
-    { url: 'https://solana-api.projectserum.com', weight: 10 },
-    { url: 'https://raydium.rpcpool.com', weight: 50 },
-    // { url: 'https://api.mainnet-beta.solana.com', weight: 20 }
-  ]
-}
-
 export const commitment: Commitment = 'confirmed'
 // getMultipleAccounts
 export async function getMultipleAccounts(
@@ -290,7 +279,7 @@ export async function createGauntletUserAccountIfNotExist(
     const createtData = Buffer.alloc(createDataLayout.span)
     createDataLayout.encode(
       {
-        instruction: 12,
+        instruction: 13,
       },
       createtData
     )
@@ -397,3 +386,15 @@ export async function sendTransaction(
 
   return txid
 }
+
+// export async function sendTransactions(
+//   connection: Connection,
+//   wallet: any,
+//   transactions: [Transaction],
+// ) {
+//   const signedTransactions = await wallet.signAllTransactions(transactions);
+//   signedTransactions.forEach((signedTransaction, index) => {
+
+//   });
+//   connection.sendRawTransaction(signedTransactions[0])
+// }

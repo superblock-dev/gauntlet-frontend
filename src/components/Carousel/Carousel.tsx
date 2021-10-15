@@ -1,18 +1,39 @@
 import { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 import { makeStyles } from '@material-ui/core';
+
+import { conn, liquidityPoolInfos } from 'recoil/atoms';
+import { Farm, Strategy, Vault } from 'types';
+import {
+  harvest,
+  harvestV4,
+  swapRewardToUsdc,
+  swapUsdcToStrategy,
+  swapRewardToStrategy,
+  deposit,
+  depositV4,
+  withdraw,
+  withdrawV4,
+} from 'utils/transactions';
+import { sendAndConfirmRawTransaction } from '@solana/web3.js';
 import FlagItem from './FlagItem';
+import NotConnectedFlagItem from './NotConnectedFlagItem';
 import CursorPointer from "assets/CursorPointer.svg";
 import IconLeftNavigation from "assets/svgs/big-arrow-left.svg";
 import IconRightNavigation from "assets/svgs/big-arrow-right.svg";
 import './Carousel.css';
-import NotConnectedFlagItem from './NotConnectedFlagItem';
+import { STRATEGIES } from 'utils/strategies';
+import { getIndexFromSymbol } from 'utils/constants';
 
 interface CarouselProps {
+  vault: Vault;
+  farm: Farm;
   items: any[];
   active: number;
   handleChangeIndex?: (index: number) => void;
+  isHome?: boolean;
 }
 
 interface CarouselAnimState {
@@ -60,8 +81,11 @@ const useStyles = makeStyles({
 
 export default function Carousel(props: CarouselProps) {
   const classes = useStyles();
+  const { vault, farm, isHome } = props;
+  const connection = useRecoilValue(conn);
+  const poolInfos = useRecoilValue(liquidityPoolInfos);
+  const { connected, publicKey, signAllTransactions } = useWallet();
   const [items, _] = useState<any[]>(props.items);
-  const { connected } = useWallet();
   const [animState, setAnimState] = useState<CarouselAnimState>({
     active: props.active,
     direction: "left",
@@ -139,11 +163,148 @@ export default function Carousel(props: CarouselProps) {
     })
   }
 
+
+  // 공통으로 필요한, 커넥션, 오너 등은 Carousel 레벨에서 전달
+  // Strategy, amount 등 FlagItem 레벨에서 결정해야하는 것들은 함수 인자로 정의
+  const handleDeposit = async (amount: number, strategyInfo: Strategy) => {
+    console.log(amount)
+    let transactions = []
+    if (!vault.farmRewardTokenAccountB) {
+      transactions.push(
+        harvest(connection, publicKey!, vault, strategyInfo, farm)
+      )
+      if (strategyInfo.strategyTokenSymbol === 'BTC') {
+        const rewardToUsdcPoolInfo = poolInfos[vault.rewardUsdcLpMintAccount]
+        const usdcToStrategyPoolInfo = poolInfos[strategyInfo.strategyLpMintAccount]
+        transactions.push(
+          swapRewardToUsdc(connection, publicKey!, vault, strategyInfo, rewardToUsdcPoolInfo, false)
+        )
+        transactions.push(
+          swapUsdcToStrategy(connection, publicKey!, vault, strategyInfo, usdcToStrategyPoolInfo)
+        )
+      }
+      else {
+        const rewardToStrategyPoolInfo = poolInfos[strategyInfo.strategyLpMintAccount]
+        transactions.push(
+          swapRewardToStrategy(connection, publicKey!, vault, strategyInfo, rewardToStrategyPoolInfo, false)
+        )
+      }
+      transactions.push(
+        deposit(connection, publicKey!, vault, strategyInfo, farm, String(amount))
+      )
+    }
+    else {
+      transactions.push(
+        harvestV4(connection, publicKey!, vault, strategyInfo, farm)
+      )
+      if (strategyInfo.strategyTokenSymbol === 'BTC') {
+        const rewardToUsdcPoolInfo = poolInfos[vault.rewardUsdcLpMintAccount]
+        const rewardToUsdcPoolInfoB = poolInfos[vault.rewardUsdcLpMintAccountB!]
+        const usdcToStrategyPoolInfo = poolInfos[strategyInfo.strategyLpMintAccount]
+        transactions.push(
+          swapRewardToUsdc(connection, publicKey!, vault, strategyInfo, rewardToUsdcPoolInfo, false)
+        )
+        transactions.push(
+          swapRewardToUsdc(connection, publicKey!, vault, strategyInfo, rewardToUsdcPoolInfoB, true)
+        )
+        transactions.push(
+          swapUsdcToStrategy(connection, publicKey!, vault, strategyInfo, usdcToStrategyPoolInfo)
+        )
+      }
+      else {
+        const rewardToStrategyPoolInfo = poolInfos[strategyInfo.strategyLpMintAccount]
+        const rewardToStrategyPoolInfoB = poolInfos[strategyInfo.strategyLpMintAccountB!]
+        transactions.push(
+          swapRewardToStrategy(connection, publicKey!, vault, strategyInfo, rewardToStrategyPoolInfo, false)
+        )
+        transactions.push(
+          swapRewardToStrategy(connection, publicKey!, vault, strategyInfo, rewardToStrategyPoolInfoB, true)
+        )
+      }
+      transactions.push(
+        depositV4(connection, publicKey!, vault, strategyInfo, farm, String(amount))
+      )
+    }
+    transactions = await Promise.all(transactions);
+    const signedTransactions = await signAllTransactions!(transactions)
+    console.log(signedTransactions)
+    for (let signedTransaction of signedTransactions) {
+      await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
+    }
+  }
+
+  const handleWithdraw = async (amount: number, rewardAmount: number, strategyInfo: Strategy) => {
+    let transactions = []
+    if (!vault.farmRewardTokenAccountB) {
+      transactions.push(
+        harvest(connection, publicKey!, vault, strategyInfo, farm)
+      )
+      if (strategyInfo.strategyTokenSymbol === 'BTC') {
+        const rewardToUsdcPoolInfo = poolInfos[vault.rewardUsdcLpMintAccount]
+        const usdcToStrategyPoolInfo = poolInfos[strategyInfo.strategyLpMintAccount]
+        transactions.push(
+          swapRewardToUsdc(connection, publicKey!, vault, strategyInfo, rewardToUsdcPoolInfo, false)
+        )
+        transactions.push(
+          swapUsdcToStrategy(connection, publicKey!, vault, strategyInfo, usdcToStrategyPoolInfo)
+        )
+      }
+      else {
+        const rewardToStrategyPoolInfo = poolInfos[strategyInfo.strategyLpMintAccount]
+        transactions.push(
+          swapRewardToStrategy(connection, publicKey!, vault, strategyInfo, rewardToStrategyPoolInfo, false)
+        )
+      }
+      transactions.push(
+        withdraw(connection, publicKey!, vault, strategyInfo, farm, String(amount), String(rewardAmount))
+      )
+    }
+    else {
+      transactions.push(
+        harvestV4(connection, publicKey!, vault, strategyInfo, farm)
+      )
+      if (strategyInfo.strategyTokenSymbol === 'BTC') {
+        const rewardToUsdcPoolInfo = poolInfos[vault.rewardUsdcLpMintAccount]
+        const rewardToUsdcPoolInfoB = poolInfos[vault.rewardUsdcLpMintAccountB!]
+        const usdcToStrategyPoolInfo = poolInfos[strategyInfo.strategyLpMintAccount]
+        transactions.push(
+          swapRewardToUsdc(connection, publicKey!, vault, strategyInfo, rewardToUsdcPoolInfo, false)
+        )
+        transactions.push(
+          swapRewardToUsdc(connection, publicKey!, vault, strategyInfo, rewardToUsdcPoolInfoB, true)
+        )
+        transactions.push(
+          swapUsdcToStrategy(connection, publicKey!, vault, strategyInfo, usdcToStrategyPoolInfo)
+        )
+      }
+      else {
+        const rewardToStrategyPoolInfo = poolInfos[strategyInfo.strategyLpMintAccount]
+        const rewardToStrategyPoolInfoB = poolInfos[strategyInfo.strategyLpMintAccountB!]
+        transactions.push(
+          swapRewardToStrategy(connection, publicKey!, vault, strategyInfo, rewardToStrategyPoolInfo, false)
+        )
+        transactions.push(
+          swapRewardToStrategy(connection, publicKey!, vault, strategyInfo, rewardToStrategyPoolInfoB, true)
+        )
+      }
+      transactions.push(
+        withdrawV4(connection, publicKey!, vault, strategyInfo, farm, String(amount), String(rewardAmount))
+      )
+    }
+    transactions = await Promise.all(transactions);
+    const signedTransactions = await signAllTransactions!(transactions)
+    console.log(signedTransactions)
+    for (let signedTransaction of signedTransactions) {
+      await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
+      // await new Promise((resolve) => setTimeout(resolve, 500))
+    }
+  }
+
   return (
     <div className={classes.carouselRoot}>
       <div className={classes.leftArrow} onClick={(leftClick)}></div>
       {generateItems(animState.active).map((i, idx) => {
-        if (connected) {
+        if (connected || isHome) {
           return (
             <CSSTransition
               key={i.key}
@@ -152,19 +313,21 @@ export default function Carousel(props: CarouselProps) {
             >
               <FlagItem
                 id={`${i.item.symbol}-${i.key}`}
-                // id={i.key}
                 level={i.level}
                 item={i.item}
+                strategy={STRATEGIES[getIndexFromSymbol(i.item.symbol)]}
                 onClick={() => {
                   setAnimState({
                     direction: i.level < 0 ? 'left' : 'right',
                     active: i.key
                   })
                 }}
+                handleDeposit={handleDeposit}
+                handleWithdraw={handleWithdraw}
               />
             </CSSTransition>
           );
-        } else { 
+        } else {
           return (
             <CSSTransition
               key={i.key}

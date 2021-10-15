@@ -18,6 +18,8 @@ import Stones from 'assets/test/HomeStones.svg';
 import BtnMore from 'assets/svgs/BtnMore.svg';
 import Lottie from 'react-lottie';
 import Pipeline from 'assets/animation/anim.json'
+import { VAULTS } from "utils/vaults";
+import { FARMS } from "utils/farms";
 
 const useStyles = makeStyles({
   root: {
@@ -463,42 +465,7 @@ export default function Home() {
                 amount: 3.132,
                 deposit: 1,
               },
-              {
-                symbol: 'BTC',
-                amount: 0.001,
-                deposit: 1,
-              },
-              {
-                symbol: 'ETH',
-                amount: 0.001,
-                deposit: 1,
-              },
-              {
-                symbol: 'SOL',
-                amount: 0.1,
-                deposit: 1,
-              },
-              {
-                symbol: 'USDC',
-                amount: 3.132,
-                deposit: 1,
-              },
-              {
-                symbol: 'USDT',
-                amount: 3.132,
-                deposit: 1,
-              },
-              {
-                symbol: 'RAY',
-                amount: 3.132,
-                deposit: 1,
-              },
-              {
-                symbol: 'LET',
-                amount: 3.132,
-                deposit: 1,
-              },
-            ]} active={slideIndex} />
+            ]} active={slideIndex} vault={VAULTS[0]} farm={FARMS[0]} isHome />
           </div>
         </div>
         <div

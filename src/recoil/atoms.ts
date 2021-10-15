@@ -13,6 +13,7 @@ export const popupState = atom<ReactNode | ReactNode[] | undefined>({
 
 export const conn = atom<Connection | undefined>({
   key: 'conn',
+  dangerouslyAllowMutability: true,
   default: undefined
 });
 

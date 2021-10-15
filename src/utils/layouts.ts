@@ -270,6 +270,7 @@ export const GAUNTLET_VAULT_LAYOUT = struct([
 export const GAUNTLET_VAULT_STRATEGY_LAYOUT = struct([
   bool('is_initialized'),
   publicKey('vault_account'),
+  vec(bool('length'), 'needs_usdc_pools'),
   vec(bool('length'), 'availabilities'),
   vec(u64('length'), 'strategy_token_amounts'),
 ])

@@ -1,26 +1,31 @@
+import BigNumber from 'bignumber.js';
 import { useState } from 'react';
-import { Reward, rewardPrices } from 'recoil/atoms';
+import { liquidityPoolInfos, Reward, rewardPrices } from 'recoil/atoms';
 import { useRecoilValue } from 'recoil';
 import Countup from 'react-countup';
 import { makeStyles } from '@material-ui/core';
+
+import { Strategy } from 'types';
 import Stone from 'components/Stone/Stone';
 import SmallButton from 'components/Buttons/SmallButton';
+import SmallPrimaryButton from 'components/Buttons/SmallPrimaryButton';
 import BgFlag from 'assets/backgrounds/bg_flag.png';
 import FlagLeftDeco from 'assets/backgrounds/flag_left_deco.png';
 import FlagRightDeco from 'assets/backgrounds/flag_right_deco.png';
 import FlagLeftTail from 'assets/backgrounds/flag_left_tail.png';
 import FlagRightTail from 'assets/backgrounds/flag_right_tail.png';
-import BigNumber from 'bignumber.js';
 import CursorPointer from 'assets/CursorPointer.svg';
 import dot from "assets/svgs/Dot.svg";
-import SmallPrimaryButton from 'components/Buttons/SmallPrimaryButton';
 import './Carousel.css';
 
 export interface FlagItemProps {
   id: any;
   level: number;
   item: Reward;
+  strategy: Strategy;
   onClick: () => void;
+  handleDeposit: (amount: number, strategyInfo: Strategy) => void;
+  handleWithdraw: (amount: number, rewardAmount: number, strategyInfo: Strategy) => void;
 }
 
 const useStyles = makeStyles({
@@ -172,7 +177,7 @@ export default function FlagItem(props: FlagItemProps) {
   const prices = useRecoilValue(rewardPrices);
   const [mode, setMode] = useState(true);
   const [amount, setAmount] = useState(0);
-  const { level, item, onClick } = props;
+  const { level, item, strategy, onClick, handleDeposit, handleWithdraw } = props;
 
   const confirmText = mode ? "Deposit" : "Withdraw";
 
@@ -233,7 +238,7 @@ export default function FlagItem(props: FlagItemProps) {
 
           <div
             className={classes.claimButton}
-          // onClick={onClickClaim}
+            onClick={() => handleWithdraw(0, 1, strategy)}
           >
             <SmallButton text="claim" />
           </div>
@@ -274,17 +279,15 @@ export default function FlagItem(props: FlagItemProps) {
           </div>
           <div
             className={classes.confirmBtn}
-          // onClick={
-          // mode ?
-          //   () => {
-          //     onClickDeposit(amount, tokenName)
-          //     resetAmount()
-          //   } :
-          //   () => {
-          //     onClickWithdraw(amount, tokenName)
-          //     resetAmount()
-          //   }
-          // }
+            onClick={
+              mode ?
+                () => {
+                  handleDeposit(amount, strategy)
+                } :
+                () => {
+                  handleWithdraw(amount, 0, strategy)
+                }
+            }
           >
             <SmallPrimaryButton>{confirmText}</SmallPrimaryButton>
           </div>

@@ -3,6 +3,7 @@ import WalletBtnEnabled from 'assets/svgs/WalletBtnEnabled.svg';
 import WalletBtnHovered from 'assets/svgs/WalletBtnHovered.svg';
 import WalletBtnPressed from 'assets/svgs/WalletBtnPressed.svg';
 import WalletBtnSelected from 'assets/svgs/WalletBtnSelected.svg';
+import WalletBtnDisabled from 'assets/svgs/WalletBtnDisabled.svg';
 import CursorPointer from 'assets/CursorPointer.svg';
 import { Link } from "react-router-dom";
 
@@ -26,6 +27,9 @@ const useStyles = makeStyles({
     '&:focus': {
       backgroundImage: `url(${WalletBtnSelected})`,
     },
+    '&.disabled': {
+      backgroundImage: `url(${WalletBtnDisabled})`,
+    },
     cursor: `url(${CursorPointer}), pointer`,
   },
   text: {
@@ -34,9 +38,12 @@ const useStyles = makeStyles({
     fontWeight: 700,
     backgroundColor: 'transparent',
     marginTop: 4,
-    color: 'rgba(255, 210, 113, 1)',
+    color: '#FFD271',
     lineHeight: '18px',
     userSelect: 'none',
+    '&.disabled': {
+      color: '#997614',
+    },
   }
 })
 
@@ -44,10 +51,21 @@ export interface BasicBtnProps {
   text?: string,
   link?: string,
   external?: boolean,
+  disabled?: boolean,
 }
 
-function MediumButton({ text, link, external }: BasicBtnProps) {
+function MediumButton({ text, link, external, disabled }: BasicBtnProps) {
   const classes = useStyles();
+  if (disabled) {
+    return (
+      <div className={`${classes.root} disabled`}>
+        <div className={`${classes.text} disabled`}>
+          {text}
+        </div>
+      </div>
+    )
+  }
+
   if (external) {
     return (
       <Link to={{
