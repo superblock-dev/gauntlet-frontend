@@ -5,7 +5,7 @@ import Countup from 'react-countup';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from "@material-ui/core";
 
-import { farmInfos } from 'recoil/atoms';
+import { farmInfos, liquidityPoolInfos } from 'recoil/atoms';
 import { Vault } from 'types';
 import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
 import SmallButton from "components/Buttons/SmallButton";
@@ -47,7 +47,7 @@ interface VaultItemProps {
 
 function VaultItem({ vault }: VaultItemProps) {
   const classes = useStyles();
-
+  const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const farms = useRecoilValue(farmInfos);
 
   const farm = Object.values(farms).find(f => f.lp.symbol === vault.depositToken.symbol);
@@ -57,7 +57,7 @@ function VaultItem({ vault }: VaultItemProps) {
 
   let totalHApr = new BigNumber(0);
   // let totalLApr = new BigNumber(0);
-  
+
   if (farm && farm.apr) {
     totalHApr = BigNumber.sum(totalHApr, Number(farm.apr))
     // totalLApr = BigNumber.sum(totalLApr, Number(farm.apr))
@@ -70,6 +70,11 @@ function VaultItem({ vault }: VaultItemProps) {
     totalHApr = BigNumber.sum(highestApy, Number(farm.fees))
     // totalLApr = BigNumber.sum(lowestApy, Number(farm.fees))
   }
+  let lpValue = 0;
+  const lp = liquidityPools[vault.depositToken.mintAddress];
+  if (lp && lp.currentLpValue) {
+    lpValue = lp.currentLpValue;
+  }
 
   return (
     <>
@@ -77,7 +82,20 @@ function VaultItem({ vault }: VaultItemProps) {
         <Grid item xs={4} className={classes.itemContainer}>
           <LPTokenView lp={vault.depositToken} name={farm?.name} />
         </Grid>
-        <Grid item xs={3} className={classes.itemContainer}>540.1 M</Grid>
+        <Grid item xs={3} className={classes.itemContainer}>{
+          <Countup
+            start={0}
+            end={vault.totalDepositAmount ? 
+              vault.totalDepositAmount.toEther().multipliedBy(lpValue ? lpValue : 0).toNumber() :
+              0
+            }
+            delay={0}
+            duration={0.75}
+            decimals={2}
+            decimal="."
+            prefix="$ "
+          />
+        }</Grid>
         <Grid item xs={3} className={classes.itemContainer}>
           {/* <Countup
             start={0}

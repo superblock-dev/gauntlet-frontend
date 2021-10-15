@@ -88,12 +88,12 @@ function App() {
         calculateLpValues(liquidityPools, priceData);
         setLiquidityInfo(liquidityPools);
 
+        const vaultInfos = await requestVaultsState(connState);
+        setVaultsInfo(vaultInfos);
+
         const farmInfos = await requestFarmInfo(connState);
         calculateAprValues(farmInfos, pairsData, liquidityPools, priceData);
         setFarmInfo(farmInfos);
-
-        const vaultInfos = await requestVaultsState(connState);
-        setVaultsInfo(vaultInfos);
       } catch (e) {
         console.error(e)
       }

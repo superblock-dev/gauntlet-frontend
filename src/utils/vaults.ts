@@ -14,16 +14,16 @@ export const BASE_FEE: Fees = {
 
 export function calculateReward(userState: User, vault: Vault) {
   const decimals = userState.rewardToken.decimals
-  const amount = new TokenAmount(userState.amount, decimals);
+  const amount = userState.amount;
   const rewardDebt = new TokenAmount(userState.rewardDebt, decimals);
   const acc = new BigNumber(
     vault.accPerShares ?
       vault.accPerShares[getIndexFromSymbol(userState.rewardToken.symbol)] :
       0)
-  console.log("acc: ", acc.toNumber());
+
   const rewardAmount = BigNumber.sum(
     amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther()),
-    userState.reward
+    userState.reward.toEther()
   );
 
   return Math.floor(rewardAmount.multipliedBy(Math.pow(10, decimals)).toNumber()) / Math.pow(10, decimals);

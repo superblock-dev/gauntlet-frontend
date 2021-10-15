@@ -184,15 +184,17 @@ function VaultDetail() {
     if (!vault) return
     const newRewards: Reward[] = rewards.map(r => {
       const userState = userVaultStates.find(s => s.rewardToken.symbol === r.symbol);
+      console.log(userState)
       if (userState) {
         return {
           symbol: r.symbol,
           amount: calculateReward(userState, vault),
-          deposit: userState.amount.toNumber(),
+          deposit: userState.amount.toEther().toNumber(),
         }
       }
       return r
     })
+    console.log(newRewards)
     setRewards(newRewards)
   }, [userInfoState]);
 

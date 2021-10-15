@@ -6,6 +6,9 @@ import {
 } from 'utils/web3'
 import { Vault } from 'types'
 import { VAULTS } from 'utils/vaults'
+import { TokenAmount } from 'utils/safe-math'
+
+const denominator = new BigNumber(2).pow(64);
 
 // : Promise<Vault[]> 
 export const requestVaultsState = async (conn: Connection) => {
@@ -22,16 +25,17 @@ export const requestVaultsState = async (conn: Connection) => {
     if (vault) {
       const data = vault.account.data
       const decodedValue = GAUNTLET_VAULT_LAYOUT.decode(data);
-
       return {
         ...v,
-        totalDepositAmount: new BigNumber(decodedValue.total_deposit_amount).toNumber(),
+        totalDepositAmount: new TokenAmount(new BigNumber(decodedValue.total_deposit_amount), v.depositToken.decimals),
         // @ts-ignore
-        accPerShares: decodedValue.accumulated_reward_per_shares.slice(0, 5).map((i) => new BigNumber(i))
+        accPerShares: decodedValue.accumulated_reward_per_shares.slice(0, 5).map((i) => new BigNumber(i).dividedBy(denominator))
       }
     }
     return v
   })
+
+  console.log("New vaults: ", newVaults)
 
   return newVaults
 }

@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import Countup from 'react-countup';
 import { makeStyles } from '@material-ui/core';
 
-import { Strategy } from 'types';
+import { Strategy, Vault } from 'types';
 import Stone from 'components/Stone/Stone';
 import SmallButton from 'components/Buttons/SmallButton';
 import SmallPrimaryButton from 'components/Buttons/SmallPrimaryButton';
@@ -17,15 +17,17 @@ import FlagRightTail from 'assets/backgrounds/flag_right_tail.png';
 import CursorPointer from 'assets/CursorPointer.svg';
 import dot from "assets/svgs/Dot.svg";
 import './Carousel.css';
+import { TokenAmount } from 'utils/safe-math';
 
 export interface FlagItemProps {
   id: any;
   level: number;
   item: Reward;
+  vault: Vault;
   strategy: Strategy;
   onClick: () => void;
-  handleDeposit: (amount: number, strategyInfo: Strategy) => void;
-  handleWithdraw: (amount: number, rewardAmount: number, strategyInfo: Strategy) => void;
+  handleDeposit: (amount: BigNumber, strategyInfo: Strategy) => void;
+  handleWithdraw: (amount: BigNumber, rewardAmount: BigNumber, strategyInfo: Strategy) => void;
 }
 
 const useStyles = makeStyles({
@@ -176,8 +178,8 @@ export default function FlagItem(props: FlagItemProps) {
   const classes = useStyles();
   const prices = useRecoilValue(rewardPrices);
   const [mode, setMode] = useState(true);
-  const [amount, setAmount] = useState(0);
-  const { level, item, strategy, onClick, handleDeposit, handleWithdraw } = props;
+  const [amount, setAmount] = useState<string>("");
+  const { level, item, vault, strategy, onClick, handleDeposit, handleWithdraw } = props;
 
   const confirmText = mode ? "Deposit" : "Withdraw";
 
@@ -238,7 +240,7 @@ export default function FlagItem(props: FlagItemProps) {
 
           <div
             className={classes.claimButton}
-            onClick={() => handleWithdraw(0, 1, strategy)}
+            onClick={() => handleWithdraw(new BigNumber(0), new BigNumber(1), strategy)}
           >
             <SmallButton text="claim" />
           </div>
@@ -260,9 +262,11 @@ export default function FlagItem(props: FlagItemProps) {
               className={classes.input}
               type='number'
               step='0.1'
-              placeholder="0.000"
-              value={amount === 0 ? "" : amount}
-              onChange={(e) => setAmount(parseFloat(e.target.value))}
+              placeholder="0.000000"
+              value={amount}
+              onChange={(e) => {
+                setAmount(e.target.value)
+              }}
             />
             <div
               className={classes.maxButton}
@@ -280,13 +284,15 @@ export default function FlagItem(props: FlagItemProps) {
           <div
             className={classes.confirmBtn}
             onClick={
-              mode ?
-                () => {
-                  handleDeposit(amount, strategy)
-                } :
-                () => {
-                  handleWithdraw(amount, 0, strategy)
-                }
+              amount ?
+                mode ?
+                  () => {
+                    handleDeposit(new BigNumber(amount).multipliedBy(new BigNumber(10).pow(vault.depositToken.decimals)), strategy)
+                  } :
+                  () => {
+                    handleWithdraw(new BigNumber(amount).multipliedBy(new BigNumber(10).pow(vault.depositToken.decimals)), new BigNumber(0), strategy)
+                  } :
+                () => { }
             }
           >
             <SmallPrimaryButton>{confirmText}</SmallPrimaryButton>

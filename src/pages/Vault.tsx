@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { useEffect, useState } from "react";
 import { PublicKey } from '@solana/web3.js';
 import { useRecoilState, useRecoilValue } from "recoil";
-import { conn, farmInfos, rewardPrices, userInfo, vaultInfos } from "recoil/atoms";
+import { conn, farmInfos, liquidityPoolInfos, rewardPrices, userInfo, vaultInfos } from "recoil/atoms";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
@@ -66,7 +66,10 @@ function VaultPage() {
   const [vaults, setVaults] = useRecoilState(vaultInfos);
   const farms = useRecoilValue(farmInfos);
   const prices = useRecoilValue(rewardPrices);
+  const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const [userInfoValue, setUserInfo] = useRecoilState(userInfo);
+  const [totalDeposit, setTotalDeposit] = useState(0);
+  const [totalDepositInUsd, setTotalDepositInUsd] = useState(0);
   const [avgApr, setAvgApr] = useState(0);
   const [userVaultIds, setUserVaultIds] = useState<string[]>([])
   const [userVaults, setUserVaults] = useState<Vault[]>([])
@@ -191,7 +194,18 @@ function VaultPage() {
 
     const highestStrategy = STRATEGY_FARMS.reduce((p, v) => p.apy < v.apy ? v : p);
 
-    let avgApr = vaults.reduce((prev, v) => {
+    let [totalDeposit, totalDepositInUsd, avgApr] = vaults.reduce((prev, v) => {
+      if (v.totalDepositAmount) {
+        prev[0] = BigNumber.sum(v.totalDepositAmount.toEther(), prev[0]).toNumber()
+
+        let lpValue = 0;
+        const lp = liquidityPools[v.depositToken.mintAddress];
+        if (lp && lp.currentLpValue) {
+          lpValue = lp.currentLpValue;
+        }
+        prev[1] += v.totalDepositAmount.toEther().multipliedBy(lpValue).toNumber()
+      }
+
       let totalHApr = 0;
       if (v.farmApr) {
         totalHApr = BigNumber.sum(totalHApr, Number(v.farmApr)).toNumber();
@@ -203,11 +217,13 @@ function VaultPage() {
         totalHApr = BigNumber.sum(highestApy, Number(v.farmFee)).toNumber()
       }
 
-      prev += totalHApr / vaults.length
+      prev[2] += totalHApr / vaults.length
 
       return prev;
-    }, 0);
+    }, [0, 0, 0]);
 
+    setTotalDeposit(totalDeposit);
+    setTotalDepositInUsd(totalDepositInUsd);
     setAvgApr(avgApr);
 
     setUserInfo({
@@ -227,8 +243,8 @@ function VaultPage() {
           connected ?
             <UserVaultsContainer vaults={userVaults} /> :
             <GauntletSummary
-              totalDeposit={120381294} //TODO
-              totalLpValueInUSD={12903810293808}
+              totalDeposit={totalDeposit} //TODO
+              totalLpValueInUSD={totalDepositInUsd}
               totalRewardsInUSD={0}
               avgApr={avgApr}
             />

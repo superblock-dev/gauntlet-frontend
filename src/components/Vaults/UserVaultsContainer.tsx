@@ -67,9 +67,8 @@ interface UserVaultStats {
 
 function UserVaultsContainer({ vaults }: UserVaultsProps) {
   const classes = useStyles();
-  const prices = useRecoilValue(rewardPrices);
   const liquidityPools = useRecoilValue(liquidityPoolInfos);
-  const [userInfoValue] = useRecoilState(userInfo);
+  const userInfoValue = useRecoilValue(userInfo);
   const [userVaultStats, setUserVaultStats] = useState<UserVaultStats>({
     totalDeposit: 0,
     totalLpValueInUSD: 0,
@@ -80,11 +79,11 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
   // UserState가 바뀌면 total 정보 변화
   useEffect(() => {
     const [totalDeposit, totalLpValueInUSD, totalRewardsInUSD] = userInfoValue.states.reduce((total, s) => {
-      total[0] = BigNumber.sum(total[0], s.amount);
+      total[0] = BigNumber.sum(total[0], s.amount.toEther());
       const v = vaults.find(v => v.stateAccount === s.vaultStateAccount);
       if (v && v.depositToken.mintAddress in liquidityPools) {
         const lpValue = liquidityPools[v.depositToken.mintAddress].currentLpValue;
-        total[1] = BigNumber.sum(total[1], lpValue ? s.amount.multipliedBy(lpValue) : 0);
+        total[1] = BigNumber.sum(total[1], lpValue ? s.amount.toEther().multipliedBy(lpValue) : 0);
       }
       if (s.totalRewardInUSD) total[2] = BigNumber.sum(total[2], s.totalRewardInUSD);
       return total
@@ -92,7 +91,7 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
 
     const avgApr = userInfoValue.states.reduce((weighted, s) => {
       if (s.totalApr) {
-        weighted = BigNumber.sum(weighted, new BigNumber(s.totalApr).multipliedBy(s.amount))
+        weighted = BigNumber.sum(weighted, new BigNumber(s.totalApr).multipliedBy(s.amount.toEther()))
       }
       return weighted;
     }, new BigNumber(0)).dividedBy(totalDeposit).toNumber();

@@ -90,9 +90,6 @@ function Header({ routeList }: HeaderProps) {
           </Link>
         ))}
       </div>
-      <div className={classes.tvlText}>
-        tvl: $785.06M
-      </div>
       <div className={classes.connectBtn} onClick={handleConnect}>
         <WalletButton connected={connected} address={address} />
       </div>

@@ -4,12 +4,12 @@ import { LP_TOKENS, TOKENS } from "./tokens";
 
 // 이걸 프론트에서 직접 수행하면 너무 오래걸림.
 export function calculateApyInPercentage(farmApr: number, multiplier: number) {
-  const dailyApr = new BigNumber(farmApr).dividedBy(365);
-  // const sApy = BigNumber.sum(new BigNumber(stratApy).dividedBy(365), 1);
-  // const multiplier = (sApy.pow(365)).minus(1).dividedBy(sApy.minus(1));
-  const apy = dailyApr.multipliedBy(multiplier);
+  // const dailyApr = new BigNumber(farmApr).dividedBy(365);
+  // // const sApy = BigNumber.sum(new BigNumber(stratApy).dividedBy(365), 1);
+  // // const multiplier = (sApy.pow(365)).minus(1).dividedBy(sApy.minus(1));
+  // const apy = dailyApr.multipliedBy(multiplier);
 
-  return apy;
+  return new BigNumber(farmApr);
 }
 
 export const STRATEGY_FARMS: StrategyApy[] = [

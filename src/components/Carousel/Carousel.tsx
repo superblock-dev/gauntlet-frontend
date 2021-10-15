@@ -26,6 +26,7 @@ import IconRightNavigation from "assets/svgs/big-arrow-right.svg";
 import './Carousel.css';
 import { STRATEGIES } from 'utils/strategies';
 import { getIndexFromSymbol } from 'utils/constants';
+import BigNumber from 'bignumber.js';
 
 interface CarouselProps {
   vault: Vault;
@@ -166,8 +167,7 @@ export default function Carousel(props: CarouselProps) {
 
   // 공통으로 필요한, 커넥션, 오너 등은 Carousel 레벨에서 전달
   // Strategy, amount 등 FlagItem 레벨에서 결정해야하는 것들은 함수 인자로 정의
-  const handleDeposit = async (amount: number, strategyInfo: Strategy) => {
-    console.log(amount)
+  const handleDeposit = async (amount: BigNumber, strategyInfo: Strategy) => {
     let transactions = []
     if (!vault.farmRewardTokenAccountB) {
       transactions.push(
@@ -189,8 +189,9 @@ export default function Carousel(props: CarouselProps) {
           swapRewardToStrategy(connection, publicKey!, vault, strategyInfo, rewardToStrategyPoolInfo, false)
         )
       }
+      console.log(amount.toString())
       transactions.push(
-        deposit(connection, publicKey!, vault, strategyInfo, farm, String(amount))
+        deposit(connection, publicKey!, vault, strategyInfo, farm, amount.toString())
       )
     }
     else {
@@ -222,7 +223,7 @@ export default function Carousel(props: CarouselProps) {
         )
       }
       transactions.push(
-        depositV4(connection, publicKey!, vault, strategyInfo, farm, String(amount))
+        depositV4(connection, publicKey!, vault, strategyInfo, farm, amount.toString())
       )
     }
     transactions = await Promise.all(transactions);
@@ -237,7 +238,7 @@ export default function Carousel(props: CarouselProps) {
     }
   }
 
-  const handleWithdraw = async (amount: number, rewardAmount: number, strategyInfo: Strategy) => {
+  const handleWithdraw = async (amount: BigNumber, rewardAmount: BigNumber, strategyInfo: Strategy) => {
     let transactions = []
     if (!vault.farmRewardTokenAccountB) {
       transactions.push(
@@ -260,7 +261,7 @@ export default function Carousel(props: CarouselProps) {
         )
       }
       transactions.push(
-        withdraw(connection, publicKey!, vault, strategyInfo, farm, String(amount), String(rewardAmount))
+        withdraw(connection, publicKey!, vault, strategyInfo, farm, amount.toString(), rewardAmount.toString())
       )
     }
     else {
@@ -292,7 +293,7 @@ export default function Carousel(props: CarouselProps) {
         )
       }
       transactions.push(
-        withdrawV4(connection, publicKey!, vault, strategyInfo, farm, String(amount), String(rewardAmount))
+        withdrawV4(connection, publicKey!, vault, strategyInfo, farm, amount.toString(), rewardAmount.toString())
       )
     }
     transactions = await Promise.all(transactions);
@@ -324,6 +325,7 @@ export default function Carousel(props: CarouselProps) {
                 id={`${i.item.symbol}-${i.key}`}
                 level={i.level}
                 item={i.item}
+                vault={vault}
                 strategy={STRATEGIES[getIndexFromSymbol(i.item.symbol)]}
                 onClick={() => {
                   setAnimState({

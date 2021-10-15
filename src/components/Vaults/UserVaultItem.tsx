@@ -125,7 +125,7 @@ function UserVaultItem({ vault, userStates }: UserVaultProps) {
 
   const [totalApr, totalDeposit, totalRewardInUSD] = userStates.reduce((prev, s) => {
     prev[0] = s.totalApr ? prev[0] + s.totalApr : prev[0];
-    prev[1] = BigNumber.sum(prev[1], s.amount);
+    prev[1] = BigNumber.sum(prev[1], s.amount.toEther());
     prev[2] = s.totalRewardInUSD ? prev[2] + s.totalRewardInUSD : prev[2];
 
     return prev
@@ -250,7 +250,7 @@ function UserVaultItem({ vault, userStates }: UserVaultProps) {
                     <div className={classes.rewardAmount}>
                       {
                         state.reward ?
-                          state.reward.toNumber() :
+                          state.reward.toEther().toNumber() :
                           0
                       }</div>
                   </div>

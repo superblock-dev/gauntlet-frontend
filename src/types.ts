@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js"
 import { ReactNode } from "react"
+import { TokenAmount } from "utils/safe-math"
 import { LPToken, Token } from "utils/tokens"
 
 export type TokenName =
@@ -38,7 +39,7 @@ export interface Vault {
   rewardUsdcLpMintAccount: string
   rewardUsdcLpMintAccountB?: string
   // load 해야 되는 애들
-  totalDepositAmount?: number
+  totalDepositAmount?: TokenAmount
   accPerShares?: BigNumber[]
   farmApr?: number
   farmFee?: number,
@@ -51,9 +52,9 @@ export interface User {
   strategyStateAccount: string
   rewardToken: Token | LPToken
   // Deposited amount of LP token
-  amount: BigNumber
+  amount: TokenAmount
   // Pending reward
-  reward: BigNumber
+  reward: TokenAmount
   // Reward debt
   rewardDebt: BigNumber
   // Calculated reward
