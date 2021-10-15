@@ -34,6 +34,7 @@ export interface Vault {
   farmRewardTokenAccountB?: string
   vaultRaydiumStateAccount: string
   withdrawFeeTokenAccount: string
+  rewardUsdcLpMintAccount: string
   // load 해야 되는 애들
   totalDepositAmount?: number
   accPerShares?: number[]
@@ -63,6 +64,7 @@ export interface Strategy {
   strategyTokenAccount: string
   strategyTokenMintAccount: string
   performanceFeeTokenAccount: string
+  usdcStrategyLpMintAccount: string
 }
 
 export interface StrategyApy {

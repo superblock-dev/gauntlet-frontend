@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { Strategy, StrategyApy } from "types";
-import { TOKENS } from "./tokens";
+import { LP_TOKENS, TOKENS } from "./tokens";
 
 // 이걸 프론트에서 직접 수행하면 너무 오래걸림.
 export function calculateApyInPercentage(farmApr: number, multiplier: number) {
@@ -44,36 +44,42 @@ export const STRATEGIES: Strategy[] = [
     stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
     strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
     strategyTokenMintAccount: TOKENS.USDT.mintAddress,
-    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm",
+    usdcStrategyLpMintAccount: LP_TOKENS['LIKE-USDC-V4'].mintAddress,
   },
   {
     stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
     strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
     strategyTokenMintAccount: TOKENS.USDT.mintAddress,
-    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm",
+    usdcStrategyLpMintAccount: LP_TOKENS['LIKE-USDC-V4'].mintAddress,
   },
   {
     stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
     strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
     strategyTokenMintAccount: TOKENS.USDT.mintAddress,
-    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm",
+    usdcStrategyLpMintAccount: LP_TOKENS['LIKE-USDC-V4'].mintAddress,
   },
   {
     stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
     strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
     strategyTokenMintAccount: TOKENS.USDT.mintAddress,
-    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm",
+    usdcStrategyLpMintAccount: LP_TOKENS['LIKE-USDC-V4'].mintAddress,
   },
   {
     stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
     strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
     strategyTokenMintAccount: TOKENS.USDT.mintAddress,
-    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm",
+    usdcStrategyLpMintAccount: LP_TOKENS['LIKE-USDC-V4'].mintAddress,
   },
   {
     stateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
     strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
     strategyTokenMintAccount: TOKENS.USDT.mintAddress,
-    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm",
+    usdcStrategyLpMintAccount: LP_TOKENS['LIKE-USDC-V4'].mintAddress,
   },
 ]

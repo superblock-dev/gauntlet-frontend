@@ -42,6 +42,7 @@ export const VAULTS: Vault[] = [
     farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
     vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
     withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
+    rewardUsdcLpMintAccount: LP_TOKENS['RAY-USDC-V4'].mintAddress,
   },
   {
     fees: BASE_FEE,
@@ -52,6 +53,7 @@ export const VAULTS: Vault[] = [
     farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
     vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
     withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
+    rewardUsdcLpMintAccount: LP_TOKENS['RAY-USDC-V4'].mintAddress,
   },
   {
     fees: BASE_FEE,
@@ -62,6 +64,7 @@ export const VAULTS: Vault[] = [
     farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
     vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
     withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
+    rewardUsdcLpMintAccount: LP_TOKENS['RAY-USDC-V4'].mintAddress,
   },
   {
     fees: BASE_FEE,
@@ -72,6 +75,7 @@ export const VAULTS: Vault[] = [
     farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
     vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
     withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
+    rewardUsdcLpMintAccount: LP_TOKENS['RAY-USDC-V4'].mintAddress,
   },
   {
     fees: BASE_FEE,
@@ -82,5 +86,6 @@ export const VAULTS: Vault[] = [
     farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
     vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
     withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
+    rewardUsdcLpMintAccount: LP_TOKENS['RAY-USDC-V4'].mintAddress,
   },
 ]

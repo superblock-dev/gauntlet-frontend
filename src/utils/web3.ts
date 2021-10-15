@@ -15,19 +15,8 @@ import { initializeAccount } from '@project-serum/serum/lib/token-instructions';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID, RENT_PROGRAM_ID, SYSTEM_PROGRAM_ID, TOKEN_PROGRAM_ID
 } from './ids';
-import { bool, publicKey, struct, u128, u32, u64, u8 } from '@project-serum/borsh'
-import { ACCOUNT_LAYOUT, MINT_LAYOUT } from './layouts';
-import { TOKENS } from './tokens';
-export const web3Config = {
-  strategy: 'speed',
-  rpcs: [
-    { url: 'https://free.rpcpool.com', weight: 10 },
-    { url: 'https://api.rpcpool.com', weight: 10 },
-    { url: 'https://solana-api.projectserum.com', weight: 10 },
-    { url: 'https://raydium.rpcpool.com', weight: 50 },
-    // { url: 'https://api.mainnet-beta.solana.com', weight: 20 }
-  ]
-}
+import { struct, u8 } from '@project-serum/borsh'
+import { ACCOUNT_LAYOUT } from './layouts';
 
 export const commitment: Commitment = 'confirmed'
 // getMultipleAccounts
@@ -387,3 +376,15 @@ export async function sendTransaction(
 
   return txid
 }
+
+// export async function sendTransactions(
+//   connection: Connection,
+//   wallet: any,
+//   transactions: [Transaction],
+// ) {
+//   const signedTransactions = await wallet.signAllTransactions(transactions);
+//   signedTransactions.forEach((signedTransaction, index) => {
+
+//   });
+//   connection.sendRawTransaction(signedTransactions[0])
+// }
