@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js"
 import { ReactNode } from "react"
 import { LPToken, Token } from "utils/tokens"
 
@@ -44,15 +45,16 @@ export interface Vault {
 
 export interface User {
   stateAccount: string
-  vault: Vault,
+  vault?: Vault,
+  vaultStateAccount: string,
   strategyStateAccount: string
   rewardToken: Token | LPToken
   // Deposited amount of LP token
-  amount: number
+  amount: BigNumber
   // Pending reward
-  reward: number
+  reward: BigNumber
   // Reward debt
-  rewardDebt: number
+  rewardDebt: BigNumber
   // Calculated reward
   totalReward?: number
   totalRewardInUSD?: number
@@ -64,7 +66,6 @@ export interface Strategy {
   strategyTokenAccount: string
   strategyTokenMintAccount: string
   performanceFeeTokenAccount: string
-  strategyTokenSymbol: Token | LPToken
 }
 
 export interface StrategyApy {

@@ -72,13 +72,13 @@ function VaultPage() {
   const [userVaults, setUserVaults] = useState<Vault[]>([])
   const [otherVaults, setOtherVaults] = useState<Vault[]>(vaults)
 
-  
-
   const updateUserInfo = async (seed: any) => {
     if (connState) {
       const userStates = await fetchUserState(connState, seed)
       const _userStates = userStates.map(userState => {
-        const v = userState.vault;
+        const v = vaults.find(vault => vault.stateAccount === userState.vaultStateAccount)
+        if (v === undefined) return userState
+        // const v = userState.vault;
 
         const totalReward = calculateReward(userState, v);
 
@@ -107,13 +107,12 @@ function VaultPage() {
         }
 
       })
-      const _userVaultIds = _userStates.map(userState => userState.vault.stateAccount)
-      setUserVaultIds(_userVaultIds)
-
+      const _userVaultIds = _userStates.map(userState => userState.vaultStateAccount)
       setUserInfo({
         ...userInfoValue,
         states: _userStates,
       })
+      setUserVaultIds(_userVaultIds)
     }
   }
 
@@ -122,7 +121,7 @@ function VaultPage() {
     const _otherVaults = connected ? vaults.filter(vault => !userVaultIds.includes(vault.stateAccount)) : vaults;
     setUserVaults(_userVaults)
     setOtherVaults(_otherVaults)
-  }, userVaultIds)
+  }, [userVaultIds])
 
   useEffect(() => {
     if (connected) {
@@ -153,13 +152,16 @@ function VaultPage() {
         farmFee: Number(f.fees),
       };
     });
+    
     setVaults(_vaults)
   }, [farms]);
 
   // Vault 업데이트 되면, 각 state들마다 pending reward 계산
   useEffect(() => {
     const _states = userInfoValue.states.map(s => {
-      const v = s.vault;
+      const v = vaults.find(vault => vault.stateAccount === s.vaultStateAccount)
+      // const v = s.vault;
+      if (v === undefined) return s
 
       const totalReward = calculateReward(s, v);
 
