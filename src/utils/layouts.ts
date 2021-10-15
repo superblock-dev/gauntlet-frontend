@@ -1,4 +1,4 @@
-import { bool, publicKey, struct, u128, u32, u64, u8 } from '@project-serum/borsh'
+import { bool, publicKey, struct, u128, u32, u64, u8, vec, i64 } from '@project-serum/borsh'
 // @ts-ignore
 import { blob } from 'buffer-layout';
 
@@ -230,4 +230,71 @@ export const USER_STAKE_INFO_ACCOUNT_LAYOUT_V4 = struct([
   u64('depositBalance'),
   u64('rewardDebt'),
   u64('rewardDebtB')
+])
+
+export const GAUNTLET_STATUS_LAYOUT = struct([
+  bool('is_initialized'),
+  publicKey('admin'),
+  u8('strategies_len'),
+  u8('vaults_len'),
+  publicKey('usdc_token_account'),
+])
+
+export const GAUNTLET_FEE_LAYOUT = struct([
+  u64('performance_fee_numerator'),
+  u64('performance_fee_denominator'),
+  u64('withdrawal_fee_numerator'),
+  u64('withdrawal_fee_denominator'),
+])
+
+export const GAUNTLET_VAULT_LAYOUT = struct([
+  bool('is_initialized'),
+  u8('index'),
+  u8('status'),
+  blob(GAUNTLET_FEE_LAYOUT.span, 'fee'),
+  publicKey('gauntlet_state_account'),
+  publicKey('deposit_token_account'),
+  publicKey('reward_token_account'),
+  publicKey('reward_token_b_account'),
+  publicKey('withdraw_fee_account'),
+  u64('total_deposit_amount'),
+  vec(u64('length'), 'deposit_amounts'),
+  vec(u64('length'), 'reward_token_remain_amounts'),
+  vec(u64('length'), 'reward_token_b_remain_amounts'),
+  vec(u64('length'), 'usdc_token_amounts'),
+  vec(u128('length'), 'accumulated_reward_per_shares'),
+  i64('last_reward_update_time'),
+  publicKey('raydium_state_account'),
+])
+
+export const GAUNTLET_VAULT_STRATEGY_LAYOUT = struct([
+  bool('is_initialized'),
+  publicKey('vault_account'),
+  vec(bool('length'), 'availabilities'),
+  vec(u64('length'), 'strategy_token_amounts'),
+])
+
+export const GAUNTLET_STRATEGY_LAYOUT = struct([
+  bool('is_initialized'),
+  u8('index'),
+  publicKey('gauntlet_state_account'),
+  publicKey('admin'),
+  publicKey('performance_fee_account'),
+  u8('status'),
+  i64('last_reward_update_time'),
+  u64('total_deposit_amount'),
+  vec(u64('length'), 'deposit_amounts'),
+  publicKey('strategy_token_account'),
+])
+
+export const GAUNTLET_USER_LAYOUT = struct([
+  bool('is_initialized'),
+  publicKey('user'),
+  publicKey('vault_account'),
+  publicKey('strategy_account'),
+  u64('amount'),
+  u64('reward'),
+  u64('reward_debt'),
+  u8('user_status'),
+  i64('last_reward_update_time'),
 ])
