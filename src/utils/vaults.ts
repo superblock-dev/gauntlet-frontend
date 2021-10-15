@@ -18,10 +18,10 @@ export function calculateReward(userState: UserState, vault: Vault) {
   const rewardDebt = new TokenAmount(getBigNumber(userState.rewardDebt), decimals);
   const acc = new BigNumber(vault.accPerShares[getIndexFromSymbol(userState.rewardToken.symbol)]);
   const rewardAmount = BigNumber.sum(
-    amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther()), 
+    amount.toEther().multipliedBy(acc).minus(rewardDebt.toEther()),
     userState.reward
   );
-  
+
   return Math.floor(rewardAmount.multipliedBy(Math.pow(10, decimals)).toNumber()) / Math.pow(10, decimals);
 }
 
@@ -105,7 +105,13 @@ export const VAULTS: Vault[] = [
       1340000,
       1560000,
       1560000,
-    ]
+    ],
+    vaultStateAccount: "FgPqAkiqEqRH5Y2qc5JpUTELgg4Kt1kKbyFfsis8nEKV",
+    vaultStrategyAccount: "DnEpq8Z2TKFU1xQCie1iCvnU5qhnwMhiCxccF4KkKjzQ",
+    vaultDepositTokenAccount: "J27PU3toMReud3cwdWJYh4qJ6o4b5CCwVDWypCvBJZPa",
+    farmRewardTokenAccount: "2fXVnnLf2EzdA3ZRQNdtkNV3abTZAKKhJ3n1FWGPECad",
+    vaultRaydiumStateAccount: "FEEBAFLz8M6656ZFx7HuAauzxAZ8tFCMhqS9LdmBgnvR",
+    withdrawFeeTokenAccount: "5fq9sJnPHzKokqRNDFqbSaWX4RUn1mDT1GEkKVDmenTt",
   },
   {
     id: 2,

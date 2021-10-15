@@ -3,6 +3,10 @@ import BigNumber from "bignumber.js";
 export interface StrategyFarm {
   token: string;
   apy: number;
+  strategyStateAccount?: string,
+  strategyTokenAccount?: string,
+  performanceFeeTokenAccount?: string,
+  strategyTokenMintAccount?: string
 }
 
 // 이걸 프론트에서 직접 수행하면 너무 오래걸림.
@@ -31,6 +35,10 @@ export const STRATEGY_FARMS: StrategyFarm[] = [
   {
     token: 'USDC',
     apy: 390.528,
+    strategyStateAccount: "Bu4PAB2xbhPqxMF7NyE1z5zm8rWzEfE3LMtanGNAvusX",
+    strategyTokenAccount: "F3CQFdE1tyRUYcQNN4w3wWkU1DJenKMwJsWinTawHtVb",
+    strategyTokenMintAccount: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    performanceFeeTokenAccount: "BzKqXpZVqe8x7tKJpP72m3TJDGgXbRDNbpsVPSfn4Mrm"
   },
   {
     token: 'USDT',

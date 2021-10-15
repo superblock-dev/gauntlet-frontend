@@ -32,6 +32,13 @@ export interface Vault {
   accPerShares: number[];
   farmApr?: number;
   farmFee?: number;
+  vaultStateAccount?: string;
+  vaultStrategyAccount?: string;
+  vaultDepositTokenAccount?: string;
+  farmRewardTokenAccount?: string;
+  farmRewardTokenAccountB?: string;
+  vaultRaydiumStateAccount?: string;
+  withdrawFeeTokenAccount?: string;
 }
 
 export interface UserState {

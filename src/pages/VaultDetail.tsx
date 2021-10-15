@@ -26,6 +26,7 @@ import { calculateReward } from "utils/vaults";
 import SmallButton from "components/Buttons/SmallButton";
 import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
 import { getIndexFromSymbol, REWARDS } from 'utils/constants';
+import { harvest, harvestV4, swapToUsdc, swapToStrategy, deposit, depositV4, withdraw, withdrawV4 } from 'utils/transactions'
 
 interface FlagCreationArgs {
   vault: Vault;
@@ -331,6 +332,7 @@ function VaultDetail() {
     }
     console.log("new user info: ", newUserInfo)
     setUserInfoState(newUserInfo);
+    let transactions = []
     enqueueSnackbar(<SuccessSnackbar message={`${amount} LP successfully deposited!`} />)
   }
 
