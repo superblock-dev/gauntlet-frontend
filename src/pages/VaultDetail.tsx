@@ -1,14 +1,16 @@
 import { BigNumber } from 'bignumber.js';
 import { cloneDeep } from 'lodash';
 import { useEffect, useState } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward } from "recoil/atoms";
+import { conn, userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import { makeStyles } from "@material-ui/core";
+import { PublicKey } from '@solana/web3.js';
 
 import { Farm, User, Vault } from "types";
-import { calculateApyInPercentage, STRATEGY_FARMS } from "utils/strategies";
+import { calculateApyInPercentage, STRATEGY_FARMS, STRATEGIES } from "utils/strategies";
 import { ErrorSnackbar, SuccessSnackbar } from 'components/Snackbar/Snackbar';
 import Carousel from 'components/Carousel';
 import LPTokenView from "components/Vaults/LPTokenView";
@@ -21,6 +23,7 @@ import CursorPointer from 'assets/CursorPointer.svg';
 import IconBackArrow from 'assets/svgs/IconBackArrow.svg';
 import LineMixPurpleAndGold from 'assets/svgs/LineMixPurpleAndGold.svg';
 import { calculateReward } from 'utils/vaults';
+import { fetchUserState, fetchUserDepositAssociatedTokenAccount } from 'api/users';
 
 interface VaultDetailParams {
   vaultId: string,
@@ -126,6 +129,8 @@ const basicRewardsList: Reward[] = [
 
 function VaultDetail() {
   const classes = useStyles();
+  const connState = useRecoilValue(conn)
+  const { connected, publicKey } = useWallet();
   const { goBack } = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const [vaults, setVaults] = useRecoilState(vaultInfos);
@@ -142,6 +147,34 @@ function VaultDetail() {
   const { vaultId } = useParams<VaultDetailParams>();
   const vId = vaultId;
 
+  const updateUserInfo = async (seed: any, totalApr: number, depositTokenMintAddress: string ) => {
+    if (connState && publicKey != null) {
+      const userDepositTokenStatus = cloneDeep(userInfoState.lpTokens)
+      const depoistTokenMintPubkey = new PublicKey(depositTokenMintAddress)
+      const userTokenAccountList = await fetchUserDepositAssociatedTokenAccount(connState, publicKey, [depoistTokenMintPubkey])
+      userTokenAccountList.map(userTokenAccount => {
+        const symbol = Object.keys(userDepositTokenStatus).find(key => key === userTokenAccount.depositToken)
+        if (symbol != undefined) {
+          userDepositTokenStatus[symbol].balance = userTokenAccount.amount
+        }
+      })
+      const userStates = await fetchUserState(connState, seed)
+      const _userStates = userStates.map(s => {
+        return {
+          ...s,
+          totalApr
+        }
+      })
+      console.log('_userStates', _userStates)
+      console.log('userDepositTokenState', userDepositTokenStatus)
+      setUserInfoState({
+        ...userInfoState,
+        lpTokens: userDepositTokenStatus,
+        states: _userStates
+      })
+    }
+  }
+
   useEffect(() => {
     const currentVault = vaults.find(v => v.stateAccount === vId);
     if (!currentVault) return;
@@ -155,26 +188,35 @@ function VaultDetail() {
     if (!fApr || !fFees) {
       return setVault(currentVault);
     }
-
-    const aprCalculatedStates = userInfoState.states.map(s => {
-      return {
-        ...s,
-        totalApr: fApr + fFees,
-      };
-    })
-
+    const totalApr = fApr + fFees
+    // const aprCalculatedStates = userInfoState.states.map(s => {
+    //   return {
+    //     ...s,
+    //     totalApr: fApr + fFees,
+    //   };
+    // })
     setVault({
       ...currentVault,
       farmApr: Number(f.apr),
       farmFee: Number(f.fees)
     })
     setFarm(f);
-    setUserInfoState({
-      ...userInfoState,
-      states: aprCalculatedStates,
-    })
+    if (publicKey) {
+      const seed: any[] = []
+      STRATEGIES.map(s => {
+        if (s.stateAccount) {
+          seed.push([new PublicKey(vId).toBuffer(), publicKey?.toBuffer(), new PublicKey(s.stateAccount.toString()).toBuffer()])
+        }
+      })
+      updateUserInfo(seed, totalApr, currentVault.depositToken.mintAddress)      
+    }
 
-  }, [farms, vaults]);
+    // setUserInfoState({
+    //   ...userInfoState,
+    //   states: aprCalculatedStates,
+    // })
+
+  }, [farms, vaults, connState, publicKey]);
 
   useEffect(() => {
     if (!userInfoState) return
@@ -184,8 +226,9 @@ function VaultDetail() {
     if (!vault) return
     const newRewards: Reward[] = rewards.map(r => {
       const userState = userVaultStates.find(s => s.rewardToken.symbol === r.symbol);
-      console.log(userState)
+      console.log('userState', userState)
       if (userState) {
+        console.log('calcReward', userState, vault)
         return {
           symbol: r.symbol,
           amount: calculateReward(userState, vault),
@@ -194,7 +237,7 @@ function VaultDetail() {
       }
       return r
     })
-    console.log(newRewards)
+    console.log('newReward', newRewards)
     setRewards(newRewards)
   }, [userInfoState]);
 
@@ -222,7 +265,7 @@ function VaultDetail() {
   }, [vault]);
 
   let lpStaked = rewards.reduce((prev, r) => BigNumber.sum(prev, r.deposit).toNumber(), 0);
-  let lpBalance = 0;
+  let lpBalance = new BigNumber(0);
 
   if (vault) {
     lpBalance = userInfoState.lpTokens[vault.depositToken.symbol].balance

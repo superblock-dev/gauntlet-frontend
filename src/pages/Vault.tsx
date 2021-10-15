@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from "react";
+import { cloneDeep } from 'lodash';
 import { PublicKey } from '@solana/web3.js';
 import { useRecoilState, useRecoilValue } from "recoil";
 import { conn, farmInfos, liquidityPoolInfos, rewardPrices, userInfo, vaultInfos } from "recoil/atoms";
@@ -13,8 +14,10 @@ import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import UserVaultsContainer from "components/Vaults/UserVaultsContainer";
 import { calculateReward } from 'utils/vaults';
 import { calculateApyInPercentage, STRATEGY_FARMS, STRATEGIES } from 'utils/strategies';
-import { fetchUserState } from 'api/users';
+import { fetchUserState, fetchUserDepositAssociatedTokenAccount } from 'api/users';
 import { Vault } from 'types';
+import { VAULTS } from 'utils/vaults'
+import { TOKENS } from 'utils/tokens';
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -76,7 +79,16 @@ function VaultPage() {
   const [otherVaults, setOtherVaults] = useState<Vault[]>(vaults)
 
   const updateUserInfo = async (seed: any) => {
-    if (connState) {
+    if (connState && publicKey != null) {
+      const depositTokenMintAddressList = VAULTS.map(v => new PublicKey(v.depositToken.mintAddress))
+      const userDepositTokenStatus = cloneDeep(userInfoValue.lpTokens)
+      const userTokenAccountList = await fetchUserDepositAssociatedTokenAccount(connState, publicKey, depositTokenMintAddressList)
+      userTokenAccountList.map(userTokenAccount => {
+        const symbol = Object.keys(userDepositTokenStatus).find(key => key === userTokenAccount.depositToken)
+        if (symbol != undefined) {
+          userDepositTokenStatus[symbol].balance = userTokenAccount.amount
+        }
+      })
       const userStates = await fetchUserState(connState, seed)
       const _userStates = userStates.map(userState => {
         const v = vaults.find(vault => vault.stateAccount === userState.vaultStateAccount)
@@ -112,6 +124,7 @@ function VaultPage() {
       const _userVaultIds = _userStates.map(userState => userState.vaultStateAccount)
       setUserInfo({
         ...userInfoValue,
+        lpTokens: userDepositTokenStatus,
         states: _userStates,
       })
       setUserVaultIds(_userVaultIds)
@@ -172,7 +185,7 @@ function VaultPage() {
           prices[s.rewardToken.symbol] :
           0
       )
-
+      console.log('ssibal', totalRewardInUSD)
       const strategyFarm = STRATEGY_FARMS.find(sf => sf.token === s.rewardToken.symbol);
       let totalApr;
       if (!v.farmApr || !strategyFarm) {
