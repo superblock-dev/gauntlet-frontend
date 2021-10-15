@@ -112,7 +112,7 @@ export default function Carousel(props: CarouselProps) {
     var level
     var halfLen = Math.floor(items.length / 2)
 
-    for (var i = active - halfLen; i < active + halfLen; i++) {
+    for (var i = active - halfLen ; i < active + halfLen + 1; i++) {
       var index = i;
       if ((i % items.length) < 0) {
         index = (i % items.length) + items.length

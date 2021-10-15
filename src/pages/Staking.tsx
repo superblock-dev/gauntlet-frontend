@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 function Staking() {
   const classes = useStyles();
   const prices = useRecoilValue(rewardPrices);
-  const totalStakedInM = 1.34;
+  const totalStakedInM = 0;
 
   return (
     <PageTemplate title={"STAKING"}>
@@ -71,23 +71,25 @@ function Staking() {
           separator=","
           decimals={3}
           decimal="."
-          suffix="M LET"
+          suffix=" LET"
         />
       </div>
       <div className={classes.container}>
         <InfoContainer 
-          aprValue={95.43} 
-          totalStaked={103}
-          balance={120.124}
-          staked={128.23}
+          aprValue={0} 
+          totalStaked={0}
+          balance={0}
+          staked={0}
+          disabled
         />
         <InfoContainer 
           isStaking
-          aprValue={50} 
-          aprMaxValue={95.39} 
-          totalStaked={123}
-          balance={20.124}
-          staked={128.23}
+          aprValue={0} 
+          aprMaxValue={0} 
+          totalStaked={0}
+          balance={0}
+          staked={0}
+          disabled
         />
       </div>
     </PageTemplate>

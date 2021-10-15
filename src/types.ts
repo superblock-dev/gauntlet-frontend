@@ -65,6 +65,7 @@ export interface Strategy {
   strategyTokenMintAccount: string
   performanceFeeTokenAccount: string
   usdcStrategyLpMintAccount: string
+  isUsdcProxyEnabled?: boolean
 }
 
 export interface StrategyApy {

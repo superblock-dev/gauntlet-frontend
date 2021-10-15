@@ -137,8 +137,8 @@ function App() {
               <Route exact path={"/vault"} component={() => <Vault />} />
               <Route path={"/vault/:vaultId"} component={() => <VaultDetail />} />
               <Route path={"/swap"} component={() => <Swap />} />
-              <Route path={"/staking/stake"} component={() => <Stake />} />
-              <Route path={"/staking/pool"} component={() => <LetLpPool />} />
+              {/* <Route path={"/staking/stake"} component={() => <Stake />} />
+              <Route path={"/staking/pool"} component={() => <LetLpPool />} /> */}
               <Route path={"/staking"} component={() => <Staking />} />
               <Route path={"/"} component={() => <Home />} />
             </Switch>

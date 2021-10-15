@@ -214,11 +214,6 @@ function VaultDetail() {
       amount: 0,
       deposit: 0,
     },
-    {
-      symbol: 'RAY',
-      amount: 0,
-      deposit: 0,
-    },
   ];
   let lpStaked = rewards.reduce((prev, r) => BigNumber.sum(prev, r.deposit).toNumber(), 0);
 
@@ -285,17 +280,6 @@ function VaultDetail() {
             null
         }
       </div>
-      {/* {
-        flags.length === 0 ?
-          null :
-          <div className={classes.sliderContainer}>
-            <FlagNavigation onClick={(direction: number) => {
-              const index = slideIndex + direction;
-              setSlideIndex(index);
-            }} />
-            <Slider index={slideIndex} slides={flags} />
-          </div>
-      } */}
 
       <RewardList
         rewards={STRATEGY_FARMS}
