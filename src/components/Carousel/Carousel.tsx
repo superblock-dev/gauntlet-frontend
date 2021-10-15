@@ -305,6 +305,7 @@ export default function Carousel(props: CarouselProps) {
       }
     } catch (e) {
       console.log(e)
+
     }
   }
 
