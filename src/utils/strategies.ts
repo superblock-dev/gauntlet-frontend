@@ -40,30 +40,30 @@ export const STRATEGY_FARMS: StrategyFarm[] = [
     token: 'RAY',
     apy: 528.512,
   },
-  {
-    token: 'LET',
-    // apy: 591.183,
-    apy: 528.512,
-  },
-  {
-    token: 'RAY-ETH',
-    apy: 527.251,
-  },
-  {
-    token: 'RAY-SOL',
-    apy: 441.743,
-  },
-  {
-    token: 'RAY-USDC',
-    apy: 541.480,
-  },
-  {
-    token: 'RAY-USDT',
-    apy: 546.656,
-  },
-  {
-    token: 'LET-USDC',
-    // apy: 454914,
-    apy: 541.480,
-  }
+  // {
+  //   token: 'LET',
+  //   // apy: 591.183,
+  //   apy: 528.512,
+  // },
+  // {
+  //   token: 'RAY-ETH',
+  //   apy: 527.251,
+  // },
+  // {
+  //   token: 'RAY-SOL',
+  //   apy: 441.743,
+  // },
+  // {
+  //   token: 'RAY-USDC',
+  //   apy: 541.480,
+  // },
+  // {
+  //   token: 'RAY-USDT',
+  //   apy: 546.656,
+  // },
+  // {
+  //   token: 'LET-USDC',
+  //   // apy: 454914,
+  //   apy: 541.480,
+  // }
 ];

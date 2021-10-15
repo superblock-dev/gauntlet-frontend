@@ -92,6 +92,8 @@ const useStyles = makeStyles({
     width: '100vw',
     height: 160,
     position: 'relative',
+    display: 'flex',
+  justifyContent: 'center'
   },
 });
 
@@ -220,36 +222,6 @@ function VaultDetail() {
     },
     {
       symbol: 'RAY',
-      amount: 3.132,
-      deposit: 1,
-    },
-    {
-      symbol: 'LET',
-      amount: 3.132,
-      deposit: 1,
-    },
-    {
-      symbol: 'RAY-ETH',
-      amount: 0.001,
-      deposit: 1,
-    },
-    {
-      symbol: 'RAY-SOL',
-      amount: 0.001,
-      deposit: 1,
-    },
-    {
-      symbol: 'RAY-USDC',
-      amount: 0.1,
-      deposit: 1,
-    },
-    {
-      symbol: 'RAY-USDT',
-      amount: 3.132,
-      deposit: 1,
-    },
-    {
-      symbol: 'LET-USDC',
       amount: 3.132,
       deposit: 1,
     },

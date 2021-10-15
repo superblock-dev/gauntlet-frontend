@@ -127,7 +127,6 @@ interface GauntletSummaryProps {
 function GauntletSummary({ totalDeposit, totalLpValueInUSD, totalRewardsInUSD, avgApr, userSummary }: GauntletSummaryProps) {
   const classes = useStyles();
   const rewardTokenList = [
-    'LET',
     'RAY',
     'USDT',
     'USDC',

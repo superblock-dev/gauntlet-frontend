@@ -11,29 +11,11 @@ const tokens: TokenName[] = [
   "USDC",
   "USDT",
   "RAY",
-  "LET",
-  "RAY-ETH",
-  "RAY-SOL",
-  "RAY-USDC",
-  "RAY-USDT",
-  "LET-USDC",
-  "BTC",
-  "ETH",
-  "SOL",
-  "USDC",
-  "USDT",
-  "RAY",
-  "LET",
-  "RAY-ETH",
-  "RAY-SOL",
-  "RAY-USDC",
-  "RAY-USDT",
-  "LET-USDC",
 ];
 
 const useStyles = makeStyles({
   container: {
-    width: (112 * 7 + 152 * 5) * 2 * 2,
+    width: (112 * 6),
     height: 160,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
@@ -51,8 +33,8 @@ export default function StoneDisplay({ items, onClick }: StoneDisplayProps) {
   const symbols = items.map(i => i.symbol);
 
   return (
-    <div className={`${classes.container} stone`}>
-      {[...tokens, ...tokens].map(((item, idx) => {
+    <div className={`${classes.container}`}>
+      {[...tokens].map(((item, idx) => {
         return (
           <Stone
             key={`stone-${idx}`}
