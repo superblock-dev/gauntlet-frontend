@@ -38,12 +38,13 @@ export interface Vault {
   totalDepositAmount?: number
   accPerShares?: number[]
   farmApr?: number
-  farmFee?: number
+  farmFee?: number,
+  state?: any,
 }
 
 export interface User {
   stateAccount: string
-  vault: Vault
+  vault: Vault,
   strategyStateAccount: string
   rewardToken: Token | LPToken
   // Deposited amount of LP token
@@ -63,6 +64,7 @@ export interface Strategy {
   strategyTokenAccount: string
   strategyTokenMintAccount: string
   performanceFeeTokenAccount: string
+  strategyTokenSymbol: Token | LPToken
 }
 
 export interface StrategyApy {

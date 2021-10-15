@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from "react";
+import { PublicKey } from '@solana/web3.js';
 import { useRecoilState, useRecoilValue } from "recoil";
-import { farmInfos, rewardPrices, userInfo, vaultInfos } from "recoil/atoms";
+import { conn, farmInfos, rewardPrices, userInfo, vaultInfos } from "recoil/atoms";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Grid, makeStyles } from "@material-ui/core";
 import PageTemplate from "components/PageTemplate";
@@ -10,8 +11,10 @@ import VaultItem from "components/Vaults/VaultItem";
 import IconArrowUp from 'assets/svgs/IconArrowUp.svg';
 import LineOnlyPurple from 'assets/svgs/LineOnlyPurple.svg';
 import UserVaultsContainer from "components/Vaults/UserVaultsContainer";
-import { calculateReward, getVaultByAccountId } from 'utils/vaults';
-import { calculateApyInPercentage, STRATEGY_FARMS } from 'utils/strategies';
+import { calculateReward } from 'utils/vaults';
+import { calculateApyInPercentage, STRATEGY_FARMS, STRATEGIES } from 'utils/strategies';
+import { fetchUserState } from 'api/vaults';
+import { Vault } from 'types';
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -56,18 +59,86 @@ const useStyles = makeStyles({
   }
 });
 
-function Vault() {
+function VaultPage() {
   const classes = useStyles();
+  const { connected, publicKey } = useWallet();
+  const connState = useRecoilValue(conn);
   const [vaults, setVaults] = useRecoilState(vaultInfos);
   const farms = useRecoilValue(farmInfos);
   const prices = useRecoilValue(rewardPrices);
   const [userInfoValue, setUserInfo] = useRecoilState(userInfo);
   const [avgApr, setAvgApr] = useState(0);
+  const [userVaultIds, setUserVaultIds] = useState<string[]>([])
+  const [userVaults, setUserVaults] = useState<Vault[]>([])
+  const [otherVaults, setOtherVaults] = useState<Vault[]>(vaults)
 
-  const { connected } = useWallet();
-  const userVaultIds = userInfoValue.states.map(userStat => userStat.vault.stateAccount);
-  const userVaults = connected ? vaults.filter(vault => userVaultIds.includes(vault.stateAccount)) : [];
-  const otherVaults = connected ? vaults.filter(vault => !userVaultIds.includes(vault.stateAccount)) : vaults;
+  
+
+  const updateUserInfo = async (seed: any) => {
+    if (connState) {
+      const userStates = await fetchUserState(connState, seed)
+      const _userStates = userStates.map(userState => {
+        const v = userState.vault;
+
+        const totalReward = calculateReward(userState, v);
+
+        const totalRewardInUSD = totalReward * (
+          userState.rewardToken.symbol in prices ?
+            prices[userState.rewardToken.symbol] :
+            0
+        )
+
+        const strategyFarm = STRATEGY_FARMS.find(sf => sf.token === userState.rewardToken.symbol);
+        let totalApr;
+        if (!v.farmApr || !strategyFarm) {
+          totalApr = 0;
+        } else {
+          totalApr = calculateApyInPercentage(v.farmApr, strategyFarm.apy).toNumber();
+        }
+        if (v.fees) {
+          totalApr = BigNumber.sum(totalApr, Number(v.farmFee)).toNumber();
+        }
+
+        return {
+          ...userState,
+          totalReward,
+          totalRewardInUSD,
+          totalApr,
+        }
+
+      })
+      const _userVaultIds = _userStates.map(userState => userState.vault.stateAccount)
+      setUserVaultIds(_userVaultIds)
+
+      setUserInfo({
+        ...userInfoValue,
+        states: _userStates,
+      })
+    }
+  }
+
+  useEffect(() => {
+    const _userVaults = connected ? vaults.filter(vault => userVaultIds.includes(vault.stateAccount)) : [];
+    const _otherVaults = connected ? vaults.filter(vault => !userVaultIds.includes(vault.stateAccount)) : vaults;
+    setUserVaults(_userVaults)
+    setOtherVaults(_otherVaults)
+  }, userVaultIds)
+
+  useEffect(() => {
+    if (connected) {
+      // user state account address 가져옴
+      const seed: any[] = []
+      vaults.map(v => {
+        STRATEGIES.map(s => {
+          if (v.stateAccount && s.stateAccount) {
+            seed.push([new PublicKey(v.stateAccount).toBuffer(), publicKey?.toBuffer(), new PublicKey(s.stateAccount.toString()).toBuffer()])
+          }
+        })
+      })
+      updateUserInfo(seed)
+    }
+  }, [connected, publicKey])
+
 
   useEffect(() => {
     const _vaults = vaults.map(v => {
@@ -82,7 +153,6 @@ function Vault() {
         farmFee: Number(f.fees),
       };
     });
-    console.log(_vaults)
     setVaults(_vaults)
   }, [farms]);
 
@@ -125,9 +195,9 @@ function Vault() {
       if (v.farmApr) {
         totalHApr = BigNumber.sum(totalHApr, Number(v.farmApr)).toNumber();
       }
-  
+
       const highestApy = calculateApyInPercentage(totalHApr, highestStrategy.apy)
-  
+
       if (v.farmFee) {
         totalHApr = BigNumber.sum(highestApy, Number(v.farmFee)).toNumber()
       }
@@ -201,4 +271,4 @@ function Vault() {
   )
 };
 
-export default Vault;
+export default VaultPage;
