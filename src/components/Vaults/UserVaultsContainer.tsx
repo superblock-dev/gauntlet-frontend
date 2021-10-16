@@ -104,7 +104,9 @@ function UserVaultsContainer({ vaults }: UserVaultsProps) {
       avgApr
     })
 
-  }, [userInfoValue]);
+    console.log(totalLpValueInUSD.toNumber())
+
+  }, [userInfoValue, vaults]);
 
   return (
     <>
