@@ -1,7 +1,7 @@
 import { LPToken } from 'utils/tokens';
 import { makeStyles } from '@material-ui/core';
 import IconToken from 'assets/svgs/IconToken.svg';
-import DefaultToken from 'assets/tokens/Default.svg';
+import DefaultToken from 'assets/tokens/Default.png';
 import { useRecoilValue } from 'recoil';
 import { tokenInfos } from 'recoil/atoms';
 
