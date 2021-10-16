@@ -216,7 +216,7 @@ export default function FlagItem(props: FlagItemProps) {
           <span className={classes.textAmount}>
             <Countup
               start={0}
-              end={item.amount}
+              end={item.amount < 0 ? 0 : item.amount}
               delay={0}
               duration={1}
               decimals={6}
