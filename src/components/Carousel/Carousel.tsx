@@ -243,9 +243,9 @@ export default function Carousel(props: CarouselProps) {
         depositV4(connection, publicKey!, vault, strategyInfo, farm, amount.toString())
       )
     }
-    transactions = await Promise.all(transactions);
-    const signedTransactions = await signAllTransactions!(transactions)
     try {
+      transactions = await Promise.all(transactions);
+      const signedTransactions = await signAllTransactions!(transactions)
       for (let signedTransaction of signedTransactions) {
         await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
       }
@@ -317,9 +317,9 @@ export default function Carousel(props: CarouselProps) {
         withdrawV4(connection, publicKey!, vault, strategyInfo, farm, amount.toString(), rewardAmount.toString())
       )
     }
-    transactions = await Promise.all(transactions);
-    const signedTransactions = await signAllTransactions!(transactions)
     try {
+      transactions = await Promise.all(transactions);
+      const signedTransactions = await signAllTransactions!(transactions)
       for (let signedTransaction of signedTransactions) {
         await sendAndConfirmRawTransaction(connection!, signedTransaction.serialize(), { skipPreflight: true, commitment: 'confirmed' });
       }

@@ -15,7 +15,8 @@ const useStyles = makeStyles({
   container: {
     width: (112 * 5),
     height: 160,
-    overflow: 'hidden',
+    // overflow: 'hidden',
+    overflow: 'visible',
     whiteSpace: 'nowrap',
   },
 })

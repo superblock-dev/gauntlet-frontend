@@ -157,6 +157,7 @@ function VaultDetail() {
         }
       })
       const userStates = await fetchUserState(connState, seed)
+      console.log(userStates)
       const _userStates = userStates.map(s => {
         return {
           ...s,
