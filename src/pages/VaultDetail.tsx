@@ -3,10 +3,11 @@ import { cloneDeep } from 'lodash';
 import { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { conn, userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward } from "recoil/atoms";
+import { conn, userInfo, vaultInfos, farmInfos, activeFlagIndex, Reward, liquidityPoolInfos } from "recoil/atoms";
 import { useHistory, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import { PublicKey } from '@solana/web3.js';
+import Countup from 'react-countup';
 
 import { Farm, User, Vault } from "types";
 import { calculateApyInPercentage, STRATEGY_FARMS, STRATEGIES } from "utils/strategies";
@@ -133,6 +134,7 @@ function VaultDetail() {
   const vaults = useRecoilValue(vaultInfos);
   const [userInfoState, setUserInfoState] = useRecoilState(userInfo);
   const farms = useRecoilValue(farmInfos);
+  const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const [slideIndex, setSlideIndex] = useRecoilState(activeFlagIndex);
 
   const [vault, setVault] = useState<Vault | undefined>(undefined);
@@ -259,10 +261,17 @@ function VaultDetail() {
 
   let lpStaked = rewards.reduce((prev, r) => BigNumber.sum(prev, r.deposit).toNumber(), 0);
   let lpBalance = new BigNumber(0);
-
+  let lpValue = 0;
+  
   if (vault) {
     lpBalance = userInfoState.lpTokens[vault.depositToken.symbol].balance
+    const lp = liquidityPools[vault.depositToken.mintAddress];
+    if (lp && lp.currentLpValue) {
+      lpValue = lp.currentLpValue;
+    }
   }
+
+
 
   return (
     <div className={classes.root}>
@@ -292,7 +301,20 @@ function VaultDetail() {
             marginRight: 16,
           }}>
             <div style={{ fontFamily: 'Sen', fontSize: 12, color: '#CBA344', }}>TVL</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#FFD271', }}>540.1M</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#FFD271', }}>
+              <Countup
+                start={0}
+                end={vault?.totalDepositAmount ?
+                  vault?.totalDepositAmount.toEther().multipliedBy(lpValue ? lpValue : 0).toNumber() :
+                  0
+                }
+                delay={0}
+                duration={0.75}
+                decimals={2}
+                decimal="."
+                prefix="$ "
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -317,7 +339,7 @@ function VaultDetail() {
       <div className={classes.sliderContainer}>
         {
           vault && farm ?
-            <Carousel vault={vault} farm={farm} items={rewards} active={slideIndex} handleUpdateInfo={() => setUpdateCounter(updateCounter+1)} /> :
+            <Carousel vault={vault} farm={farm} items={rewards} active={slideIndex} handleUpdateInfo={() => setUpdateCounter(updateCounter + 1)} /> :
             null
         }
       </div>
