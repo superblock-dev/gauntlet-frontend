@@ -55,7 +55,7 @@ const useStyles = makeStyles({
 
 const routeList = [
   { label: "DOCS", path: "https://superblock.gitbook.io/gauntlet/" },
-  { label: "DISCORD", path: "/" },
+  { label: "DISCORD", path: "https://discord.gg/TKZX6CTPWD" },
   { label: "TWITTER", path: "https://twitter.com/GauntletVault" },
 ]
 

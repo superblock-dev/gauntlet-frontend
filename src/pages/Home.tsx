@@ -557,7 +557,7 @@ export default function Home() {
               }}
             >
               <a href="https://superblock.gitbook.io/gauntlet/" target="_blank" className={classes.footerText}>Docs</a>
-              <span className={classes.footerText}>Discord</span>
+              <a href="https://discord.gg/TKZX6CTPWD" className={classes.footerText}>Discord</a>
               <a href="https://twitter.com/GauntletVault" target="_blank" className={classes.footerText}>Twitter</a>
             </div>
             <span className={classes.footerText} style={{ fontSize: 12, }}>© 2021 by Gauntlet Protocol. All rights reserved.</span>
