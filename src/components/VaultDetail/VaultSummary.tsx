@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Countup from 'react-countup';
 import { useRecoilValue } from 'recoil';
@@ -71,12 +72,13 @@ const useStyles = makeStyles({
 
 interface VaultSummaryProps {
   balance: number;
+  vaultTotalAmount?: BigNumber;
   tokenMintAddress: string;
   apr: number;
   staked: boolean;
 }
 
-function VaultSummary({ balance, tokenMintAddress, apr, staked }: VaultSummaryProps) {
+function VaultSummary({ balance, vaultTotalAmount, tokenMintAddress, apr, staked }: VaultSummaryProps) {
   const classes = useStyles();
   const liquidityPools = useRecoilValue(liquidityPoolInfos);
   const { connected } = useWallet();
@@ -92,6 +94,11 @@ function VaultSummary({ balance, tokenMintAddress, apr, staked }: VaultSummaryPr
   if (tokenMintAddress in liquidityPools) {
     const lpValue = liquidityPools[tokenMintAddress].currentLpValue;
     lpValueInUSD = lpValue ? lpValue * balance : 0;
+  }
+
+  let shareOfPool = 0;
+  if (vaultTotalAmount && vaultTotalAmount.toNumber() !== 0) {
+    shareOfPool = new BigNumber(balance).dividedBy(vaultTotalAmount).multipliedBy(100).toNumber();
   }
 
   return (
@@ -168,7 +175,18 @@ function VaultSummary({ balance, tokenMintAddress, apr, staked }: VaultSummaryPr
         <div className={classes.summaryHeader}>Share of pool</div>
       </div>
       <div className={classes.summaryContent}>
-        <div className={classes.summaryBody} style={{ marginBottom: 0, }}>20%</div>
+        <div className={classes.summaryBody} style={{ marginBottom: 0, }}>
+          <Countup
+            start={0}
+            end={shareOfPool}
+            delay={0}
+            duration={0.75}
+            separator=","
+            decimals={3}
+            decimal="."
+            suffix=" %"
+          />
+        </div>
       </div>
     </div>
   )

@@ -321,6 +321,7 @@ function VaultDetail() {
 
       <VaultSummary
         balance={lpStaked ? lpStaked : 0}
+        vaultTotalAmount={vault?.totalDepositAmount?.toEther()}
         tokenMintAddress={vault ? vault.depositToken.mintAddress : ''}
         apr={userStates.length !== 0 ?
           userStates.reduce((p, s) => s.totalApr ? p + s.totalApr : p, 0) :
